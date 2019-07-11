@@ -1,49 +1,7 @@
 
-
-" Disable arrow keys for nav - use hjkl!
-noremap <Up> <Nop>
-noremap <Down> <Nop>
-noremap <Left> <Nop>
-noremap <Right> <Nop>
-
-" Automatically close brackets, braces, quotes
-inoremap " ""<left>
-inoremap ' ''<left>
-inoremap ( ()<left>
-inoremap [ []<left>
-inoremap { {}<left>
-inoremap {<CR> {<CR>}<ESC>O
-inoremap {;<CR> {<CR>};<ESC>O
-
-" Tabs to four spaces
-set expandtab
-set tabstop=4
-set shiftwidth=4
-
-" Use ; for commands
-nnoremap ; :
-
-" Use jj to escape quickly from insert mode
-imap jj <ESC>
-
-" Show line numbers by default
-set number
-
-" Persistent undo (across vim sessions)
-set undodir=~/.vimdid
-set undofile
-
-" Enhanced tab completion
-set wildmenu
-
-" Use CTRL-/ for next buffer
-nnoremap <silent> gn :bnext<CR>
-nnoremap <silent> gp :bprevious<CR>
-
-" Autoformat on save
-au BufWrite * :Autoformat
-
-" Plugin section
+""""""""""""""""""""""""""""""""""""""""""""
+" Plugin Section
+""""""""""""""""""""""""""""""""""""""""""""
 call plug#begin('~/.local/share/nvim/plugged')
 
 " GUI Enhancements
@@ -87,6 +45,29 @@ Plug 'ncm2/ncm2-pyclang'
 
 call plug#end()
 
+
+""""""""""""""""""""""""""""""""""""""""""
+" Configuration Section
+""""""""""""""""""""""""""""""""""""""""""
+" Tabs to four spaces
+set expandtab
+set tabstop=4
+set shiftwidth=4
+
+" Show line numbers by default
+set number
+
+" Persistent undo (across vim sessions)
+set undodir=~/.vimdid
+set undofile
+
+" Enhanced tab completion
+set wildmenu
+
+" Autoformat on save
+au BufWrite * :Autoformat
+
+
 " Required for operations modifying multiple buffers like rename.
 set hidden
 
@@ -94,7 +75,6 @@ let g:LanguageClient_serverCommands = {
             \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
             \ }
 
-nnoremap <F5> :call LanguageClient_contextMenu()<CR>
 
 " Set directory of libclang for use by ncm2/ncm2-pyclang
 let g:ncm2_pyclang#library_path = '/usr/lib/x86_64-linux-gnu/libclang-8.so.1'
@@ -105,3 +85,35 @@ let g:ale_fixers = {
             \}
 " Fix files on save, duh
 let g:ale_fix_on_save = 1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Mappings Section
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Disable arrow keys for nav - use hjkl!
+noremap <Up> <Nop>
+noremap <Down> <Nop>
+noremap <Left> <Nop>
+noremap <Right> <Nop>
+
+" Automatically close brackets, braces, quotes
+inoremap " ""<left>
+inoremap ' ''<left>
+inoremap ( ()<left>
+inoremap [ []<left>
+inoremap { {}<left>
+inoremap {<CR> {<CR>}<ESC>O
+inoremap {;<CR> {<CR>};<ESC>O
+
+" Use ; for commands
+nnoremap ; :
+
+" Use jj to escape quickly from insert mode
+imap jj <ESC>
+
+" TODO: figure out what this does exactly
+" Get lang client menu
+nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+
+" Use CTRL-/ for next buffer
+nnoremap <silent> gn :bnext<CR>
+nnoremap <silent> gp :bprevious<CR>
