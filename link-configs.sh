@@ -7,6 +7,7 @@
 declare -A arr
 arr["${HOME}/.dotfiles/nvim/init.vim"]="${HOME}/.config/nvim/init.vim"
 arr["${HOME}/.dotfiles/alacritty/alacritty.yml"]="${HOME}/.config/alacritty/alacritty.yml"
+arr["${HOME}/.dotfiles/nvim/init.vim"]="${HOME}/.vimrc"
 
 # Check if each value path exists, create it if it doesn't
 for key in ${!arr[@]}; do
