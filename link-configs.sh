@@ -2,6 +2,12 @@
 
 # Dotfile symlink manager
 
+# Ensure that the minimum bash version (4) is installed
+if [ ${BASH_VERSION::1} -lt 4 ]; then
+    echo "Script requires bash v4 and above"
+    exit 1
+fi
+
 # Create associative array of dotfiles(key) to symlink(val)
 # NOTE: assoc arrays added in bash 4
 declare -A arr
