@@ -15,6 +15,7 @@ arr["${HOME}/.dotfiles/alacritty/alacritty.yml"]="${HOME}/.config/alacritty/alac
 arr["${HOME}/.dotfiles/vim/vimrc"]="${HOME}/.vimrc"
 arr["${HOME}/.dotfiles/vim/plug.vim"]="${HOME}/.vim/autoloadplug.vim"
 arr["${HOME}/.dotfiles/tmux/tmux.conf"]="${HOME}/.tmux.conf"
+arr["${HOME}/.dotfiles/fish/fish_variables"]="${HOME}/.config/fish/fish_variables"
 
 # Check if each value path exists, create it if it doesn't
 for key in ${!arr[@]}; do
