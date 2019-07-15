@@ -30,27 +30,28 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
 " Semantic language support
-Plug 'autozimu/LanguageClient-neovim', {
-            \ 'branch': 'next',
-            \ 'do': 'bash install.sh',
-            \ }
+"Plug 'autozimu/LanguageClient-neovim', {
+"            \ 'branch': 'next',
+"            \ 'do': 'bash install.sh',
+"            \ }
+
 " Autocomplete
-Plug 'ncm2/ncm2'
-Plug 'roxma/nvim-yarp'
+"Plug 'ncm2/ncm2'
+"Plug 'roxma/nvim-yarp'
 " Enable ncm2 for all buffers
-autocmd BufEnter * call ncm2#enable_for_buffer()
+"autocmd BufEnter * call ncm2#enable_for_buffer()
 " IMPORTANT: :help Ncm2PopupOpen for more information
-set completeopt=noinsert,menuone,noselect
+"set completeopt=noinsert,menuone,noselect
 " NOTE: you need to install completion sources to get completions. Check
 " our wiki page for a list of sources: https://github.com/ncm2/ncm2/wiki
 " General completion
-Plug 'ncm2/ncm2-bufword'
-Plug 'ncm2/ncm2-path'
-Plug 'ncm2/ncm2-tmux'
+"Plug 'ncm2/ncm2-bufword'
+"Plug 'ncm2/ncm2-path'
+"Plug 'ncm2/ncm2-tmux'
 " Rust
-Plug 'ncm2/ncm2-racer'
+"Plug 'ncm2/ncm2-racer'
 " C/C++
-Plug 'ncm2/ncm2-pyclang'
+"Plug 'ncm2/ncm2-pyclang'
 
 call plug#end()
 
