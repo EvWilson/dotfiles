@@ -12,8 +12,8 @@ fi
 # NOTE: assoc arrays added in bash 4
 declare -A arr
 arr["${HOME}/.dotfiles/alacritty/alacritty.yml"]="${HOME}/.config/alacritty/alacritty.yml"
-arr["${HOME}/.dotfiles/vim/vimrc"]="${HOME}/.vimrc"
-arr["${HOME}/.dotfiles/vim/plug.vim"]="${HOME}/.vim/autoloadplug.vim"
+arr["${HOME}/.dotfiles/nvim/init.vim"]="${HOME}/.config/nvim/init.vim"
+#arr["${HOME}/.dotfiles/nvim/plug.vim"]="${HOME}/.local/share/nvim/plugged/plug.vim"
 arr["${HOME}/.dotfiles/tmux/tmux.conf"]="${HOME}/.tmux.conf"
 arr["${HOME}/.dotfiles/fish/fish_variables"]="${HOME}/.config/fish/fish_variables"
 
