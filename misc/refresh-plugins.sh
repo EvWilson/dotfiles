@@ -1,3 +1,3 @@
 #!/bin/bash
 
-env SHELL=$(which sh) vim +PlugInstall +PlugClean +PlugUpdate +UpdateRemotePlugins
+env SHELL=$(which sh) nvim +PlugInstall +PlugClean +PlugUpdate +UpdateRemotePlugins
