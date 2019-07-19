@@ -65,24 +65,19 @@ set completeopt=noinsert,menuone,noselect
 " Required for operations modifying multiple buffers like rename.
 set hidden
 
-" EXPERIMENTAL
-let g:python3_host_prog="/home/ewilson/.bin/mypy/bin/python3.7"
+" Use custom python installation if necessary (pls, Mr. Sysadmin, I want to
+" run my plugins)
+if !empty($CUSTOM_PYTHON_LOC)
+    let g:python3_host_prog=$CUSTOM_PYTHON_LOC
+endif
 
-" path to directory where libclang.so can be found
-"let g:ncm2_pyclang#library_path=$HOME."/.dotfiles/nvim/libclang.so"
-"let BACKUP_LIBCLANG=${ls /usr/lib/x86_64-linux-gnu | grep -m 1 libclang}
+" path to directory where libclang.so can be found (for ncm2-pyclang)
 let libclang_loc = system("ls /usr/lib/x86_64-linux-gnu | grep -m 1 libclang")
-echom "Libclang loc: " . libclang_loc
-let pyclang_libclang_loc=$PYCLANG_LIBCLANG_LOC
-echom "Var: " . pyclang_libclang_loc 
-if pyclang_libclang_loc
-    echom "Found it"
-    let g:ncm2_pyclang#library_path = system("echo $PYCLANG_LIBCLANG_LOC")
+if !empty($PYCLANG_LIBCLANG_LOC)
+    let g:ncm2_pyclang#library_path = $PYCLANG_LIBCLANG_LOC
 else
-    echom "Could not find"
     let g:ncm2_pyclang#library_path = "/usr/lib/x86_64-linux-gnu/" . libclang_loc
 endif
-echom "Result: " . g:ncm2_pyclang#library_path
 
 " Configure fixers for w0rp/ale plugin
 let g:ale_fixers = {
