@@ -46,6 +46,9 @@ set shiftwidth=4
 " Show line numbers by default
 set number
 
+" Required for operations modifying multiple buffers like rename.
+set hidden
+
 " Persistent undo (across vim sessions)
 set undodir=~/.vimdid
 set undofile
@@ -58,15 +61,10 @@ set wildmenu
 
 " enable ncm2 for all buffers
 autocmd BufEnter * call ncm2#enable_for_buffer()
-
 " IMPORTANT: :help Ncm2PopupOpen for more information
 set completeopt=noinsert,menuone,noselect
 
-" Required for operations modifying multiple buffers like rename.
-set hidden
-
-" Use custom python installation if necessary (pls, Mr. Sysadmin, I want to
-" run my plugins)
+" Use custom python installation if necessary (pls, Mr. Sysadmin, I want to run my plugins)
 if !empty($CUSTOM_PYTHON_LOC)
     let g:python3_host_prog=$CUSTOM_PYTHON_LOC
 endif
@@ -97,19 +95,26 @@ set scrolloff=15
 " Mappings Section
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Disable arrow keys for nav - use hjkl!
-"noremap <Up> <Nop>
-"noremap <Down> <Nop>
-"noremap <Left> <Nop>
-"noremap <Right> <Nop>
+nnoremap <Up> <Nop>
+nnoremap <Down> <Nop>
+"inoremap <Up> <Nop>
+"inoremap <Down> <Nop>
+"inoremap <Left> <Nop>
+"inoremap <Right> <Nop>
 
 " Automatically close brackets, braces, quotes
-inoremap " ""<left>
-inoremap ' ''<left>
-inoremap ( ()<left>
-inoremap [ []<left>
-inoremap { {}<left>
+"inoremap " ""<left>
+"inoremap ' ''<left>
+"inoremap ( ()<left>
+"inoremap [ []<left>
+"inoremap { {}<left>
 inoremap {<CR> {<CR>}<ESC>O
 inoremap {;<CR> {<CR>};<ESC>O
+
+" Jump to the start and end of the line using the home row
+"nnoremap H ^ 
+nnoremap H 0
+nnoremap L $
 
 " Use ; for commands
 nnoremap ; :
@@ -117,9 +122,20 @@ nnoremap ; :
 " Use jj to escape quickly from insert mode
 inoremap jj <ESC>
 
-" Use CTRL-/ for next buffer
-nnoremap <silent> gn :bnext<CR>
-nnoremap <silent> gp :bprevious<CR>
+" tab to select from autocomplete
+" and don't hijack my enter key
+inoremap <expr><Tab> (pumvisible()?(empty(v:completed_item)?"\<C-n>":"\<C-y>"):"\<Tab>")
+inoremap <expr><CR> (pumvisible()?(empty(v:completed_item)?"\<CR>\<CR>":"\<C-y>"):"\<CR>")
+
+" Cycle buffers, using whatever I happen to have below
+"nnoremap <silent> gn :bnext<CR>
+"nnoremap <silent> gp :bprevious<CR>
+nnoremap <silent> <Right> :bnext<CR>
+nnoremap <silent> <Right> :bprevious<CR>
+
+" Open fzf commands easily
+nnoremap <Leader>- :Files<CR>
+nnoremap <Leader>= :Buffers<CR>
 
 " C++ goto definition
 autocmd FileType c,cpp nnoremap <buffer> gd :<c-u>call ncm2_pyclang#goto_declaration()<cr>
