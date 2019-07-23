@@ -131,7 +131,7 @@ inoremap <expr><CR> (pumvisible()?(empty(v:completed_item)?"\<CR>\<CR>":"\<C-y>"
 "nnoremap <silent> gn :bnext<CR>
 "nnoremap <silent> gp :bprevious<CR>
 nnoremap <silent> <Right> :bnext<CR>
-nnoremap <silent> <Right> :bprevious<CR>
+nnoremap <silent> <Left> :bprevious<CR>
 
 " Open fzf commands easily
 nnoremap <Leader>- :Files<CR>
