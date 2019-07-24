@@ -15,7 +15,13 @@ Plug 'w0rp/ale'
 Plug 'machakann/vim-highlightedyank'
 
 " Automatic formatter
-Plug 'Chiel92/vim-autoformat'
+"Plug 'Chiel92/vim-autoformat'
+
+" LSP support
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
 
 " Fuzzy finder
 Plug 'airblade/vim-rooter'
@@ -30,7 +36,7 @@ Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-tmux'
 Plug 'ncm2/ncm2-path'
 " C++
-Plug 'ncm2/ncm2-pyclang'
+"Plug 'ncm2/ncm2-pyclang'
 
 call plug#end()
 
@@ -56,6 +62,14 @@ set undofile
 " Enhanced tab completion
 set wildmenu
 
+" Always be able to see at least 5 lines of context
+set scrolloff=15
+
+" Check for various needed executables
+if !executable('clangd')
+    echom "You do not have clangd, needed for LanguageClient ops"
+end
+
 " Autoformat on save
 "au BufWrite * :Autoformat
 
@@ -64,32 +78,31 @@ autocmd BufEnter * call ncm2#enable_for_buffer()
 " IMPORTANT: :help Ncm2PopupOpen for more information
 set completeopt=noinsert,menuone,noselect
 
+" Set up LanguageClient
+let g:LanguageClient_serverCommands = {
+    \ 'cpp': ['clangd'],
+    \ }
+
 " Use custom python installation if necessary (pls, Mr. Sysadmin, I want to run my plugins)
 if !empty($CUSTOM_PYTHON_LOC)
     let g:python3_host_prog=$CUSTOM_PYTHON_LOC
 endif
 
 " path to directory where libclang.so can be found (for ncm2-pyclang)
-let libclang_loc = system("ls /usr/lib/x86_64-linux-gnu | grep -m 1 libclang")
-if !empty($PYCLANG_LIBCLANG_LOC)
-    let g:ncm2_pyclang#library_path = $PYCLANG_LIBCLANG_LOC
-else
-    let g:ncm2_pyclang#library_path = "/usr/lib/x86_64-linux-gnu/" . libclang_loc
-endif
+"let libclang_loc = system("ls /usr/lib/x86_64-linux-gnu | grep -m 1 libclang")
+"if !empty($PYCLANG_LIBCLANG_LOC)
+"    let g:ncm2_pyclang#library_path = $PYCLANG_LIBCLANG_LOC
+"else
+"    let g:ncm2_pyclang#library_path = "/usr/lib/x86_64-linux-gnu/" . libclang_loc
+"endif
 
 " Configure fixers for w0rp/ale plugin
-let g:ale_fixers = {
-            \'*': ['remove_trailing_lines', 'trim_whitespace'],
-            \'c++': ['clang-tidy']
-            \}
+"let g:ale_fixers = {
+"            \'*': ['remove_trailing_lines', 'trim_whitespace'],
+"            \'c++': ['clang']
+"            \}
 " Fix files on save, duh
 "let g:ale_fix_on_save = 1
-
-" Enforce highlighting scheme for Visual mode
-"hi Visual guifg=White guibg=LightBlue gui=none
-
-" Always be able to see at least 5 lines of context
-set scrolloff=15
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Mappings Section
@@ -137,5 +150,9 @@ nnoremap <silent> <Left> :bprevious<CR>
 nnoremap <Leader>- :Files<CR>
 nnoremap <Leader>= :Buffers<CR>
 
-" C++ goto definition
-autocmd FileType c,cpp nnoremap <buffer> gd :<c-u>call ncm2_pyclang#goto_declaration()<cr>
+" goto definition
+"autocmd FileType c,cpp nnoremap <buffer> gd :<c-u>call ncm2_pyclang#goto_declaration()<cr>
+"nnoremap <silent> gd :ALEGoToDefinition<CR>
+nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+" Get function information
+nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR><Paste>
