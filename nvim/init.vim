@@ -152,6 +152,7 @@ nnoremap <silent> <Left> :bprevious<CR>
 " Open fzf commands easily
 nnoremap <Leader>- :Files<CR>
 nnoremap <Leader>= :Buffers<CR>
+nnoremap <Leader>] :Rg<Space>
 
 " goto definition
 "autocmd FileType c,cpp nnoremap <buffer> gd :<c-u>call ncm2_pyclang#goto_declaration()<cr>
