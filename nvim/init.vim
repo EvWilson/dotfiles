@@ -24,7 +24,7 @@ Plug 'autozimu/LanguageClient-neovim', {
     \ }
 
 " Fuzzy finder
-Plug 'airblade/vim-rooter'
+"Plug 'airblade/vim-rooter'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
@@ -93,7 +93,7 @@ endif
 "if !empty($PYCLANG_LIBCLANG_LOC)
 "    let g:ncm2_pyclang#library_path = $PYCLANG_LIBCLANG_LOC
 "else
-"    let g:ncm2_pyclang#library_path = "/usr/lib/x86_64-linux-gnu/" . libclang_loc
+"    let g:ncm2_pyclang#library_path = \"/usr/lib/x86_64-linux-gnu/\" . libclang_loc
 "endif
 
 " Configure fixers for w0rp/ale plugin
@@ -155,4 +155,4 @@ nnoremap <Leader>= :Buffers<CR>
 "nnoremap <silent> gd :ALEGoToDefinition<CR>
 nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
 " Get function information
-nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR><Paste>
+nnoremap <silent> <Leader><Space> :call LanguageClient#textDocument_hover()<CR><Paste>
