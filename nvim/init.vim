@@ -65,6 +65,9 @@ set wildmenu
 " Always be able to see at least 5 lines of context
 set scrolloff=15
 
+" Enable mouse to set cursor location
+set mouse=a
+
 " Check for various needed executables
 if !executable('clangd')
     echom "You do not have clangd, needed for LanguageClient ops"
