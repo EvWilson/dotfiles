@@ -1,3 +1,7 @@
+# Colors to see dirs and bins
+LS_COLORS="di=34:ex=33"
+export $LS_COLORS
+
 # Set custom prompt
 function abbreviated_pwd {
     ps_str=''
