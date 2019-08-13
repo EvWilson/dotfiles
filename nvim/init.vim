@@ -14,9 +14,6 @@ Plug 'w0rp/ale'
 " Highlight yanked materials
 Plug 'machakann/vim-highlightedyank'
 
-" Automatic formatter
-"Plug 'Chiel92/vim-autoformat'
-
 " LSP support
 Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
@@ -31,10 +28,14 @@ Plug 'junegunn/fzf.vim'
 " Semantic language support
 Plug 'ncm2/ncm2'
 Plug 'roxma/nvim-yarp'
+
 " Completion plugins
 Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-tmux'
 Plug 'ncm2/ncm2-path'
+
+" Syntactic language support
+Plug 'rust-lang/rust.vim'
 " C++
 "Plug 'ncm2/ncm2-pyclang'
 
@@ -71,10 +72,12 @@ set mouse=a
 " Check for various needed executables
 if !executable('clangd')
     echom "You do not have clangd, needed for LanguageClient ops"
-end
+endif
 
-" Autoformat on save
-"au BufWrite * :Autoformat
+" Make sure we get what we need for Rust dev
+if !executable('rls')
+    echom "Make sure to install RLS and any others needed for Rust autocomplete!"
+endif
 
 " enable ncm2 for all buffers
 autocmd BufEnter * call ncm2#enable_for_buffer()
@@ -86,26 +89,23 @@ let g:LanguageClient_serverCommands = {
     \ 'cpp': ['clangd'],
     \ }
 
+" Linter
+" Only lint on save
+let g:ale_lint_in_text_changed = 'never'
+let g:ale_lint_on_insert_leave = 1
+let g:ale_lint_on_save = 1
+let g:ale_lint_on_enter = 1
+let g:ale_linters = {'rust': ['rls']}
+
+" Autoformat rust code on save
+let g:rustfmt_command = "rustfmt +nightly"
+let g:rustfmt_autosave = 1
+let g:rustfmt_fail_silently = 0
+
 " Use custom python installation if necessary (pls, Mr. Sysadmin, I want to run my plugins)
 if !empty($CUSTOM_PYTHON_LOC)
     let g:python3_host_prog=$CUSTOM_PYTHON_LOC
 endif
-
-" path to directory where libclang.so can be found (for ncm2-pyclang)
-"let libclang_loc = system("ls /usr/lib/x86_64-linux-gnu | grep -m 1 libclang")
-"if !empty($PYCLANG_LIBCLANG_LOC)
-"    let g:ncm2_pyclang#library_path = $PYCLANG_LIBCLANG_LOC
-"else
-"    let g:ncm2_pyclang#library_path = \"/usr/lib/x86_64-linux-gnu/\" . libclang_loc
-"endif
-
-" Configure fixers for w0rp/ale plugin
-"let g:ale_fixers = {
-"            \'*': ['remove_trailing_lines', 'trim_whitespace'],
-"            \'c++': ['clang']
-"            \}
-" Fix files on save, duh
-"let g:ale_fix_on_save = 1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Mappings Section
@@ -138,6 +138,9 @@ nnoremap ; :
 " Use jj to escape quickly from insert mode
 inoremap jj <ESC>
 
+" Quicksave
+noremap <Leader>w :w<CR>
+
 " tab to select from autocomplete
 " and don't hijack my enter key
 inoremap <expr><Tab> (pumvisible()?(empty(v:completed_item)?"\<C-n>":"\<C-y>"):"\<Tab>")
@@ -155,8 +158,7 @@ nnoremap <Leader>= :Buffers<CR>
 nnoremap <Leader>] :Rg<CR>
 
 " goto definition
-"autocmd FileType c,cpp nnoremap <buffer> gd :<c-u>call ncm2_pyclang#goto_declaration()<cr>
-"nnoremap <silent> gd :ALEGoToDefinition<CR>
-nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+autocmd FileType rust nnoremap gd :ALEGoToDefinition<CR>
+autocmd FileType c,cpp nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
 " Get function information
-nnoremap <silent> <Leader><Space> :call LanguageClient#textDocument_hover()<CR><Paste>
+nnoremap <silent> <Leader><Space> :call LanguageClient#textDocument_hover()<CR>
