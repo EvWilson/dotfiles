@@ -33,11 +33,11 @@ Plug 'roxma/nvim-yarp'
 Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-tmux'
 Plug 'ncm2/ncm2-path'
+" With Rust
+Plug 'ncm2/ncm2-racer'
 
 " Syntactic language support
 Plug 'rust-lang/rust.vim'
-" C++
-"Plug 'ncm2/ncm2-pyclang'
 
 call plug#end()
 
@@ -69,7 +69,15 @@ set scrolloff=15
 " Enable mouse to set cursor location
 set mouse=a
 
-" Check for various needed executables
+" Check for needed binaries
+if !executable('fzf')
+    echom "Install fzf to make your life better"
+endif
+if !executable('rg')
+    echom "Install ripgrep to make your life better"
+endif
+
+" Check for CPP LSP
 if !executable('clangd')
     echom "You do not have clangd, needed for LanguageClient ops"
 endif
@@ -77,6 +85,9 @@ endif
 " Make sure we get what we need for Rust dev
 if !executable('rls')
     echom "Make sure to install RLS and any others needed for Rust autocomplete!"
+endif
+if !executable('racer')
+    echom "Make sure to install racer for Rust dev"
 endif
 
 " enable ncm2 for all buffers
@@ -87,6 +98,7 @@ set completeopt=noinsert,menuone,noselect
 " Set up LanguageClient
 let g:LanguageClient_serverCommands = {
     \ 'cpp': ['clangd'],
+    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
     \ }
 
 " Linter
