@@ -96,6 +96,17 @@ let g:ale_lint_on_insert_leave = 1
 let g:ale_lint_on_save = 1
 let g:ale_lint_on_enter = 1
 let g:ale_linters = {'rust': ['rls']}
+highlight link ALEWarningSign Todo
+highlight link ALEErrorSign WarningMsg
+highlight link ALEVirtualTextWarning Todo
+highlight link ALEVirtualTextInfo Todo
+highlight link ALEVirtualTextError WarningMsg
+highlight ALEError guibg=None
+highlight ALEWarning guibg=None
+let g:ale_sign_error = "✖"
+let g:ale_sign_warning = "⚠"
+let g:ale_sign_info = "i"
+let g:ale_sign_hint = "➤"
 
 " Autoformat rust code on save
 let g:rustfmt_command = "rustfmt +nightly"
@@ -157,8 +168,13 @@ nnoremap <Leader>- :Files<CR>
 nnoremap <Leader>= :Buffers<CR>
 nnoremap <Leader>] :Rg<CR>
 
+" Get ALE details easily
+autocmd FileType rust nnoremap <silent> <Leader>d :ALEDetail<CR>
+
 " goto definition
 autocmd FileType rust nnoremap gd :ALEGoToDefinition<CR>
 autocmd FileType c,cpp nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+
 " Get function information
-nnoremap <silent> <Leader><Space> :call LanguageClient#textDocument_hover()<CR>
+autocmd FileType rust nnoremap <silent> <Leader><Space> :ALEHover<CR>
+autocmd FileType c,cpp nnoremap <silent> <Leader><Space> :call LanguageClient#textDocument_hover()<CR>
