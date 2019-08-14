@@ -86,10 +86,10 @@ endif
 
 " Make sure we get what we need for Rust dev
 if !executable('rls')
-    echom "Make sure to install RLS and any others needed for Rust autocomplete!"
+    "echom "Make sure to install RLS and any others needed for Rust autocomplete!"
 endif
 if !executable('racer')
-    echom "Make sure to install racer for Rust dev"
+    "echom "Make sure to install racer for Rust dev"
 endif
 
 " enable ncm2 for all buffers
@@ -144,7 +144,7 @@ nnoremap <Down> <Nop>
 "inoremap <Right> <Nop>
 
 " Automatically close brackets, braces, quotes
-"inoremap " ""<left>
+"inoremap \" \"\"<left>
 "inoremap ' ''<left>
 "inoremap ( ()<left>
 "inoremap [ []<left>
@@ -164,7 +164,8 @@ nnoremap ; :
 inoremap jj <ESC>
 
 " Quicksave
-noremap <Leader>w :w<CR>
+inoremap <Leader>w :w<CR>
+nnoremap <Leader>w <c-o>:w<CR>
 
 " Open NERDtree
 nnoremap <Leader>t :NERDTreeToggle<CR>
