@@ -164,8 +164,8 @@ nnoremap ; :
 inoremap jj <ESC>
 
 " Quicksave
-inoremap <Leader>w :w<CR>
-nnoremap <Leader>w <c-o>:w<CR>
+nnoremap <Leader>w :w<CR>
+inoremap <Leader>w <c-o>:w<CR>
 
 " Open NERDtree
 nnoremap <Leader>t :NERDTreeToggle<CR>
