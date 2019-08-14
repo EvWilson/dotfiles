@@ -13,6 +13,8 @@ Plug 'itchyny/lightline.vim'
 Plug 'w0rp/ale'
 " Highlight yanked materials
 Plug 'machakann/vim-highlightedyank'
+" NERDtree - visual file explorer
+Plug 'scrooloose/nerdtree'
 
 " LSP support
 Plug 'autozimu/LanguageClient-neovim', {
@@ -163,6 +165,9 @@ inoremap jj <ESC>
 
 " Quicksave
 noremap <Leader>w :w<CR>
+
+" Open NERDtree
+nnoremap <Leader>t :NERDTreeToggle<CR>
 
 " tab to select from autocomplete
 " and don't hijack my enter key
