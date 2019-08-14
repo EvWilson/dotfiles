@@ -183,7 +183,13 @@ nnoremap <silent> <Left> :bprevious<CR>
 " Open fzf commands easily
 nnoremap <Leader>- :Files<CR>
 nnoremap <Leader>= :Buffers<CR>
-nnoremap <Leader>] :Rg<CR>
+"nnoremap <Leader>] :Rg<CR>
+let g:rg_command = '
+  \ rg --column --line-number --no-heading --ignore-case --no-ignore --hidden --follow --color "always"
+  \ -g "!{.git,node_modules,vendor}/*" '
+
+command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
+nnoremap <Leader>] :F<CR>
 
 " Get ALE details easily
 autocmd FileType rust nnoremap <silent> <Leader>d :ALEDetail<CR>
