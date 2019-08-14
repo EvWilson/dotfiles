@@ -86,10 +86,10 @@ endif
 
 " Make sure we get what we need for Rust dev
 if !executable('rls')
-    "echom "Make sure to install RLS and any others needed for Rust autocomplete!"
+    echom "Make sure to install RLS and any others needed for Rust autocomplete!"
 endif
 if !executable('racer')
-    "echom "Make sure to install racer for Rust dev"
+    echom "Make sure to install racer for Rust dev"
 endif
 
 " enable ncm2 for all buffers
@@ -138,22 +138,12 @@ endif
 " Disable arrow keys for nav - use hjkl!
 nnoremap <Up> <Nop>
 nnoremap <Down> <Nop>
-"inoremap <Up> <Nop>
-"inoremap <Down> <Nop>
-"inoremap <Left> <Nop>
-"inoremap <Right> <Nop>
 
-" Automatically close brackets, braces, quotes
-"inoremap \" \"\"<left>
-"inoremap ' ''<left>
-"inoremap ( ()<left>
-"inoremap [ []<left>
-"inoremap { {}<left>
+" Automatically match brackets
 inoremap {<CR> {<CR>}<ESC>O
 inoremap {;<CR> {<CR>};<ESC>O
 
 " Jump to the start and end of the line using the home row
-"nnoremap H ^ 
 nnoremap H 0
 nnoremap L $
 
@@ -176,15 +166,12 @@ inoremap <expr><Tab> (pumvisible()?(empty(v:completed_item)?"\<C-n>":"\<C-y>"):"
 inoremap <expr><CR> (pumvisible()?(empty(v:completed_item)?"\<CR>\<CR>":"\<C-y>"):"\<CR>")
 
 " Cycle buffers, using whatever I happen to have below
-"nnoremap <silent> gn :bnext<CR>
-"nnoremap <silent> gp :bprevious<CR>
 nnoremap <silent> <Right> :bnext<CR>
 nnoremap <silent> <Left> :bprevious<CR>
 
 " Open fzf commands easily
 nnoremap <Leader>- :Files<CR>
 nnoremap <Leader>= :Buffers<CR>
-"nnoremap <Leader>] :Rg<CR>
 let g:rg_command = '
   \ rg --column --line-number --no-heading --ignore-case --no-ignore --hidden --follow --color "always"
   \ -g "!{.git,node_modules,vendor}/*" '
