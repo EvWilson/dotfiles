@@ -144,7 +144,8 @@ inoremap {<CR> {<CR>}<ESC>O
 inoremap {;<CR> {<CR>};<ESC>O
 
 " Jump to the start and end of the line using the home row
-nnoremap H 0
+nnoremap HH 0
+nnoremap H ^
 nnoremap L $
 
 " Use ; for commands
