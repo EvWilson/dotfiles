@@ -15,6 +15,8 @@ Plug 'w0rp/ale'
 Plug 'machakann/vim-highlightedyank'
 " NERDtree - visual file explorer
 Plug 'scrooloose/nerdtree'
+" Tagbar - visually display tags in a certain file, for C/C++ development
+Plug 'majutsushi/tagbar'
 
 " LSP support
 Plug 'autozimu/LanguageClient-neovim', {
@@ -42,6 +44,7 @@ Plug 'ncm2/ncm2-racer'
 Plug 'rust-lang/rust.vim'
 
 call plug#end()
+
 
 
 """"""""""""""""""""""""""""""""""""""""""
@@ -77,6 +80,9 @@ if !executable('fzf')
 endif
 if !executable('rg')
     echom "Install ripgrep to make your life better"
+endif
+if !executable('ctags')
+    echom "Install ctags to make your life better"
 endif
 
 " Check for CPP LSP
@@ -161,6 +167,9 @@ inoremap <Leader>w <c-o>:w<CR>
 " Open NERDtree
 nnoremap <Leader>t :NERDTreeToggle<CR>
 
+" Open Tagbar window
+nnoremap <Leader>1 :TagbarToggle<CR>
+
 " tab to select from autocomplete
 " and don't hijack my enter key
 inoremap <expr><Tab> (pumvisible()?(empty(v:completed_item)?"\<C-n>":"\<C-y>"):"\<Tab>")
@@ -170,22 +179,25 @@ inoremap <expr><CR> (pumvisible()?(empty(v:completed_item)?"\<CR>\<CR>":"\<C-y>"
 nnoremap <silent> <Right> :bnext<CR>
 nnoremap <silent> <Left> :bprevious<CR>
 
-" Open fzf commands easily
+" Open fzf commands
 nnoremap <Leader>- :Files<CR>
 nnoremap <Leader>= :Buffers<CR>
+" This subsection is to make project ripgrep behave as expected
 let g:rg_command = '
   \ rg --column --line-number --no-heading --ignore-case --no-ignore --hidden --follow --color "always"
   \ -g "!{.git,node_modules,vendor}/*" '
 
 command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
 nnoremap <Leader>] :F<CR>
+" Search ctags, if applicable
+autocmd FileType c,cpp nnoremap <Leader>' :Tags<CR>
 
-" Get ALE details easily
+" Get ALE details
 autocmd FileType rust nnoremap <silent> <Leader>d :ALEDetail<CR>
 
 " goto definition
 autocmd FileType rust nnoremap gd :ALEGoToDefinition<CR>
-autocmd FileType c,cpp nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+autocmd FileType c,cpp nnoremap gd <c-]>
 
 " Get function information
 autocmd FileType rust nnoremap <silent> <Leader><Space> :ALEHover<CR>
