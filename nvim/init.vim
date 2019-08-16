@@ -92,10 +92,10 @@ endif
 
 " Make sure we get what we need for Rust dev
 if !executable('rls')
-    echom "Make sure to install RLS and any others needed for Rust autocomplete!"
+    "echom "Make sure to install RLS and any others needed for Rust autocomplete!"
 endif
 if !executable('racer')
-    echom "Make sure to install racer for Rust dev"
+    "echom "Make sure to install racer for Rust dev"
 endif
 
 " enable ncm2 for all buffers
