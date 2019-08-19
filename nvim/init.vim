@@ -10,19 +10,13 @@ call plug#begin('~/.local/shared/nvim/plugged')
 " Utility showing vim mode status, etc in lower bar
 Plug 'itchyny/lightline.vim'
 " Asynchronous Lint Engine
-Plug 'w0rp/ale'
+Plug 'dense-analysis/ale'
 " Highlight yanked materials
 Plug 'machakann/vim-highlightedyank'
 " NERDtree - visual file explorer
 Plug 'scrooloose/nerdtree'
 " Tagbar - visually display tags in a certain file, for C/C++ development
 Plug 'majutsushi/tagbar'
-
-" LSP support
-Plug 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh',
-    \ }
 
 " Fuzzy finder
 "Plug 'airblade/vim-rooter'
@@ -37,11 +31,16 @@ Plug 'roxma/nvim-yarp'
 Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-tmux'
 Plug 'ncm2/ncm2-path'
-" With Rust
-Plug 'ncm2/ncm2-racer'
 
-" Syntactic language support
+" Rust support
+" Completion
+Plug 'ncm2/ncm2-racer'
+" Syntax
 Plug 'rust-lang/rust.vim'
+
+" Python
+" Formatting
+Plug 'psf/black'
 
 call plug#end()
 
@@ -74,23 +73,31 @@ set scrolloff=15
 " Enable mouse to set cursor location
 set mouse=a
 
-" Check for needed binaries
+" General binaries
 if !executable('fzf')
     echom "Install fzf to make your life better"
 endif
 if !executable('rg')
     echom "Install ripgrep to make your life better"
 endif
+
+" CPP binaries
+if !executable('clangd')
+    echom "You do not have clangd, needed for CPP dev"
+endif
 if !executable('ctags')
     echom "Install ctags to make your life better"
 endif
 
-" Check for CPP LSP
-if !executable('clangd')
-    echom "You do not have clangd, needed for LanguageClient ops"
+" Python binaries
+if !executable('pylint')
+    echom "Install pylint for Python dev"
+endif
+if !executable('black')
+    echom "Install black for Python dev"
 endif
 
-" Make sure we get what we need for Rust dev
+" Rust binaries
 if !executable('rls')
     "echom "Make sure to install RLS and any others needed for Rust autocomplete!"
 endif
@@ -104,18 +111,26 @@ autocmd BufEnter * call ncm2#enable_for_buffer()
 set completeopt=noinsert,menuone,noselect
 
 " Set up LanguageClient
-let g:LanguageClient_serverCommands = {
-    \ 'cpp': ['clangd'],
-    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
-    \ }
+"let g:LanguageClient_serverCommands = {
+"    \ 'cpp': ['clangd'],
+"    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+"    \ }
 
+" Fixers
+"let g:ale_fixers = {
+"    \ '*': ['remove_trailing_lines', 'trim_whitespace'],
+"    \ }
 " Linter
 " Only lint on save
 let g:ale_lint_in_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 1
 let g:ale_lint_on_save = 1
 let g:ale_lint_on_enter = 1
-let g:ale_linters = {'rust': ['rls']}
+let g:ale_linters = {
+    \ 'cpp': ['clangd'],
+    \ 'python': ['pylint'],
+    \ 'rust': ['rls'],
+    \ }
 highlight link ALEWarningSign Todo
 highlight link ALEErrorSign WarningMsg
 highlight link ALEVirtualTextWarning Todo
@@ -123,10 +138,10 @@ highlight link ALEVirtualTextInfo Todo
 highlight link ALEVirtualTextError WarningMsg
 highlight ALEError guibg=None
 highlight ALEWarning guibg=None
-let g:ale_sign_error = "✖"
-let g:ale_sign_warning = "⚠"
+let g:ale_sign_error = "X"
+let g:ale_sign_warning = "!"
 let g:ale_sign_info = "i"
-let g:ale_sign_hint = "➤"
+let g:ale_sign_hint = "?"
 
 " Autoformat rust code on save
 let g:rustfmt_command = "rustfmt +nightly"
@@ -191,6 +206,9 @@ command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>),
 nnoremap <Leader>] :F<CR>
 " Search ctags, if applicable
 autocmd FileType c,cpp nnoremap <Leader>' :Tags<CR>
+
+" Format on save
+"autocmd BufWritePre *.py execute ':Black'
 
 " Get ALE details
 autocmd FileType rust nnoremap <silent> <Leader>d :ALEDetail<CR>
