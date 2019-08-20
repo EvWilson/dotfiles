@@ -147,6 +147,11 @@ let g:rustfmt_command = "rustfmt +nightly"
 let g:rustfmt_autosave = 1
 let g:rustfmt_fail_silently = 0
 
+" Use custom python installation if necessary (pls, Mr. Sysadmin, I want to run my plugins)
+if !empty($CUSTOM_PYTHON_LOC)
+    let g:python3_host_prog=$CUSTOM_PYTHON_LOC
+endif
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Mappings Section
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
