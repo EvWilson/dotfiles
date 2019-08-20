@@ -89,6 +89,11 @@ if !executable('ctags')
     echom "Install ctags to make your life better"
 endif
 
+" Go binaries
+if !executable('go')
+    echom "Install go for Go dev"
+endif
+
 " Python binaries
 if !executable('pylint')
     echom "Install pylint for Python dev"
@@ -109,12 +114,6 @@ endif
 autocmd BufEnter * call ncm2#enable_for_buffer()
 " IMPORTANT: :help Ncm2PopupOpen for more information
 set completeopt=noinsert,menuone,noselect
-
-" Set up LanguageClient
-"let g:LanguageClient_serverCommands = {
-"    \ 'cpp': ['clangd'],
-"    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
-"    \ }
 
 " Fixers
 "let g:ale_fixers = {
@@ -147,11 +146,6 @@ let g:ale_sign_hint = "?"
 let g:rustfmt_command = "rustfmt +nightly"
 let g:rustfmt_autosave = 1
 let g:rustfmt_fail_silently = 0
-
-" Use custom python installation if necessary (pls, Mr. Sysadmin, I want to run my plugins)
-if !empty($CUSTOM_PYTHON_LOC)
-    let g:python3_host_prog=$CUSTOM_PYTHON_LOC
-endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Mappings Section
@@ -204,6 +198,7 @@ let g:rg_command = '
 
 command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
 nnoremap <Leader>] :F<CR>
+
 " Search ctags, if applicable
 autocmd FileType c,cpp nnoremap <Leader>' :Tags<CR>
 
@@ -211,12 +206,12 @@ autocmd FileType c,cpp nnoremap <Leader>' :Tags<CR>
 "autocmd BufWritePre *.py execute ':Black'
 
 " Get ALE details
-autocmd FileType rust nnoremap <silent> <Leader>d :ALEDetail<CR>
+autocmd FileType python,rust nnoremap <silent> <Leader>d :ALEDetail<CR>
 
 " goto definition
-autocmd FileType rust nnoremap gd :ALEGoToDefinition<CR>
+autocmd FileType python,rust nnoremap gd :ALEGoToDefinition<CR>
 autocmd FileType c,cpp nnoremap gd <c-]>
 
 " Get function information
-autocmd FileType rust nnoremap <silent> <Leader><Space> :ALEHover<CR>
+autocmd FileType python,rust nnoremap <silent> <Leader><Space> :ALEHover<CR>
 autocmd FileType c,cpp nnoremap <silent> <Leader><Space> :call LanguageClient#textDocument_hover()<CR>
