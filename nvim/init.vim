@@ -80,6 +80,9 @@ endif
 if !executable('rg')
     echom "Install ripgrep to make your life better"
 endif
+if !executable('tmux')
+    echom "Install tmux to make your life better"
+endif
 
 " CPP binaries
 if !executable('clangd')
