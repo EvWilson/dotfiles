@@ -95,6 +95,12 @@ if !executable('go')
 endif
 
 " Python binaries
+if !executable('python3')
+    echom "Install python3 for Python dev"
+endif
+if !executable('pip3')
+    echom "Install pip3 for Python dev"
+endif
 if !executable('pylint')
     echom "Install pylint for Python dev"
 endif
@@ -127,7 +133,7 @@ let g:ale_lint_on_save = 1
 let g:ale_lint_on_enter = 1
 let g:ale_linters = {
     \ 'cpp': ['clangd'],
-    \ 'python': ['pylint'],
+    \ 'python': ['pylint', 'black'],
     \ 'rust': ['rls'],
     \ }
 highlight link ALEWarningSign Todo
