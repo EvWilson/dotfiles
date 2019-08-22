@@ -113,10 +113,10 @@ endif
 
 " Rust binaries
 if !executable('rls')
-    "echom "Make sure to install RLS and any others needed for Rust autocomplete!"
+    echom "Make sure to install RLS and any others needed for Rust autocomplete!"
 endif
 if !executable('racer')
-    "echom "Make sure to install racer for Rust dev"
+    echom "Make sure to install racer for Rust dev"
 endif
 
 " enable ncm2 for all buffers
@@ -227,5 +227,5 @@ autocmd FileType python,rust nnoremap gd :ALEGoToDefinition<CR>
 autocmd FileType c,cpp nnoremap gd <c-]>
 
 " Get function information
-autocmd FileType python,rust nnoremap <silent> <Leader><Space> :ALEHover<CR>
-autocmd FileType c,cpp nnoremap <silent> <Leader><Space> :call LanguageClient#textDocument_hover()<CR>
+autocmd FileType python,rust nnoremap <Leader><Space> :ALEHover<CR>
+autocmd FileType c,cpp nnoremap <Leader><Space> :call LanguageClient#textDocument_hover()<CR>
