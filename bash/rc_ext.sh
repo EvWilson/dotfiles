@@ -8,6 +8,11 @@ export $LS_COLORS
 
 # Function to auto-dial into a tmux session over SSH
 # Usage: tsh <[username@]hostname> <tmux-session>
+# Explanation:
+# $1 is the hostname to pass in
+# $2 is the tmux session to dial into
+# -X to enable X11 forwarding
+# -t launch tmux process interactively in pseudo-terminal
 function tsh {
     host=$1
     session_name=$2
@@ -15,7 +20,7 @@ function tsh {
         echo "Need to provide session-name. Example: tsh <hostname> <tmux-session>"
         return 1;
     fi
-    ssh -X $host -t "tmux -CC attach -t $session_name || tmux -CC new -s $session_name"
+    ssh -X $host -t "tmux attach -t $session_name"
 }
 
 # Set custom prompt
