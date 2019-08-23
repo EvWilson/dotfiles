@@ -134,6 +134,13 @@ let g:ale_lint_in_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 1
 let g:ale_lint_on_save = 1
 let g:ale_lint_on_enter = 1
+let g:ale_rust_rls_config = {
+	\ 'rust': {
+		\ 'all_targets': 1,
+		\ 'build_on_save': 1,
+		\ 'clippy_preference': 'on'
+	\ }
+	\ }
 let g:ale_linters = {
     \ 'cpp': ['clangd'],
     \ 'python': ['pylint', 'black'],
