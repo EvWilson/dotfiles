@@ -23,6 +23,41 @@ function tsh {
     ssh -X $host -t "tmux attach -t $session_name"
 }
 
+# Check for general needed dependencies
+DEP_ARR=( rg fzf tmux )
+for dep in "${DEP_ARR[@]}"
+do
+    [ -z $(command -v ${dep}) ] && echo "You should install ${dep} to make your life better"
+done
+
+# C++ dependencies
+CPP_ARR=( clangd ctags )
+for dep in "${CPP_ARR[@]}"
+do
+    [ -z $(command -v ${dep}) ] && echo "You should install ${dep} for CPP dev"
+done
+
+# Go dependencies
+GO_ARR=( go )
+for dep in "${GO_ARR[@]}"
+do
+    [ -z $(command -v ${dep}) ] && echo "You should install ${dep} for Go dev"
+done
+
+# Python dependencies
+PYTHON_ARR=( python3 pip3 pylint black )
+for dep in "${PYTHON_ARR[@]}"
+do
+    [ -z $(command -v ${dep}) ] && echo "You should install ${dep} for Python dev"
+done
+
+# Rust dependencies
+RUST_ARR=( rls racer )
+for dep in "${RUST_ARR[@]}"
+do
+    [ -z $(command -v ${dep}) ] && echo "You should install ${dep} for Rust dev"
+done
+
 # Set custom prompt
 function abbreviated_pwd {
     ps_str=''

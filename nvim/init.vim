@@ -73,52 +73,6 @@ set scrolloff=15
 " Enable mouse to set cursor location
 set mouse=a
 
-" General binaries
-if !executable('fzf')
-    echom "Install fzf to make your life better"
-endif
-if !executable('rg')
-    echom "Install ripgrep to make your life better"
-endif
-if !executable('tmux')
-    echom "Install tmux to make your life better"
-endif
-
-" CPP binaries
-if !executable('clangd')
-    echom "You do not have clangd, needed for CPP dev"
-endif
-if !executable('ctags')
-    echom "Install ctags to make your life better"
-endif
-
-" Go binaries
-if !executable('go')
-    echom "Install go for Go dev"
-endif
-
-" Python binaries
-if !executable('python3')
-    echom "Install python3 for Python dev"
-endif
-if !executable('pip3')
-    echom "Install pip3 for Python dev"
-endif
-if !executable('pylint')
-    echom "Install pylint for Python dev"
-endif
-if !executable('black')
-    echom "Install black for Python dev"
-endif
-
-" Rust binaries
-if !executable('rls')
-    echom "Make sure to install RLS and any others needed for Rust autocomplete!"
-endif
-if !executable('racer')
-    echom "Make sure to install racer for Rust dev"
-endif
-
 " enable ncm2 for all buffers
 autocmd BufEnter * call ncm2#enable_for_buffer()
 " IMPORTANT: :help Ncm2PopupOpen for more information
