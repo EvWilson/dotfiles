@@ -32,15 +32,18 @@ Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-tmux'
 Plug 'ncm2/ncm2-path'
 
+" Go
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+
+" Python
+" Formatting
+Plug 'psf/black'
+
 " Rust support
 " Completion
 Plug 'ncm2/ncm2-racer'
 " Syntax
 Plug 'rust-lang/rust.vim'
-
-" Python
-" Formatting
-Plug 'psf/black'
 
 call plug#end()
 
