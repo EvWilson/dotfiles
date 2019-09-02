@@ -23,16 +23,28 @@ Plug 'majutsushi/tagbar'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
+" Try phasing out?
 " Semantic language support
-Plug 'ncm2/ncm2'
-Plug 'roxma/nvim-yarp'
+"Plug 'ncm2/ncm2'
+"Plug 'roxma/nvim-yarp'
 
 " Completion plugins
-Plug 'ncm2/ncm2-bufword'
-Plug 'ncm2/ncm2-tmux'
-Plug 'ncm2/ncm2-path'
+"Plug 'ncm2/ncm2-bufword'
+"Plug 'ncm2/ncm2-tmux'
+"Plug 'ncm2/ncm2-path'
 
-" Go
+" Deoplete completion manager
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+" Golang Deoplete support
+Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}
+
+" Go vim settings, see configs later
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 " Python
@@ -41,7 +53,7 @@ Plug 'psf/black'
 
 " Rust support
 " Completion
-Plug 'ncm2/ncm2-racer'
+"Plug 'ncm2/ncm2-racer'
 " Syntax
 Plug 'rust-lang/rust.vim'
 
@@ -76,16 +88,34 @@ set scrolloff=15
 " Enable mouse to set cursor location
 set mouse=a
 
+" 80 character line marking
+set colorcolumn=80
+highlight colorcolumn ctermbg=darkyellow ctermfg=black
+
+" Highlight extra whitespace for removal
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+
 " enable ncm2 for all buffers
-autocmd BufEnter * call ncm2#enable_for_buffer()
+"autocmd BufEnter * call ncm2#enable_for_buffer()
 " IMPORTANT: :help Ncm2PopupOpen for more information
 set completeopt=noinsert,menuone,noselect
 
-" Fixers
-"let g:ale_fixers = {
-"    \ '*': ['remove_trailing_lines', 'trim_whitespace'],
-"    \ }
-" Linter
+" Code completion
+if has('nvim')
+    let g:deoplete#enable_at_startup = 1
+endif
+
+" Allow for Go highlighting - vim-go
+let g:go_highlight_build_constraints = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_structs = 1
+let g:go_highlight_types = 1
+
 " Only lint on save
 let g:ale_lint_in_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 1
@@ -173,7 +203,6 @@ nnoremap <Leader>= :Buffers<CR>
 let g:rg_command = '
   \ rg --column --line-number --no-heading --ignore-case --no-ignore --hidden --follow --color "always"
   \ -g "!{.git,node_modules,vendor}/*" '
-
 command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
 nnoremap <Leader>] :F<CR>
 

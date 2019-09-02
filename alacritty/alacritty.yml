@@ -100,13 +100,13 @@ tabspaces: 8
 
 # Font configuration (changes require restart)
 font:
-  # Normal (roman) font face
-  normal:
-    family: "Noto Sans Mono"
-  bold:
-    family: "Noto Sans Mono"
-  italic:
-    family: "Noto Sans Mono"
+    #  # Normal (roman) font face
+    #  normal:
+    #    family: "Noto Sans Mono"
+    #  bold:
+    #    family: "Noto Sans Mono"
+    #  italic:
+    #    family: "Noto Sans Mono"
     # Font family
     #
     # Default:
