@@ -105,6 +105,9 @@ set completeopt=noinsert,menuone,noselect
 if has('nvim')
     let g:deoplete#enable_at_startup = 1
 endif
+if !has('python3')
+    echom "No python3 detected: you're gonna have a bad time"
+endif
 
 " Allow for Go highlighting - vim-go
 let g:go_highlight_build_constraints = 1

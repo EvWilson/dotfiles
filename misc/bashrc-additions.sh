@@ -1,3 +1,6 @@
+# Purpose: Hold all the lovely little preferences that I prefer in my bash
+#     environment
+
 # Colors to see dirs and bins
 LS_COLORS="di=34:ex=33"
 export $LS_COLORS
