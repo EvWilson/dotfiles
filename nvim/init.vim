@@ -90,7 +90,7 @@ set mouse=a
 
 " 80 character line marking
 set colorcolumn=80
-highlight colorcolumn ctermbg=darkyellow ctermfg=black
+highlight colorcolumn ctermbg=darkgray ctermfg=black
 
 " Highlight extra whitespace for removal
 highlight ExtraWhitespace ctermbg=red guibg=red
