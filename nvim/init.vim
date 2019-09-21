@@ -57,6 +57,9 @@ Plug 'psf/black'
 " Syntax
 Plug 'rust-lang/rust.vim'
 
+" Vue support
+Plug 'posva/vim-vue'
+
 call plug#end()
 
 
@@ -152,6 +155,9 @@ let g:ale_sign_hint = "?"
 let g:rustfmt_command = "rustfmt +nightly"
 let g:rustfmt_autosave = 1
 let g:rustfmt_fail_silently = 0
+
+" Disable CSS preprocessors for Vue dev
+let g:vue_pre_processors = []
 
 " Use custom python installation if necessary (pls, Mr. Sysadmin, I want to run my plugins)
 if !empty($CUSTOM_PYTHON_LOC)
