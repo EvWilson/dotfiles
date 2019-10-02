@@ -78,6 +78,11 @@ set number
 " Required for operations modifying multiple buffers like rename.
 set hidden
 
+" Make searching case-sensitive only if caps are passed (similar to rg)
+" (Must ignorecase before smartcase will apply)
+set ignorecase
+set smartcase
+
 " Persistent undo (across vim sessions)
 set undodir=~/.vimdid
 set undofile
