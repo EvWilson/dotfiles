@@ -47,6 +47,9 @@ Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}
 " Go vim settings, see configs later
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
+" Javascript
+Plug 'pangloss/vim-javascript'
+
 " Python
 " Formatting
 Plug 'psf/black'
@@ -141,6 +144,7 @@ let g:ale_rust_rls_config = {
 	\ }
 let g:ale_linters = {
     \ 'cpp': ['clangd'],
+    \ 'javascript': ['eslint'],
     \ 'python': ['pylint', 'black'],
     \ 'rust': ['rls'],
     \ }
