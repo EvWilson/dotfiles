@@ -23,16 +23,6 @@ Plug 'majutsushi/tagbar'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
-" Try phasing out?
-" Semantic language support
-"Plug 'ncm2/ncm2'
-"Plug 'roxma/nvim-yarp'
-
-" Completion plugins
-"Plug 'ncm2/ncm2-bufword'
-"Plug 'ncm2/ncm2-tmux'
-"Plug 'ncm2/ncm2-path'
-
 " Deoplete completion manager
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -42,7 +32,7 @@ else
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
 " Golang Deoplete support
-Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}
+"Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}
 
 " Go vim settings, see configs later
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
@@ -198,6 +188,9 @@ inoremap jj <ESC>
 " Quicksave
 nnoremap <Leader>w :w<CR>
 inoremap <Leader>w <c-o>:w<CR>
+
+" Shortcut to delete current buffer
+nnoremap <Leader>d :bd<CR>
 
 " Open NERDtree
 nnoremap <Leader>t :NERDTreeToggle<CR>
