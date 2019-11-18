@@ -23,16 +23,6 @@ Plug 'majutsushi/tagbar'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
-" Try phasing out?
-" Semantic language support
-"Plug 'ncm2/ncm2'
-"Plug 'roxma/nvim-yarp'
-
-" Completion plugins
-"Plug 'ncm2/ncm2-bufword'
-"Plug 'ncm2/ncm2-tmux'
-"Plug 'ncm2/ncm2-path'
-
 " Deoplete completion manager
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -231,3 +221,8 @@ autocmd FileType c,cpp nnoremap gd <c-]>
 " Get function information
 autocmd FileType python,rust nnoremap <Leader><Space> :ALEHover<CR>
 autocmd FileType c,cpp nnoremap <Leader><Space> :call LanguageClient#textDocument_hover()<CR>
+
+" Import a given path in the current buffer in Go, via vim-go
+autocmd FileType go nnoremap <Leader>i :GoImport<Space>
+" Remove, inverse of the above
+autocmd FileType go nnoremap <Leader>r :GoDrop<Space>
