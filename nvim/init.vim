@@ -32,10 +32,13 @@ else
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
 " Golang Deoplete support
-Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}
+"Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}
 
 " Go vim settings, see configs later
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+
+" Javascript
+Plug 'pangloss/vim-javascript'
 
 " Python
 " Formatting
@@ -67,6 +70,11 @@ set number
 
 " Required for operations modifying multiple buffers like rename.
 set hidden
+
+" Make searching case-sensitive only if caps are passed (similar to rg)
+" (Must ignorecase before smartcase will apply)
+set ignorecase
+set smartcase
 
 " Persistent undo (across vim sessions)
 set undodir=~/.vimdid
@@ -126,6 +134,7 @@ let g:ale_rust_rls_config = {
 	\ }
 let g:ale_linters = {
     \ 'cpp': ['clangd'],
+    \ 'javascript': ['eslint'],
     \ 'python': ['pylint', 'black'],
     \ 'rust': ['rls'],
     \ }
@@ -179,6 +188,9 @@ inoremap jj <ESC>
 " Quicksave
 nnoremap <Leader>w :w<CR>
 inoremap <Leader>w <c-o>:w<CR>
+
+" Shortcut to delete current buffer
+nnoremap <Leader>d :bd<CR>
 
 " Open NERDtree
 nnoremap <Leader>t :NERDTreeToggle<CR>
