@@ -32,7 +32,7 @@ else
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
 " Golang Deoplete support
-"Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}
+Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}
 
 " Go vim settings, see configs later
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
