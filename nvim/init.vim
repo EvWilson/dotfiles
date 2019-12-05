@@ -1,4 +1,4 @@
-" Make sure to use bash over fish
+" Make sure to use bash shell
 set shell=/bin/bash
 
 """"""""""""""""""""""""""""""""""""""""""""
@@ -15,11 +15,8 @@ Plug 'dense-analysis/ale'
 Plug 'machakann/vim-highlightedyank'
 " NERDtree - visual file explorer
 Plug 'scrooloose/nerdtree'
-" Tagbar - visually display tags in a certain file, for C/C++ development
-Plug 'majutsushi/tagbar'
 
 " Fuzzy finder
-"Plug 'airblade/vim-rooter'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
@@ -83,7 +80,7 @@ set undofile
 " Enhanced tab completion
 set wildmenu
 
-" Always be able to see at least 5 lines of context
+" Maintain this many lines of context while scrolling, if possible
 set scrolloff=15
 
 " Enable mouse to set cursor location
@@ -96,11 +93,6 @@ highlight colorcolumn ctermbg=darkgray ctermfg=black
 " Highlight extra whitespace for removal
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
-
-" enable ncm2 for all buffers
-"autocmd BufEnter * call ncm2#enable_for_buffer()
-" IMPORTANT: :help Ncm2PopupOpen for more information
-set completeopt=noinsert,menuone,noselect
 
 " Code completion
 if has('nvim')
@@ -158,7 +150,7 @@ let g:rustfmt_fail_silently = 0
 " Disable CSS preprocessors for Vue dev
 let g:vue_pre_processors = []
 
-" Use custom python installation if necessary (pls, Mr. Sysadmin, I want to run my plugins)
+" Use custom python3 installation if necessary
 if !empty($CUSTOM_PYTHON_LOC)
     let g:python3_host_prog=$CUSTOM_PYTHON_LOC
 endif
@@ -194,9 +186,6 @@ nnoremap <Leader>d :bd<CR>
 
 " Open NERDtree
 nnoremap <Leader>t :NERDTreeToggle<CR>
-
-" Open Tagbar window
-nnoremap <Leader>1 :TagbarToggle<CR>
 
 " tab to select from autocomplete
 " and don't hijack my enter key
