@@ -77,7 +77,7 @@ function abbreviated_pwd {
 PS1='\[\e[1;32m\]\u@\h:\[\e[1;34m\]$(eval abbreviated_pwd)\[\e[0m\]$ '
 
 # Adjust FZF to use ripgrep
-export FZF_DEFAULT_COMMAND='rg --files --hidden -g "!{.git,node_modules}/*"'
+export FZF_DEFAULT_COMMAND='rg --files -g "!{.git,node_modules}/*"'
 # Insert file from fzf into command
 export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_COMMAND}"
 # Edit file from fzf

@@ -98,6 +98,19 @@ Manual Renewal: sudo certbot renew
 Investigate auto-renew: Under /etc/letsencrypt/renewal/example.com, renew_hook = CMD
 
 ######################################
+# DOCKER
+######################################
+
+# Installation
+EXPERIMETNAL: Haven't gotten this to work yet
+Be sure to update first
+Command: curl -sSL https://get.docker.com | sh
+Only run this once
+Post-install commands (remove need to sudo to docker):
+sudo usermod -aG docker ${USER}
+su - ${USER}
+
+######################################
 # ADMINISTRATION
 ######################################
 
