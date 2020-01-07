@@ -13,37 +13,9 @@ do
     [ -z $(command -v ${dep}) ] && echo "You should install ${dep} to make your life better"
 done
 
-# C++ dependencies
-CPP_ARR=( clangd ctags )
-for dep in "${CPP_ARR[@]}"
-do
-    [ -z $(command -v ${dep}) ] && echo "You should install ${dep} for CPP dev"
-done
-
-# Go dependencies
-GO_ARR=( go )
-for dep in "${GO_ARR[@]}"
-do
-    [ -z $(command -v ${dep}) ] && echo "You should install ${dep} for Go dev"
-done
-
-# Python dependencies
-PYTHON_ARR=( python3 pip3 pylint black )
-for dep in "${PYTHON_ARR[@]}"
-do
-    [ -z $(command -v ${dep}) ] && echo "You should install ${dep} for Python dev"
-done
-
-# Rust dependencies
-RUST_ARR=( rls racer )
-for dep in "${RUST_ARR[@]}"
-do
-    [ -z $(command -v ${dep}) ] && echo "You should install ${dep} for Rust dev"
-done
-
 # Set custom prompt
 PROMPT_COMMAND='PS1X=$(p="${PWD#${HOME}}"; [ "${PWD}" != "${p}" ] && printf "~";IFS=/; for q in ${p:1}; do printf /${q:0:1}; done; printf "${q:1}")'
-PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]${PS1X}\[\033[00m\]\$ '
+PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]${PS1X}\[\033[00m\] '
 
 # Adjust FZF to use ripgrep
 export FZF_DEFAULT_COMMAND='rg --files -g "!{.git,node_modules}/*"'
