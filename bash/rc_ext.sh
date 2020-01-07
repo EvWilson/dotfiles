@@ -6,23 +6,6 @@
 LS_COLORS="di=34:ex=33"
 export $LS_COLORS
 
-# Function to auto-dial into a tmux session over SSH
-# Usage: tsh <[username@]hostname> <tmux-session>
-# Explanation:
-# $1 is the hostname to pass in
-# $2 is the tmux session to dial into
-# -X to enable X11 forwarding
-# -t launch tmux process interactively in pseudo-terminal
-function tsh {
-    host=$1
-    session_name=$2
-    if [ -z "$session_name" ]; then
-        echo "Need to provide session-name. Example: tsh <hostname> <tmux-session>"
-        return 1;
-    fi
-    ssh -X $host -t "tmux attach -t $session_name"
-}
-
 # Check for general needed dependencies
 DEP_ARR=( rg fzf tmux )
 for dep in "${DEP_ARR[@]}"
@@ -59,22 +42,8 @@ do
 done
 
 # Set custom prompt
-function abbreviated_pwd {
-    ps_str=''
-    pwd_str=$(pwd)
-    if [ ! -z $(pwd | grep "^${HOME}") ]; then
-        pwd_str=$(echo $pwd_str | sed "s#${HOME}#~#")
-    fi
-    OLD_IFS=$IFS
-    IFS='/' # set delimiter
-    read -ra ADDR <<< ${pwd_str} # pwd output is read into an array as tokens separated by IFS
-    for i in "${ADDR[@]}"; do # access each element of array
-        ps_str+="${i:0:1}/"
-    done
-    IFS=${OLD_IFS} # reset to default value after usage
-    echo ${ps_str}
-}
-PS1='\[\e[1;32m\]\u@\h:\[\e[1;34m\]$(eval abbreviated_pwd)\[\e[0m\]$ '
+PROMPT_COMMAND='PS1X=$(p="${PWD#${HOME}}"; [ "${PWD}" != "${p}" ] && printf "~";IFS=/; for q in ${p:1}; do printf /${q:0:1}; done; printf "${q:1}")'
+PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]${PS1X}\[\033[00m\]\$ '
 
 # Adjust FZF to use ripgrep
 export FZF_DEFAULT_COMMAND='rg --files -g "!{.git,node_modules}/*"'
