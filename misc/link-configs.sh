@@ -11,7 +11,6 @@ fi
 # Create associative array of dotfiles(key) to symlink(val)
 # NOTE: assoc arrays added in bash 4
 declare -A arr
-arr["${HOME}/.dotfiles/alacritty/alacritty.yml"]="${HOME}/.config/alacritty/alacritty.yml"
 arr["${HOME}/.dotfiles/nvim/init.vim"]="${HOME}/.config/nvim/init.vim"
 #arr["${HOME}/.dotfiles/nvim/plug.vim"]="${HOME}/.local/share/nvim/plugged/plug.vim"
 arr["${HOME}/.dotfiles/tmux/tmux.conf"]="${HOME}/.tmux.conf"
