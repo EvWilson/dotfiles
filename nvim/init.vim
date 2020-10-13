@@ -98,7 +98,7 @@ endif
 " Mappings Section
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remap leader key because backslash is inconvenient
-let mapleader = "hh"
+let mapleader = "hj"
 
 " Disable arrow keys for nav - use hjkl!
 nnoremap <Up> <Nop>
