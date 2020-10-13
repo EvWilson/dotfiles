@@ -12,9 +12,7 @@ fi
 # NOTE: assoc arrays added in bash 4
 declare -A arr
 arr["${HOME}/.dotfiles/nvim/init.vim"]="${HOME}/.config/nvim/init.vim"
-#arr["${HOME}/.dotfiles/nvim/plug.vim"]="${HOME}/.local/share/nvim/plugged/plug.vim"
 arr["${HOME}/.dotfiles/tmux/tmux.conf"]="${HOME}/.tmux.conf"
-arr["${HOME}/.dotfiles/fish/fish_variables"]="${HOME}/.config/fish/fish_variables"
 
 # Check if each value path exists, create it if it doesn't
 for key in ${!arr[@]}; do
