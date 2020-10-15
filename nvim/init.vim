@@ -26,7 +26,7 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 " This has a tendency to break with new python3 installs/upgrades
 " If broken, run :checkhealth
 " May need to install nvim module to enable remote plugin updates, eg:
-" python -m pip install --user --upgrade pynvim
+" python3 -m pip install --user --upgrade pynvim
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 " Vue support
