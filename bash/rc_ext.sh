@@ -19,7 +19,3 @@ PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]${PS1X}\[\033[00m\] '
 
 # Adjust FZF to use ripgrep
 export FZF_DEFAULT_COMMAND='rg --files -g "!{.git,node_modules}/*"'
-# Insert file from fzf into command
-export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_COMMAND}"
-# Edit file from fzf
-bind -x '"\C-p": nvim $(fzf);'
