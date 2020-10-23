@@ -32,6 +32,9 @@ Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 " Vue support
 Plug 'posva/vim-vue'
 
+" Basic zig highlighting and file detection
+Plug 'ziglang/zig.vim'
+
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""
