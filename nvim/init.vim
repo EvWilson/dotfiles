@@ -20,6 +20,9 @@ Plug 'preservim/nerdtree'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
+" CoC
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
 " Go support, see configs later
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 " Automatic autocompletion
@@ -33,6 +36,7 @@ Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'posva/vim-vue'
 
 " Basic zig highlighting and file detection
+" For ZLS support, go here: https://github.com/zigtools/zls#neovimvim8
 Plug 'ziglang/zig.vim'
 
 call plug#end()
@@ -158,7 +162,7 @@ let g:airline#extensions#tabline#enabled = 1
 " Toggle NERDTree open/close - '<Leader>n
 nnoremap <Leader>n :NERDTreeToggle<CR>
 " Automatically turn on autocomplete for vim-go
-let g:deoplete#enable_at_startup = 1
+autocmd FileType go call deoplete#enable()
 
 " Languages and Environments
 " Supported languages/environments:
