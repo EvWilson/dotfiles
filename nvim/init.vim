@@ -175,11 +175,11 @@ autocmd FileType go nnoremap <Leader>f :GoFmt<CR>
 
 " Go to definition - 'gd'
 " Go - taken care of within 'vim-go'
+autocmd FileType zig nmap gd <Plug>(coc-definition)
 
 " Run tests - '<Leader>t'
 " Go
 autocmd FileType go nnoremap <Leader>t :GoTest<CR>
-
 
 
 
