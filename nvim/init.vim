@@ -94,9 +94,6 @@ highlight colorcolumn ctermbg=darkgray ctermfg=black
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
 
-" Turn on spell checking for markdown files
-au BufRead,BufNewFile *.md set spell spelllang=en_us
-
 " Use custom python3 installation if necessary
 if !empty($CUSTOM_PYTHON_LOC)
     let g:python3_host_prog=$CUSTOM_PYTHON_LOC
