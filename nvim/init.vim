@@ -13,8 +13,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-fugitive'
 " Highlight yanked materials
 Plug 'machakann/vim-highlightedyank'
-" NERDTree
-Plug 'preservim/nerdtree'
 
 " Fuzzy finder
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -142,6 +140,9 @@ nnoremap <Leader>d :bd<CR>
 nnoremap <silent> <Right> :bnext<CR>
 nnoremap <silent> <Left> :bprevious<CR>
 
+" Search for visually selected text with //
+vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
+
 " Open fzf commands
 nnoremap <Leader>h :Files<CR>
 nnoremap <Leader>j :Buffers<CR>
@@ -159,8 +160,6 @@ nnoremap <Leader>k :F<CR>
 " Plugins
 " Show open buffers in airline
 let g:airline#extensions#tabline#enabled = 1
-" Toggle NERDTree open/close - '<Leader>n
-nnoremap <Leader>n :NERDTreeToggle<CR>
 " Automatically turn on autocomplete for vim-go
 autocmd FileType go call deoplete#enable()
 
