@@ -27,6 +27,6 @@ possible.
 - Set up config symlinks, install vimplug, add bash extensions (see respective
 scripts)
 - Do any additional setup as mentioned in nvim config
-- Set git credential store (git config --global credential.helper store)
+- Set git credential store (e.g. Linux - git config --global credential.helper store)
 - Add assorted applications from managed shop du jour
     - e.g. Discord, Zoom, VLC media player, VSCode
