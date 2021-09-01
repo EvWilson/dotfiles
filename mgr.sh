@@ -20,8 +20,8 @@ function link_configs() {
     # Create associative array of dotfiles(key) to symlink(val)
     # NOTE: assoc arrays added in bash 4
     declare -A arr
-    arr["${SOURCE_DIR}/nvim/init.vim"]="${HOME}/.config/nvim/init.vim"
-    arr["${SOURCE_DIR}/tmux/tmux.conf"]="${HOME}/.tmux.conf"
+    arr["${SCRIPT_DIR}/init.vim"]="${HOME}/.config/nvim/init.vim"
+    arr["${SCRIPT_DIR}/tmux.conf"]="${HOME}/.tmux.conf"
 
     # Check if each value path exists, create it if it doesn't
     for key in ${!arr[@]}; do

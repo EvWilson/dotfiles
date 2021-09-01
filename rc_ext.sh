@@ -1,6 +1,6 @@
 # My wonderful little preferences, aliases, functions, etc, to make my shell feel like home
 # Add this line to the end of .bashrc to load it in:
-# [ -s "${HOME}/.dotfiles/bash/rc_ext.sh" ] && \. "${HOME}/.dotfiles/bash/rc_ext.sh"
+# [ -s "${HOME}/.dotfiles/rc_ext.sh" ] && \. "${HOME}/.dotfiles/rc_ext.sh"
 
 # Colors to see dirs and bins
 LS_COLORS="di=34:ex=33"
