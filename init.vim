@@ -21,17 +21,12 @@ Plug 'junegunn/fzf.vim'
 " CoC
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-" Go support, see configs later
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 " Automatic autocompletion
 " This has a tendency to break with new python3 installs/upgrades
 " If broken, run :checkhealth
 " May need to install nvim module to enable remote plugin updates, eg:
 " python3 -m pip install --user --upgrade pynvim
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-
-" Vue support
-Plug 'posva/vim-vue'
 
 " Basic zig highlighting and file detection
 " For ZLS support, go here: https://github.com/zigtools/zls#neovimvim8
@@ -94,11 +89,6 @@ highlight colorcolumn ctermbg=darkgray ctermfg=black
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
 
-" Use custom python3 installation if necessary
-if !empty($CUSTOM_PYTHON_LOC)
-    let g:python3_host_prog=$CUSTOM_PYTHON_LOC
-endif
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Mappings Section
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -157,41 +147,3 @@ nnoremap <Leader>k :F<CR>
 " Plugins
 " Show open buffers in airline
 let g:airline#extensions#tabline#enabled = 1
-" Automatically turn on autocomplete for vim-go
-autocmd FileType go call deoplete#enable()
-
-" Languages and Environments
-" Supported languages/environments:
-" - Go
-" - Vue
-
-" Format - on save and with '<Leader>f'
-" Go
-autocmd FileType go nnoremap <Leader>f :GoFmt<CR>
-
-" Go to definition - 'gd'
-" Go - taken care of within 'vim-go'
-autocmd FileType zig nmap gd <Plug>(coc-definition)
-
-" Run tests - '<Leader>t'
-" Go
-autocmd FileType go nnoremap <Leader>t :GoTest<CR>
-
-
-
-
-
-" LEGACY SECTION - (may not be up to date, left for rare cases it's needed)
-" Search ctags, if applicable
-autocmd FileType c,cpp nnoremap <Leader>' :Tags<CR>
-
-" goto definition
-autocmd FileType c,cpp nnoremap gd <c-]>
-
-" Get function information
-autocmd FileType c,cpp nnoremap <Leader><Space> :call LanguageClient#textDocument_hover()<CR>
-
-" Import a given path in the current buffer in Go, via vim-go
-autocmd FileType go nnoremap <Leader>i :GoImport<Space>
-" Remove, inverse of the above
-autocmd FileType go nnoremap <Leader>r :GoDrop<Space>
