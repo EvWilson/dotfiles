@@ -6,13 +6,6 @@
 LS_COLORS="di=34:ex=33"
 export $LS_COLORS
 
-# Check for general needed dependencies
-DEP_ARR=( rg fdfind tmux )
-for dep in "${DEP_ARR[@]}"
-do
-    [ -z $(command -v ${dep}) ] && echo "You should install ${dep} to make your life better"
-done
-
 alias fd='fdfind'
 
 # Set custom prompt
