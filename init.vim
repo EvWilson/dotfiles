@@ -28,9 +28,21 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " python3 -m pip install --user --upgrade pynvim
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
-" Basic zig highlighting and file detection
-" For ZLS support, go here: https://github.com/zigtools/zls#neovimvim8
-Plug 'ziglang/zig.vim'
+if $ZIG_ENABLE == "1"
+    " Basic zig highlighting and file detection
+    " For ZLS support, go here: https://github.com/zigtools/zls#neovimvim8
+    " As of my latest check, under :CocConfig, insert the below, minus the
+    " escapes:
+    "   {
+    "       languageserver": {
+    "           \"zls\" : {
+    "               \"command": \"command_or_path_to_zls\",
+    "               \"filetypes\": [\"zig\"]
+    "           }
+    "       }
+    "   }
+    Plug 'ziglang/zig.vim'
+endif
 
 call plug#end()
 
@@ -147,3 +159,7 @@ nnoremap <Leader>k :F<CR>
 " Plugins
 " Show open buffers in airline
 let g:airline#extensions#tabline#enabled = 1
+
+" Languages
+" Zig
+
