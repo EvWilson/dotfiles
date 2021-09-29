@@ -7,6 +7,7 @@ function usage() {
     echo "link -    symlinks configs for nvim and tmux"
     echo "refresh - refresh nvim plugins and packages"
     echo "vimplug-install - install vimplug"
+    echo "zig-install - install Zig and ZLS in current dir (ZLS bin will be in zig dir)"
 }
 
 # Dotfile symlink management
@@ -49,6 +50,29 @@ function vimplug_install() {
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 }
 
+# Install Zig and ZLS
+function zig_install() {
+    # Install latest master revision of zig to the directory "zig" in current dir
+    ZIG_TARBALL=$(curl -s https://ziglang.org/download/index.json | jq -r '.master."x86_64-linux".tarball')
+    TARFILE=$(basename $ZIG_TARBALL)
+    DIRNAME=$(echo $TARFILE | sed -e "s/.tar.xz$//")
+    echo "Installing Zig tarball from: $ZIG_TARBALL"
+    curl -O $ZIG_TARBALL
+    tar xf $TARFILE
+    rm $TARFILE
+    mv $DIRNAME zig
+
+    # Build ZLS from source and put binary in created "zig" dir
+    cd zig
+    git clone --recurse-submodules https://github.com/zigtools/zls
+    cd zls
+    zig build -Drelease-safe
+    cd ..
+    mv zls zls-git
+    mv ./zls-git/zig-out/bin/zls .
+    ./zls config
+}
+
 if [ $# == 0 ]; then
     usage
     exit 0
@@ -64,6 +88,10 @@ case $1 in
         ;;
     "vimplug-install")
         vimplug_install
+        exit 0
+        ;;
+    "zig-install")
+        zig_install
         exit 0
         ;;
     *)
