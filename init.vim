@@ -44,6 +44,10 @@ if $ZIG_ENABLE == "1"
     Plug 'ziglang/zig.vim'
 endif
 
+if $GO_ENABLE == "1"
+    Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+endif
+
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""
@@ -101,6 +105,14 @@ highlight colorcolumn ctermbg=darkgray ctermfg=black
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
 
+" CoC-specific settings
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+" TODO: check back to see if you literally ever use these
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Mappings Section
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -130,7 +142,6 @@ inoremap jj <ESC>
 
 " Quicksave
 nnoremap <Leader>w :w<CR>
-inoremap <Leader>w <c-o>:w<CR>
 
 " Shortcut to delete current buffer
 nnoremap <Leader>d :bd<CR>
@@ -159,7 +170,3 @@ nnoremap <Leader>k :F<CR>
 " Plugins
 " Show open buffers in airline
 let g:airline#extensions#tabline#enabled = 1
-
-" Languages
-" Zig
-
