@@ -58,8 +58,9 @@ set expandtab
 set tabstop=4
 set shiftwidth=4
 
-" Show line numbers by default
-set number
+" Show line numbers in hybrid mode - show line you're on and the offset
+" to surrounding lines
+set number relativenumber
 
 " Required for operations modifying multiple buffers like rename.
 set hidden
