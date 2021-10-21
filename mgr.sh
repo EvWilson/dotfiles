@@ -23,6 +23,7 @@ function link_configs() {
     declare -A arr
     arr["${SCRIPT_DIR}/init.vim"]="${HOME}/.config/nvim/init.vim"
     arr["${SCRIPT_DIR}/tmux.conf"]="${HOME}/.tmux.conf"
+    arr["${SCRIPT_DIR}/coc-settings.json"]="${HOME}/.config/nvim/coc-settings.json"
 
     # Check if each value path exists, create it if it doesn't
     for key in ${!arr[@]}; do

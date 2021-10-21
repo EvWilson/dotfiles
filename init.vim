@@ -29,22 +29,15 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 if $ZIG_ENABLE == "1"
-    " Basic zig highlighting and file detection
+    " Basic Zig highlighting and file detection
     " For ZLS support, go here: https://github.com/zigtools/zls#neovimvim8
-    " As of my latest check, under :CocConfig, insert the below, minus the
-    " escapes:
-    "   {
-    "       languageserver": {
-    "           \"zls\" : {
-    "               \"command": \"command_or_path_to_zls\",
-    "               \"filetypes\": [\"zig\"]
-    "           }
-    "       }
-    "   }
+    " Make sure CoC config is updated (:CocConfig)
     Plug 'ziglang/zig.vim'
 endif
 
 if $GO_ENABLE == "1"
+    " All the lovely things you need to work with Go
+    " Make sure CoC config is updated (:CocConfig) (snippet at https://github.com/neoclide/coc.nvim)
     Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 endif
 
