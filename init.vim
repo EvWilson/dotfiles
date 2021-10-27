@@ -99,6 +99,11 @@ highlight colorcolumn ctermbg=darkgray ctermfg=black
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
 
+" A dirty hack to clear Markdown error highlighting completely, but I hated
+" having underscores highlighted red, and would prefer to catch MD errors by
+" watching a MD renderer anyway
+hi link markdownError Normal
+
 " CoC-specific settings
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
