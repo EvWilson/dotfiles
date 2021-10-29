@@ -136,8 +136,10 @@ nnoremap L $
 " Use ; for commands
 nnoremap ; :
 
-" Use jj to escape and save quickly from insert mode
-inoremap jj <ESC>:w<CR>
+" Use jj to escape from insert mode
+" Use kk to escape and save from insert mode
+inoremap jj <ESC>
+inoremap kk <ESC>:w<CR>
 
 " Quicksave
 nnoremap <Leader>w :w<CR>
