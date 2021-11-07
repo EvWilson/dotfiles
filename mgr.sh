@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Exit on failure
+set -eu
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 function usage() {
@@ -53,8 +56,23 @@ function vimplug_install() {
 
 # Install Zig and ZLS
 function zig_install() {
-    # Install latest master revision of zig to the directory "zig" in current dir
-    ZIG_TARBALL=$(curl -s https://ziglang.org/download/index.json | jq -r '.master."x86_64-linux".tarball')
+    # Check that needed bins are available
+    PROGS="jq curl git"
+    for p in $PROGS; do
+        if ! [ -x "$(command -v $p)" ]; then
+            echo "error: $p is not installed, aborting" >&2
+            exit 1
+        fi
+    done
+
+    # Get the right platform string, because I'm also on MacOS now :/
+    PLAT='.master."x86_64-linux".tarball'
+    if [ $(uname) == "Darwin" ]; then
+        PLAT='.master."aarch64-macos".tarball'
+    fi
+
+    # Install latest master revision of zig to the directory "bin" in current dir
+    ZIG_TARBALL=$(curl -s https://ziglang.org/download/index.json | jq -r $PLAT)
     TARFILE=$(basename $ZIG_TARBALL)
     DIRNAME=$(echo $TARFILE | sed -e "s/.tar.xz$//")
     echo "Installing Zig tarball from: $ZIG_TARBALL"
@@ -67,11 +85,11 @@ function zig_install() {
     cd zig
     git clone --recurse-submodules https://github.com/zigtools/zls
     cd zls
-    zig build -Drelease-safe
+    ../zig build -Drelease-safe
     cd ..
     mv zls zls-git
     mv ./zls-git/zig-out/bin/zls .
-    ./zls config
+    sudo ./zls config
 }
 
 if [ $# == 0 ]; then
