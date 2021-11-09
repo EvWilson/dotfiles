@@ -15,7 +15,13 @@ Plug 'tpope/vim-fugitive'
 Plug 'machakann/vim-highlightedyank'
 
 " Beautiful QoL improvements from the illustrious tpope
+" Cheatsheet:
+"   - from within surrounded item, cs<thing to replace><replacement>
+"   - from within surround, ds<thing to delete>
+"   - surround line in quotes - yss"
+"   - project page: https://github.com/tpope/vim-surround
 Plug 'tpope/vim-surround'
+" Cheatsheet: 'gc' from visual line mode to comment
 Plug 'tpope/vim-commentary'
 
 " Fuzzy finder
