@@ -14,6 +14,10 @@ Plug 'tpope/vim-fugitive'
 " Highlight yanked materials
 Plug 'machakann/vim-highlightedyank'
 
+" Beautiful QoL improvements from the illustrious tpope
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-commentary'
+
 " Fuzzy finder
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
