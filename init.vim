@@ -24,6 +24,20 @@ Plug 'tpope/vim-surround'
 " Cheatsheet: 'gc' from visual line mode to comment
 Plug 'tpope/vim-commentary'
 
+" Definition of custom text objects via kana/vim-textobj-user
+Plug 'kana/vim-textobj-user'
+" e.g. `cil` for change in line
+Plug 'kana/vim-textobj-line'
+" e.g. `cie` for change in entire buffer
+Plug 'kana/vim-textobj-entire'
+" e.g. `cii` for change in indent level
+Plug 'kana/vim-textobj-indent'
+" e.g. `cif{char}` for change in between arbitrary characters (`cif_` to
+" change _phrase to change_)
+Plug 'thinca/vim-textobj-between'
+" e.g. `cij` for change between any brace pair
+Plug 'Julian/vim-textobj-brace'
+
 " Fuzzy finder
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
@@ -31,12 +45,13 @@ Plug 'junegunn/fzf.vim'
 " CoC
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+" TODO: going to try rolling without this for a bit, see if it's handled by CoC
 " Automatic autocompletion
 " This has a tendency to break with new python3 installs/upgrades
 " If broken, run :checkhealth
 " May need to install nvim module to enable remote plugin updates, eg:
 " python3 -m pip install --user --upgrade pynvim
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 if $ZIG_ENABLE == "1"
     " Basic Zig highlighting and file detection
@@ -49,6 +64,7 @@ if $GO_ENABLE == "1"
     " All the lovely things you need to work with Go
     " Make sure CoC config is updated (:CocConfig) (snippet at https://github.com/neoclide/coc.nvim)
     Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+    '
 endif
 
 call plug#end()
@@ -138,13 +154,11 @@ nnoremap <Down> <Nop>
 inoremap {<CR> {<CR>}<ESC>O
 inoremap {;<CR> {<CR>};<ESC>O
 
-" Jump to the start and end of the line using the home row
-nnoremap HH 0
-nnoremap H ^
-nnoremap L $
-
 " Use ; for commands
 nnoremap ; :
+
+" Clear highlighting from search
+nnoremap <C-l> :noh<CR>
 
 " Use jj to escape from insert mode
 " Use kk to escape and save from insert mode
