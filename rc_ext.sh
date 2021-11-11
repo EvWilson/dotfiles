@@ -6,8 +6,6 @@
 LS_COLORS="di=34:ex=33"
 export $LS_COLORS
 
-alias fd='fdfind'
-
 # Set custom prompt
 PROMPT_COMMAND='PS1X=$(p="${PWD#${HOME}}"; [ "${PWD}" != "${p}" ] && printf "~";IFS=/; for q in ${p:1}; do printf /${q:0:1}; done; printf "${q:1}")'
 PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]${PS1X}\[\033[00m\] '
