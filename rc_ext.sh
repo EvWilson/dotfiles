@@ -20,19 +20,6 @@ if [ $(uname) == "Linux" ]; then
     alias ls='ls --color=auto'
 fi
 
-if [ -f ~/.local/shared/nvim/plugged/gruvbox/gruvbox_256palette.sh ]; then
-    if [ $(uname) == "Darwin" ]; then
-        . ~/.local/shared/nvim/plugged/gruvbox/gruvbox_256palette_osx.sh
-    # This doesn't seem to work in Alacritty, which I usually use on Linux
-    # Separate config function provided
-    elif [ $(uname) == "Linux" ]; then
-        # . ~/.local/shared/nvim/plugged/gruvbox/gruvbox_256palette.sh
-        :
-    else
-        echo "Could not locate gruvbox theme to source into current shell"
-    fi
-fi
-
 # Adds gruvbox coloring to Alacritty
 function color_alacritty {
     mkdir -p ~/.config/alacritty
@@ -69,4 +56,10 @@ colors:
     cyan:    '0x8ec07c'
     white:   '0xebdbb2'
 EOF
+}
+
+function color_iterm {
+    THEME_LOC="~/.local/shared/nvim/plugged/gruvbox/gruvbox.itermcolors"
+    curl https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/schemes/Gruvbox%20Dark.itermcolors -o $THEME_LOC
+    echo "In iTerm, hit Cmd+i, go to colors, import from $THEME_LOC, set new color preference"
 }
