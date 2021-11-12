@@ -45,14 +45,6 @@ Plug 'junegunn/fzf.vim'
 " CoC
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-" TODO: going to try rolling without this for a bit, see if it's handled by CoC
-" Automatic autocompletion
-" This has a tendency to break with new python3 installs/upgrades
-" If broken, run :checkhealth
-" May need to install nvim module to enable remote plugin updates, eg:
-" python3 -m pip install --user --upgrade pynvim
-"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-
 if $ZIG_ENABLE == "1"
     " Basic Zig highlighting and file detection
     " For ZLS support, go here: https://github.com/zigtools/zls#neovimvim8
@@ -64,7 +56,6 @@ if $GO_ENABLE == "1"
     " All the lovely things you need to work with Go
     " Make sure CoC config is updated (:CocConfig) (snippet at https://github.com/neoclide/coc.nvim)
     Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-    '
 endif
 
 call plug#end()
@@ -93,7 +84,7 @@ set cmdheight=2
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 " delays and poor user experience.
-set updatetime=300
+set updatetime=50
 
 " Make searching case-sensitive only if caps are passed (similar to rg)
 " (Must ignorecase before smartcase will apply)
@@ -133,7 +124,6 @@ hi link markdownError Normal
 " CoC-specific settings
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
-" TODO: check back to see if you literally ever use these
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
@@ -165,11 +155,18 @@ nnoremap <C-l> :noh<CR>
 inoremap jj <ESC>
 inoremap kk <ESC>:w<CR>
 
+" Easier line navigation, because the standard bindings for these keys suck
+nnoremap H ^
+nnoremap L $
+
 " Quicksave
 nnoremap <Leader>w :w<CR>
 
 " Shortcut to delete current buffer
 nnoremap <Leader>d :bd<CR>
+
+" Source RC file anytime
+nnoremap <Leader>sop :source ~/.config/nvim/init.vim<CR>
 
 " Cycle buffers, using whatever I happen to have below
 nnoremap <silent> <Right> :bnext<CR>
