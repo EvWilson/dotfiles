@@ -123,9 +123,6 @@ highlight colorcolumn ctermbg=darkgray ctermfg=black
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
 
-" Highlight tabs as errors.
-match Error /\t/
-
 " A dirty hack to clear Markdown error highlighting completely, but I hated
 " having underscores highlighted red, and would prefer to catch MD errors by
 " watching a MD renderer anyway
