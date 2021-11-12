@@ -7,6 +7,8 @@ set shell=/bin/bash
 call plug#begin('~/.local/shared/nvim/plugged')
 
 " GUI Enhancements
+" Pretty lil gruvbox
+Plug 'morhetz/gruvbox'
 " Utility showing vim mode status, etc in lower bar
 Plug 'vim-airline/vim-airline'
 " Get Git integration for vim-airline
@@ -63,6 +65,10 @@ call plug#end()
 """"""""""""""""""""""""""""""""""""""""""
 " Editor Configuration Section
 """"""""""""""""""""""""""""""""""""""""""
+" WOOO COLORS
+colorscheme gruvbox
+set background=dark
+
 " Tabs to four spaces
 set expandtab
 set tabstop=4
@@ -106,6 +112,7 @@ set mouse=a
 
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
+" TODO: replace yes with number once neovim 5.0 lands in package mgrs
 set signcolumn=yes
 
 " 80 character line marking
@@ -116,25 +123,32 @@ highlight colorcolumn ctermbg=darkgray ctermfg=black
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
 
+" Highlight tabs as errors.
+match Error /\t/
+
 " A dirty hack to clear Markdown error highlighting completely, but I hated
 " having underscores highlighted red, and would prefer to catch MD errors by
 " watching a MD renderer anyway
 hi link markdownError Normal
 
-" CoC-specific settings
+" CoC-specific settings - leave mode as nmap, nnoremap doesn't work
+" Navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Mappings Section
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remap leader key because backslash is inconvenient
-" Doing this in a roundabout way, normal mode only, to not get hang while
-" typing
-nmap <space> <bslash>
+let mapleader = " "
 
 " Disable arrow keys for nav - use hjkl!
 nnoremap <Up> <Nop>
@@ -158,6 +172,14 @@ inoremap kk <ESC>:w<CR>
 " Easier line navigation, because the standard bindings for these keys suck
 nnoremap H ^
 nnoremap L $
+
+" Make Y behave sanely
+nnoremap Y yg_
+
+" cn and cN now replace word under cursor and move to the next - spam . to
+" search and replace after at lightning speeds
+nnoremap cn *``cgn
+nnoremap cN *``cgN
 
 " Quicksave
 nnoremap <Leader>w :w<CR>

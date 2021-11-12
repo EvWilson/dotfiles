@@ -16,6 +16,7 @@ possible.
     - htop
     - tmux
     - tree
+    - fzf
 - Install language toolchains
     - nvm (https://github.com/nvm-sh/nvm)
     - update-golang (https://github.com/udhos/update-golang)
