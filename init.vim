@@ -184,6 +184,9 @@ nnoremap <Leader>w :w<CR>
 " Shortcut to delete current buffer
 nnoremap <Leader>d :bd<CR>
 
+" Exit shortcut
+nnoremap <Leader>q :q<CR>
+
 " Source RC file anytime
 nnoremap <Leader>sop :source ~/.config/nvim/init.vim<CR>
 
