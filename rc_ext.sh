@@ -20,6 +20,21 @@ if [ $(uname) == "Linux" ]; then
     alias ls='ls --color=auto'
 fi
 
+# In existing tmux window, open preferred format and change all open windows to cwd
+function winhere {
+    CURR_DIR=`pwd`
+    tmux split-window -h -p 33
+    cd $CURR_DIR
+    tmux split-window -v -p 33
+    cd $CURR_DIR
+    tmux select-pane -t 0
+}
+
+# Source shortcut
+function sourceme {
+    source ~/.bashrc
+}
+
 # Adds gruvbox coloring to Alacritty
 function color_alacritty {
     mkdir -p ~/.config/alacritty
@@ -58,6 +73,7 @@ colors:
 EOF
 }
 
+# Downloads iterm gruvbox theme and saves to the gruvbox plugin dir, prints help info for next steps
 function color_iterm {
     THEME_LOC="~/.local/shared/nvim/plugged/gruvbox/gruvbox.itermcolors"
     curl https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/schemes/Gruvbox%20Dark.itermcolors -o $THEME_LOC
