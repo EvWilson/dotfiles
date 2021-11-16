@@ -8,7 +8,7 @@ call plug#begin('~/.local/shared/nvim/plugged')
 
 " GUI Enhancements
 " Pretty lil gruvbox
-Plug 'morhetz/gruvbox'
+Plug 'gruvbox-community/gruvbox'
 " Utility showing vim mode status, etc in lower bar
 Plug 'vim-airline/vim-airline'
 " Get Git integration for vim-airline
