@@ -164,6 +164,7 @@ nnoremap <C-l> :noh<CR>
 " Use jj to escape from insert mode
 " Use kk to escape and save from insert mode
 inoremap jj <ESC>
+inoremap jh <ESC>
 inoremap kk <ESC>:w<CR>
 
 " Easier line navigation, because the standard bindings for these keys suck
@@ -193,6 +194,8 @@ nnoremap <Leader>sop :source ~/.config/nvim/init.vim<CR>
 " Cycle buffers, using whatever I happen to have below
 nnoremap <silent> <Right> :bnext<CR>
 nnoremap <silent> <Left> :bprevious<CR>
+nnoremap <silent> <C-m> :bnext<CR>
+nnoremap <silent> <C-n> :bprevious<CR>
 
 " Search for visually selected text with //
 vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
