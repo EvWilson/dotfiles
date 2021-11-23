@@ -208,6 +208,22 @@ let g:rg_command = '
 command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
 nnoremap <Leader>k :F<CR>
 
+" todo list helpers
+nnoremap <Leader>tn o[ ]
+nnoremap <Leader>tt :call ToggleTodo()<CR>
+function ToggleTodo()
+    if matchstrpos(getline('.'), '\[ \]')[1] != -1
+        let l:newline=substitute(getline('.'), '\[ \]', '[X]', "g")
+        call setline(line('.'), newline)
+        return
+    endif
+    if matchstrpos(getline('.'), '\[X\]')[1] != -1
+        let l:newline=substitute(getline('.'), '\[X\]', '[ ]', "g")
+        call setline(line('.'), newline)
+        return
+    endif
+endfunction
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin/Language Configuration Section
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
