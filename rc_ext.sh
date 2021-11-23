@@ -35,6 +35,11 @@ function sourceme {
     source ~/.bashrc
 }
 
+# History fuzzy-find shortcut
+function hist {
+    history | fzf
+}
+
 # Adds gruvbox coloring to Alacritty
 function color_alacritty {
     mkdir -p ~/.config/alacritty
