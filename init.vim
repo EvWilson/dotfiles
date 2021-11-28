@@ -220,6 +220,10 @@ inoremap <silent><expr> <TAB>
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
 " Make <CR> auto-select the first completion item and notify coc.nvim to
 " format on enter, <cr> could be remapped by other vim plugin
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
@@ -227,6 +231,16 @@ inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
 " Use <c-space> to trigger completion
 inoremap <silent><expr> <c-space> coc#refresh()
 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plugin/Language Configuration Section
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plugins
+" Show open buffers in airline
+let g:airline#extensions#tabline#enabled = 1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plugin Development Section (development to extract later)
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " my little todo list helpers
 nnoremap <Leader>tn o[ ]
 nnoremap <Leader>tt :call ToggleTodo()<CR>
@@ -243,9 +257,56 @@ function ToggleTodo()
     endif
 endfunction
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Plugin/Language Configuration Section
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Plugins
-" Show open buffers in airline
-let g:airline#extensions#tabline#enabled = 1
+nnoremap <Leader>tf :call WrapLine(80, 4)<CR>
+function WrapLine(width, indent)
+    " Set up loop control and output variables
+    const l:numlines = line('$')
+    let l:lnum = 0
+    let l:lines = []
+    let l:remainder = ''
+    while l:lnum < l:numlines
+        let l:lnum += 1
+        let l:insert_newline = getline(lnum) == '' ? 'true' : ''
+        let l:new_lines = LineTextWrap(remainder . getline(lnum), a:width, a:indent, insert_newline)
+        let l:remainder = ''
+        if len(new_lines) > 1 && new_lines[-1] != ''
+            let l:remainder = new_lines[-1]
+            let l:new_lines = new_lines[0:-2]
+        endif
+        let l:lines = lines + new_lines
+    endwhile
+    if len(remainder)
+        call add(lines, remainder)
+    endif
+    " Now have appropriately-wrapped lines, just need to write them out
+    let l:lnum = 0
+    for new_line in lines
+        let l:lnum += 1
+        call setline(lnum, new_line)
+    endfor
+endfunction
+
+function LineTextWrap(text, width, indent, insert_newline)
+    let l:lines = []
+    let l:line = ''
+    " For each word in the line
+    for word in split(a:text)
+        " If the line would be too long, add it to result set and reset line
+        if len(line) + len(word) + 1 > a:width
+            call add(lines, line)
+            let l:line = ''
+        endif
+        " Add space between words
+        if len(l:line)
+            let l:line .= ' '
+        endif
+        let l:line .= word
+    endfor
+    if len(l:line)
+        call add(lines, line)
+    endif
+    if a:insert_newline == 'true'
+        call add(lines, '')
+    endif
+    return l:lines
+endfunction
