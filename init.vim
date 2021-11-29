@@ -242,7 +242,7 @@ let g:airline#extensions#tabline#enabled = 1
 " Plugin Development Section (development to extract later)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " my little todo list helpers
-nnoremap <Leader>tn o[ ]
+nnoremap <Leader>tn o- [ ]
 nnoremap <Leader>tt :call ToggleTodo()<CR>
 function ToggleTodo()
     if matchstrpos(getline('.'), '\[ \]')[1] != -1
@@ -257,6 +257,7 @@ function ToggleTodo()
     endif
 endfunction
 
+" TODO: add grammar-aware reflow
 nnoremap <Leader>tf :call WrapLine(80, 4)<CR>
 function WrapLine(width, indent)
     " Set up loop control and output variables
@@ -267,7 +268,7 @@ function WrapLine(width, indent)
     while l:lnum < l:numlines
         let l:lnum += 1
         let l:insert_newline = getline(lnum) == '' ? 'true' : ''
-        let l:new_lines = LineTextWrap(remainder . getline(lnum), a:width, a:indent, insert_newline)
+        let l:new_lines = LineTextWrap(remainder . ' ' . getline(lnum), a:width, a:indent, insert_newline)
         let l:remainder = ''
         if len(new_lines) > 1 && new_lines[-1] != ''
             let l:remainder = new_lines[-1]
@@ -309,4 +310,98 @@ function LineTextWrap(text, width, indent, insert_newline)
         call add(lines, '')
     endif
     return l:lines
+endfunction
+
+nnoremap <Leader>tg :call FormatTable()<CR>
+" Formats the table under the cursor, per GitHub-flavored MD spec
+" Concessions:
+"   - does not currently respect column justification
+"   - does not currently respect termination via following block structure
+function FormatTable()
+    " Jump to second line (delim line) and make sure it seems sane
+    norm! {jj
+    let l:search = match(getline('.'), '\v^[\|:-]+$')
+    if search == -1
+        echom 'Cursor does not appear to be on a table. Aborting.'
+        return
+    endif
+    norm! k
+    let l:startline = line('.')
+    " Parse header line for number of fields and initial lengths
+    let l:terms = []
+    let l:curterms = []
+    let l:lengths = []
+    let l:header = trim(getline('.'))
+    let l:search = match(header, '|')
+    if search == 0
+        let l:header = header[1:-1]
+    endif
+    while len(header)
+        let l:search = match(header, '|')
+        if search == -1
+            let l:search = len(header)
+        endif
+        let l:segment = header[0:search-1]
+        call add(lengths, len(trim(segment))+2)
+        call add(curterms, trim(segment))
+        let l:header = header[search+1:-1]
+    endwhile
+    call add(terms, curterms)
+    let l:curterms = []
+    " Update field lengths to per-column maximums, get each cell's values
+    norm! jj
+    let l:curline = trim(getline('.'))
+    while len(curline)
+        let l:termidx = 0
+        let l:curterms = []
+        let l:search = match(curline, '|')
+        if search == 0
+            let l:curline = curline[1:-1]
+        endif
+        while len(curline)
+            let l:search = match(curline, '|')
+            if search == -1
+                let l:search = len(curline)
+            endif
+            let l:segment = curline[0:search-1]
+            let l:termlen = len(trim(segment))+2
+            if termlen > lengths[termidx]
+                let lengths[termidx] = termlen
+            endif
+            call add(curterms, trim(segment))
+            let l:curline = curline[search+1:-1]
+        endwhile
+        norm! j
+        let l:curline = trim(getline('.'))
+        let l:termidx += 1
+        call add(terms, curterms)
+    endwhile
+    " Output title line, then delim line, then each line of cells
+    let l:curline = ''
+    let l:i = 0
+    for word in terms[0]
+        let l:curline .= '| ' . word . repeat(' ', lengths[i] - len(word) - 1)
+        let l:i += 1
+    endfor
+    let l:curline .= '|'
+    call setline(startline, curline)
+    " Delim
+    let l:startline += 1
+    let l:curline = '|'
+    for length in lengths
+        let l:curline .= repeat('-', length) . '|'
+    endfor
+    call setline(startline, curline)
+    " Cells
+    let l:terms = terms[1:-1]
+    for words in terms
+        let l:startline += 1
+        let l:curline = '|'
+        let l:i = 0
+        for length in lengths
+            let l:curline .= ' ' . words[i] . repeat(' ', length - len(words[i]) - 1) . '|'
+            let l:i += 1
+        endfor
+        call setline(startline, curline)
+    endfor
 endfunction
