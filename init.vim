@@ -52,6 +52,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Make sure CoC config is updated (:CocConfig)
 Plug 'ziglang/zig.vim'
 
+" Gate behind flag, because it's heavyweight
 if $GO_ENABLE == "1"
     " All the lovely things you need to work with Go
     " Make sure CoC config is updated (:CocConfig) (snippet at https://github.com/neoclide/coc.nvim)
@@ -66,6 +67,11 @@ call plug#end()
 " WOOO COLORS
 colorscheme gruvbox
 set background=dark
+
+" Default tabs to four spaces
+set expandtab
+set softtabstop=4
+set tabstop=4
 
 " Show line numbers in hybrid mode - show line you're on and the offset
 " to surrounding lines
@@ -225,6 +231,12 @@ inoremap <silent><expr> <c-space> coc#refresh()
 " Plugins
 " Show open buffers in airline
 let g:airline#extensions#tabline#enabled = 1
+
+" Languages
+autocmd Filetype html setlocal tabstop=2 shiftwidth=2 expandtab
+autocmd Filetype javascript setlocal tabstop=2 shiftwidth=2 expandtab
+autocmd Filetype javascript setlocal tabstop=2 shiftwidth=2 expandtab
+autocmd BufRead,BufNewFile *.json setlocal tabstop=2 shiftwidth=2 expandtab
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin Development Section (development to extract later)
