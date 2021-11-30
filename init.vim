@@ -162,10 +162,7 @@ nnoremap ; :
 nnoremap <C-l> :noh<CR>
 
 " Use jj to escape from insert mode
-" Use kk to escape and save from insert mode
 inoremap jj <ESC>
-inoremap jh <ESC>
-inoremap kk <ESC>:w<CR>
 
 " Easier line navigation, because the standard bindings for these keys suck
 nnoremap H ^
@@ -192,8 +189,6 @@ nnoremap <Leader>q :q<CR>
 nnoremap <Leader>sop :source ~/.config/nvim/init.vim<CR>
 
 " Cycle buffers, using whatever I happen to have below
-nnoremap <silent> <Right> :bnext<CR>
-nnoremap <silent> <Left> :bprevious<CR>
 nnoremap <silent> <C-m> :bnext<CR>
 nnoremap <silent> <C-n> :bprevious<CR>
 
@@ -241,53 +236,82 @@ let g:airline#extensions#tabline#enabled = 1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin Development Section (development to extract later)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
-" my little todo list helpers
 nnoremap <Leader>tn o- [ ]
 nnoremap <Leader>tt :call ToggleTodo()<CR>
 function ToggleTodo()
     if matchstrpos(getline('.'), '\[ \]')[1] != -1
-        let l:newline=substitute(getline('.'), '\[ \]', '[X]', "g")
+        let l:newline = substitute(getline('.'), '\[ \]', '[X]', "g")
         call setline(line('.'), newline)
         return
     endif
     if matchstrpos(getline('.'), '\[X\]')[1] != -1
-        let l:newline=substitute(getline('.'), '\[X\]', '[ ]', "g")
+        let l:newline = substitute(getline('.'), '\[X\]', '[ ]', "g")
         call setline(line('.'), newline)
         return
     endif
 endfunction
 
-" TODO: add grammar-aware reflow
-nnoremap <Leader>tf :call WrapLine(80, 4)<CR>
-function WrapLine(width, indent)
-    " Set up loop control and output variables
+nnoremap <Leader>tf :call WrapLine(80)<CR>
+" Wraps all text lines in current Markdown buffer at specified width
+function WrapLine(width)
+    const l:save_cursor = getpos(".")
     const l:numlines = line('$')
     let l:lnum = 0
+    let l:curline = ''
     let l:lines = []
-    let l:remainder = ''
+    let l:inblock = 'f'
+    " Iterate over lines, adding block statements to output unchanged, and
+    " adding wrappable sections to buffer before processing and adding them
+    while lnum < numlines
+        let l:lnum += 1
+        " Get the line and check if it seems to be in a block construct or not
+        let l:line = getline(lnum)
+        if match(trim(line), '\v^[^#>\-\|]+') != -1 || trim(line) == ''
+            let l:inblock = 'f'
+        else
+            let l:inblock = 't'
+        endif
+        " If the line is blank, flush line buffer and add blank line
+        if trim(line) == ''
+            if len(curline)
+                let l:lines += LineTextWrap(trim(curline), a:width)
+                let l:curline = ''
+            endif
+            let l:lines += ['']
+            continue
+        endif
+        " If in block, add line as-is. If not, add to line buffer.
+        if inblock == 't'
+            call add(lines, line)
+        else
+            let l:curline .= ' ' . line
+        endif
+    endwhile
+    " Flush line buffer one last time
+    if len(curline)
+        let l:lines += LineTextWrap(trim(curline), a:width)
+    endif
+    " Output formatted lines
+    let l:lnum = 1
+    for line in lines
+        call setline(lnum, line)
+        let l:lnum += 1
+    endfor
+    " Delete any dangling lines (silent incantation removes trailing blanks)
+    let l:lnum -= 1
     while l:lnum < l:numlines
         let l:lnum += 1
-        let l:insert_newline = getline(lnum) == '' ? 'true' : ''
-        let l:new_lines = LineTextWrap(remainder . ' ' . getline(lnum), a:width, a:indent, insert_newline)
-        let l:remainder = ''
-        if len(new_lines) > 1 && new_lines[-1] != ''
-            let l:remainder = new_lines[-1]
-            let l:new_lines = new_lines[0:-2]
-        endif
-        let l:lines = lines + new_lines
+        call setline(lnum, '')
     endwhile
-    if len(remainder)
-        call add(lines, remainder)
-    endif
-    " Now have appropriately-wrapped lines, just need to write them out
-    let l:lnum = 0
-    for new_line in lines
-        let l:lnum += 1
-        call setline(lnum, new_line)
-    endfor
+    silent! %s#\($\n\s*\)\+\%$##
+    call setpos('.', save_cursor)
 endfunction
 
-function LineTextWrap(text, width, indent, insert_newline)
+function LineTextWrap(text, width)
+    " If it's whitespace, just return an empty line
+    if a:text == ''
+        return ['']
+    endif
     let l:lines = []
     let l:line = ''
     " For each word in the line
@@ -303,11 +327,9 @@ function LineTextWrap(text, width, indent, insert_newline)
         endif
         let l:line .= word
     endfor
+    " If there's something in the trailing line, add it to result set
     if len(l:line)
         call add(lines, line)
-    endif
-    if a:insert_newline == 'true'
-        call add(lines, '')
     endif
     return l:lines
 endfunction
@@ -318,10 +340,12 @@ nnoremap <Leader>tg :call FormatTable()<CR>
 "   - does not currently respect column justification
 "   - does not currently respect termination via following block structure
 function FormatTable()
+    const l:save_cursor = getpos('.')
     " Jump to second line (delim line) and make sure it seems sane
     norm! {jj
-    let l:search = match(getline('.'), '\v^[\|:-]+$')
+    let l:search = match(getline('.'), '\v^[\|:\- ]+$')
     if search == -1
+        call setpos('.', save_cursor)
         echom 'Cursor does not appear to be on a table. Aborting.'
         return
     endif
@@ -389,7 +413,7 @@ function FormatTable()
     let l:startline += 1
     let l:curline = '|'
     for length in lengths
-        let l:curline .= repeat('-', length) . '|'
+        let l:curline .= ' ' . repeat('-', length-2) . ' |'
     endfor
     call setline(startline, curline)
     " Cells
@@ -404,4 +428,5 @@ function FormatTable()
         endfor
         call setline(startline, curline)
     endfor
+    call setpos('.', save_cursor)
 endfunction
