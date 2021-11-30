@@ -69,11 +69,6 @@ call plug#end()
 colorscheme gruvbox
 set background=dark
 
-" Tabs to four spaces
-set expandtab
-set tabstop=4
-set shiftwidth=4
-
 " Show line numbers in hybrid mode - show line you're on and the offset
 " to surrounding lines
 set number relativenumber
