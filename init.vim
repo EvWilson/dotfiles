@@ -47,12 +47,10 @@ Plug 'junegunn/fzf.vim'
 " CoC
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-if $ZIG_ENABLE == "1"
-    " Basic Zig highlighting and file detection
-    " For ZLS support, go here: https://github.com/zigtools/zls#neovimvim8
-    " Make sure CoC config is updated (:CocConfig)
-    Plug 'ziglang/zig.vim'
-endif
+" Basic Zig highlighting and file detection
+" For ZLS support, go here: https://github.com/zigtools/zls#neovimvim8
+" Make sure CoC config is updated (:CocConfig)
+Plug 'ziglang/zig.vim'
 
 if $GO_ENABLE == "1"
     " All the lovely things you need to work with Go
