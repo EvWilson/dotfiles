@@ -72,6 +72,7 @@ set background=dark
 set expandtab
 set softtabstop=4
 set tabstop=4
+set shiftwidth=4
 
 " Show line numbers in hybrid mode - show line you're on and the offset
 " to surrounding lines
