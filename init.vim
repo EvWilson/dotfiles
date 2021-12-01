@@ -160,8 +160,8 @@ nnoremap ; :
 " Clear highlighting from search
 nnoremap <C-l> :noh<CR>
 
-" Use jj to escape from insert mode
-inoremap jj <ESC>
+" Use below to escape from insert mode
+inoremap jh <ESC>
 
 " Easier line navigation, because the standard bindings for these keys suck
 nnoremap H ^
