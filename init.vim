@@ -246,21 +246,22 @@ nnoremap <c-k> :call NextInList('up')<CR>
 " Create the beginning of a new list item in whatever GitHub-flavored Markdown
 " list construct you may be in
 " Currently supports unordered lists and tasklists
-" TODO: match beginning list element in new addition, e.g. * line creates new *
 function NextInList(direction)
     let l:debug = 0
     if a:direction != 'up' && a:direction != 'down'
         return
     endif
     let l:newitems = {
-        \"list": "- ",
-        \"tasklist": "- [ ] ",
+        \"list": " ",
+        \"tasklist": " [ ] ",
         \}
     let l:inlist = ''
     " Find what list we're in
-    if match(getline('.'), '\v^\s*[\+\*-]\s\[[X ]\]') != -1
+    let l:curline = getline('.')
+    let l:leadchar = trim(curline)[0]
+    if match(curline, '\v^\s*[\+\*-]\s\[[X ]\]') != -1
         let l:inlist = 'tasklist'
-    elseif match(getline('.'), '\v^\s*[\+\*-]\s') != -1
+    elseif match(curline, '\v^\s*[\+\*-]\s') != -1
         let l:inlist = 'list'
     else
         if l:debug != 0
@@ -272,10 +273,10 @@ function NextInList(direction)
     " Match existing indent level
     let l:indent = indent('.')
     if a:direction == 'up'
-        call append(line('.') - 1, repeat(' ', indent) . newitems[inlist])
+        call append(line('.') - 1, repeat(' ', indent) . leadchar . newitems[inlist])
         norm! k$a
     else
-        call append(line('.'), repeat(' ', indent) . newitems[inlist])
+        call append(line('.'), repeat(' ', indent) . leadchar . newitems[inlist])
         norm! j$a
     endif
 endfunction
