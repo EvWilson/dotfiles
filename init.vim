@@ -4,7 +4,7 @@ set shell=/bin/bash
 """"""""""""""""""""""""""""""""""""""""""""
 " Plugin Section
 """"""""""""""""""""""""""""""""""""""""""""
-call plug#begin('~/.local/shared/nvim/plugged')
+call plug#begin('~/.local/share/nvim/plugged')
 
 " GUI Enhancements
 " Pretty lil gruvbox
@@ -236,22 +236,61 @@ let g:airline#extensions#tabline#enabled = 1
 " Languages
 autocmd Filetype html setlocal tabstop=2 shiftwidth=2 expandtab
 autocmd Filetype javascript setlocal tabstop=2 shiftwidth=2 expandtab
-autocmd Filetype javascript setlocal tabstop=2 shiftwidth=2 expandtab
 autocmd BufRead,BufNewFile *.json setlocal tabstop=2 shiftwidth=2 expandtab
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin Development Section (development to extract later)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
-nnoremap <Leader>tn o- [ ]
+nnoremap <c-j> :call NextInList('down')<CR>
+nnoremap <c-k> :call NextInList('up')<CR>
+" Create the beginning of a new list item in whatever GitHub-flavored Markdown
+" list construct you may be in
+" Currently supports unordered lists and tasklists
+" TODO: match beginning list element in new addition, e.g. * line creates new *
+function NextInList(direction)
+    let l:debug = 0
+    if a:direction != 'up' && a:direction != 'down'
+        return
+    endif
+    let l:newitems = {
+        \"list": "- ",
+        \"tasklist": "- [ ] ",
+        \}
+    let l:inlist = ''
+    " Find what list we're in
+    if match(getline('.'), '\v^\s*[\+\*-]\s\[[X ]\]') != -1
+        let l:inlist = 'tasklist'
+    elseif match(getline('.'), '\v^\s*[\+\*-]\s') != -1
+        let l:inlist = 'list'
+    else
+        if l:debug != 0
+            echom 'Could not find matching list pattern for current line: "' . getline('.') . '"'
+        endif
+        return
+    endif
+    " Based on list we're in, and passed direction, create new list element
+    " Match existing indent level
+    let l:indent = indent('.')
+    if a:direction == 'up'
+        call append(line('.') - 1, repeat(' ', indent) . newitems[inlist])
+        norm! k$a
+    else
+        call append(line('.'), repeat(' ', indent) . newitems[inlist])
+        norm! j$a
+    endif
+endfunction
+
 nnoremap <Leader>tt :call ToggleTodo()<CR>
+" Toggles GitHub-flavored Markdown tasklist items on current line between
+" complete/incomplete
 function ToggleTodo()
-    if matchstrpos(getline('.'), '\[ \]')[1] != -1
-        let l:newline = substitute(getline('.'), '\[ \]', '[X]', "g")
+    if matchstrpos(getline('.'), '- \[ \]')[1] != -1
+        let l:newline = substitute(getline('.'), '- \[ \]', '- [X]', "g")
         call setline(line('.'), newline)
         return
     endif
-    if matchstrpos(getline('.'), '\[X\]')[1] != -1
-        let l:newline = substitute(getline('.'), '\[X\]', '[ ]', "g")
+    if matchstrpos(getline('.'), '- \[X\]')[1] != -1
+        let l:newline = substitute(getline('.'), '- \[X\]', '- [ ]', "g")
         call setline(line('.'), newline)
         return
     endif
@@ -303,7 +342,8 @@ function WrapLine(width)
         call setline(lnum, line)
         let l:lnum += 1
     endfor
-    " Delete any dangling lines (silent incantation removes trailing blanks)
+    " Delete any dangling lines
+    " Silent incantation removes trailing blanks
     let l:lnum -= 1
     while l:lnum < l:numlines
         let l:lnum += 1
@@ -342,97 +382,92 @@ endfunction
 
 nnoremap <Leader>tg :call FormatTable()<CR>
 " Formats the table under the cursor, per GitHub-flavored MD spec
-" Concessions:
-"   - does not currently respect column justification
-"   - does not currently respect termination via following block structure
+" Mostly just used to help with adjustments in spacing, prettiness
+" To simplify this function, some assumptions are made:
+"   - Each line contains exactly the necessary number of vertical bars
+"   - Does not currently respect column justification
+"   - Does not currently respect termination via following block structure
 function FormatTable()
+    let l:debug = 0
     const l:save_cursor = getpos('.')
     " Jump to second line (delim line) and make sure it seems sane
     norm! {jj
-    let l:search = match(getline('.'), '\v^[\|:\- ]+$')
-    if search == -1
+    let l:search_result = match(getline('.'), '\v^[\|:\- ]+$')
+    if l:search_result == -1
         call setpos('.', save_cursor)
-        echom 'Cursor does not appear to be on a table. Aborting.'
+        if l:debug == 1
+            echom 'Cursor does not appear to be on a table. Aborting.'
+        endif
         return
     endif
     norm! k
-    let l:startline = line('.')
+    const l:startline = line('.')
     " Parse header line for number of fields and initial lengths
     let l:terms = []
     let l:curterms = []
-    let l:lengths = []
-    let l:header = trim(getline('.'))
-    let l:search = match(header, '|')
-    if search == 0
-        let l:header = header[1:-1]
-    endif
-    while len(header)
-        let l:search = match(header, '|')
-        if search == -1
-            let l:search = len(header)
-        endif
-        let l:segment = header[0:search-1]
-        call add(lengths, len(trim(segment))+2)
-        call add(curterms, trim(segment))
-        let l:header = header[search+1:-1]
-    endwhile
+    let l:max_widths = []
+    let l:num_bars = count(getline(startline), '|')
+    let l:header_items = split(trim(getline(startline)), '|')
+    for item in header_items
+        let l:trimmed = trim(item)
+        call add(curterms, trimmed)
+        call add(max_widths, len(trimmed))
+    endfor
     call add(terms, curterms)
-    let l:curterms = []
-    " Update field lengths to per-column maximums, get each cell's values
-    norm! jj
-    let l:curline = trim(getline('.'))
-    while len(curline)
-        let l:termidx = 0
+    " Process each line in table itself
+    let l:line_num = startline + 2
+    while 1
         let l:curterms = []
-        let l:search = match(curline, '|')
-        if search == 0
-            let l:curline = curline[1:-1]
+        " For current line, split up terms and add them to our buffer
+        " Make sure to update max column width as we go
+        let l:line_items = split(trim(getline(line_num)), '|', 1)[1:-2]
+        if count(getline(line_num), '|') != num_bars
+            if l:debug != 0
+                echom 'Exiting loop, line items: ' . join(line_items, ' ') . ', headers: ' . join(header_items, ' ') . ', on line: ' . getline('.')
+            endif
+            break
         endif
-        while len(curline)
-            let l:search = match(curline, '|')
-            if search == -1
-                let l:search = len(curline)
+        let l:item_idx = 0
+        for item in line_items
+            let l:trimmed = trim(item)
+            call add(curterms, trimmed)
+            if len(trimmed) > max_widths[item_idx]
+                let l:max_widths[item_idx] = len(trimmed)
             endif
-            let l:segment = curline[0:search-1]
-            let l:termlen = len(trim(segment))+2
-            if termlen > lengths[termidx]
-                let lengths[termidx] = termlen
-            endif
-            call add(curterms, trim(segment))
-            let l:curline = curline[search+1:-1]
-        endwhile
-        norm! j
-        let l:curline = trim(getline('.'))
-        let l:termidx += 1
+            let l:item_idx += 1
+        endfor
+        " Move to next line
+        let l:line_num += 1
         call add(terms, curterms)
     endwhile
     " Output title line, then delim line, then each line of cells
+    let l:line_num = startline
     let l:curline = ''
     let l:i = 0
     for word in terms[0]
-        let l:curline .= '| ' . word . repeat(' ', lengths[i] - len(word) - 1)
+        let l:curline .= '| ' . word . repeat(' ', max_widths[i] - len(word) + 1)
         let l:i += 1
     endfor
     let l:curline .= '|'
-    call setline(startline, curline)
+    call setline(line_num, curline)
     " Delim
-    let l:startline += 1
+    let l:line_num += 1
     let l:curline = '|'
-    for length in lengths
-        let l:curline .= ' ' . repeat('-', length-2) . ' |'
+    for width in max_widths
+        let l:curline .= ' ' . repeat('-', width) . ' |'
     endfor
-    call setline(startline, curline)
+    call setline(line_num, curline)
     " Cells
     let l:terms = terms[1:-1]
     for words in terms
-        let l:startline += 1
+        let l:line_num += 1
         let l:curline = '|'
         let l:i = 0
-        for length in lengths
-            let l:curline .= ' ' . words[i] . repeat(' ', length - len(words[i]) - 1) . '|'
+        for width in max_widths
+            let l:curline .= ' ' . words[i] . repeat(' ', width - len(words[i]) + 1) . '|'
             let l:i += 1
         endfor
-        call setline(startline, curline)
+        call setline(line_num, curline)
     endfor
     call setpos('.', save_cursor)
 endfunction
