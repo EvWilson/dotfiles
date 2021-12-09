@@ -160,6 +160,10 @@ nnoremap L $
 " Make Y behave sanely
 nnoremap Y yg_
 
+" Yank to system clipboard easier
+nnoremap <Leader>y "+y
+vnoremap <Leader>y "+y
+
 " cn and cN now replace word under cursor and move to the next - spam . to
 " search and replace after at lightning speeds
 nnoremap cn *``cgn
@@ -180,9 +184,6 @@ nnoremap <Leader>sop :source ~/.config/nvim/init.vim<CR>
 " Cycle buffers, using whatever I happen to have below
 nnoremap <silent> <C-m> :bnext<CR>
 nnoremap <silent> <C-n> :bprevious<CR>
-
-" Search for visually selected text with //
-vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
 
 " My GFM helpers
 nnoremap <c-j> :call gfmdoc#NextInList('down')<CR>
