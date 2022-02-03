@@ -121,6 +121,8 @@ set signcolumn=yes
 set colorcolumn=80
 highlight colorcolumn ctermbg=darkgray ctermfg=black
 
+" Show me them beautiful spaces
+set lcs+=space:·
 " Highlight extra whitespace for removal
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
