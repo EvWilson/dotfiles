@@ -178,9 +178,6 @@ nnoremap <Leader>w :w<CR>
 " Shortcut to delete current buffer
 nnoremap <Leader>d :bd<CR>
 
-" Exit shortcut
-nnoremap <Leader>q :q<CR>
-
 " Source RC file anytime
 nnoremap <Leader>sop :source ~/.config/nvim/init.vim<CR>
 
@@ -244,6 +241,21 @@ inoremap <silent><expr> <c-space> coc#refresh()
 " Plugins
 " Show open buffers in airline
 let g:airline#extensions#tabline#enabled = 1
+
+" Only open variables and stacktrace for Go debugging
+" Cheatsheet:
+" Start debug - :GoDebugStart
+" Start debug with flags - :GoDebugStart . -someflag value
+" Toggle breakpoint (can add line number) - :GoDebugBreakpoint <line_num>
+" Continue to breakpoint - :GoDebugContinue
+" Step execution (see help for differences) - :GoDebug[Next|Step|StepOver|StepOut]
+" Print variable (shouldn't need often) - :GoDebugPrint <variable>
+" Quit session - :GoDebugStop
+" Check vim-go itself - :h vim-go
+let g:go_debug_windows = {
+      \ 'vars':       'rightbelow 60vnew',
+      \ 'stack':      'rightbelow 10new',
+\ }
 
 " Languages
 autocmd Filetype html setlocal tabstop=2 shiftwidth=2 expandtab
