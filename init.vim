@@ -179,9 +179,6 @@ nnoremap cN *``cgN
 " Quicksave
 nnoremap <leader>w :w<CR>
 
-" Shortcut to delete current buffer
-nnoremap <leader>d :bd<CR>
-
 " Source RC file anytime
 nnoremap <leader>sop :source ~/.config/nvim/init.vim<CR>
 
@@ -275,6 +272,21 @@ let g:nvim_tree_icons = {
     \   'arrow_closed': ">",
     \   }
     \ }
+
+" Only open variables and stacktrace for Go debugging
+" Cheatsheet:
+" Start debug - :GoDebugStart
+" Start debug with flags - :GoDebugStart . -someflag value
+" Toggle breakpoint (can add line number) - :GoDebugBreakpoint <line_num>
+" Continue to breakpoint - :GoDebugContinue
+" Step execution (see help for differences) - :GoDebug[Next|Step|StepOver|StepOut]
+" Print variable (shouldn't need often) - :GoDebugPrint <variable>
+" Quit session - :GoDebugStop
+" Check vim-go itself - :h vim-go
+let g:go_debug_windows = {
+      \ 'vars':       'rightbelow 60vnew',
+      \ 'stack':      'rightbelow 10new',
+\ }
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Language Configuration Section
