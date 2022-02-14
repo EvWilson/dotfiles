@@ -179,6 +179,9 @@ nnoremap cN *``cgN
 " Quicksave
 nnoremap <leader>w :w<CR>
 
+" Shortcut to delete current buffer
+nnoremap <leader>d :bd<CR>
+
 " Source RC file anytime
 nnoremap <leader>sop :source ~/.config/nvim/init.vim<CR>
 
