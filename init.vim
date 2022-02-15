@@ -15,6 +15,9 @@ Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-fugitive'
 " Highlight yanked materials
 Plug 'machakann/vim-highlightedyank'
+" Experimenting with new filetree viewer
+Plug 'kyazdani42/nvim-web-devicons' " File icons for below
+Plug 'kyazdani42/nvim-tree.lua'
 
 " Beautiful QoL improvements from the illustrious tpope
 " Cheatsheet:
@@ -64,7 +67,7 @@ endif
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""
-" Editor Configuration Section
+" Editor Settings Configuration Section
 """"""""""""""""""""""""""""""""""""""""""
 " WOOO COLORS
 colorscheme gruvbox
@@ -112,10 +115,11 @@ set scrolloff=15
 " Enable mouse to set cursor location
 set mouse=a
 
-" Always show the signcolumn, otherwise it would shift the text each time
-" diagnostics appear/become resolved.
-" TODO: replace yes with number once neovim 5.0 lands in package mgrs
+" Best of both worlds sign/number column
 set signcolumn=yes
+
+" Allow filtree viewer to set colors properly
+set termguicolors
 
 " 80 character line marking
 set colorcolumn=80
@@ -134,7 +138,7 @@ match ExtraWhitespace /\s\+$/
 hi link markdownError Normal
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Mappings Section
+" Mappings and Plugin Configuration Section
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remap leader key because backslash is inconvenient
 let mapleader = " "
@@ -151,7 +155,7 @@ inoremap {;<CR> {<CR>};<ESC>O
 nnoremap ; :
 
 " Clear highlighting from search
-nnoremap <C-l> :noh<CR>
+nnoremap <c-l> :noh<CR>
 
 " Use below to escape from insert mode
 inoremap jh <ESC>
@@ -164,8 +168,8 @@ nnoremap L $
 nnoremap Y yg_
 
 " Yank to system clipboard easier
-nnoremap <Leader>y "+y
-vnoremap <Leader>y "+y
+nnoremap <leader>y "+y
+vnoremap <leader>y "+y
 
 " cn and cN now replace word under cursor and move to the next - spam . to
 " search and replace after at lightning speeds
@@ -173,38 +177,35 @@ nnoremap cn *``cgn
 nnoremap cN *``cgN
 
 " Quicksave
-nnoremap <Leader>w :w<CR>
+nnoremap <leader>w :w<CR>
 
 " Shortcut to delete current buffer
-nnoremap <Leader>d :bd<CR>
-
-" Exit shortcut
-nnoremap <Leader>q :q<CR>
+nnoremap <leader>d :bd<CR>
 
 " Source RC file anytime
-nnoremap <Leader>sop :source ~/.config/nvim/init.vim<CR>
+nnoremap <leader>sop :source ~/.config/nvim/init.vim<CR>
 
 " Cycle buffers, using whatever I happen to have below
-nnoremap <silent> <C-m> :bnext<CR>
-nnoremap <silent> <C-n> :bprevious<CR>
+nnoremap <silent> <c-m> :bnext<CR>
+nnoremap <silent> <c-n> :bprevious<CR>
 
 " My GFM helpers
 nnoremap <c-j> :call gfmdoc#NextInList('down')<CR>
 nnoremap <c-k> :call gfmdoc#NextInList('up')<CR>
-nnoremap <Leader>tt :call gfmdoc#ToggleTodo()<CR>
-nnoremap <Leader>tf :call gfmdoc#WrapLine(80)<CR>
-nnoremap <Leader>tg :call gfmdoc#FormatTable()<CR>
+nnoremap <leader>tt :call gfmdoc#ToggleTodo()<CR>
+nnoremap <leader>tf :call gfmdoc#WrapLine(80)<CR>
+nnoremap <leader>tg :call gfmdoc#FormatTable()<CR>
 
 " Open fzf commands
-nnoremap <Leader>h :Files<CR>
-nnoremap <Leader>j :Buffers<CR>
+nnoremap <leader>h :Files<CR>
+nnoremap <leader>j :Buffers<CR>
 " This subsection is to make project ripgrep behave as expected when used as
 " the backend to fzf
 let g:rg_command = '
   \ rg --column --line-number --no-heading --ignore-case --no-ignore --hidden --follow --color "always"
   \ -g "!{.git,node_modules,vendor}/*" '
 command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
-nnoremap <Leader>k :F<CR>
+nnoremap <leader>k :F<CR>
 
 " CoC-specific settings - leave mode as nmap, nnoremap doesn't work
 " Navigate diagnostics
@@ -223,10 +224,10 @@ nmap <leader>rn <Plug>(coc-rename)
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
+      \ pumvisible() ? "\<c-n>" :
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <expr><S-TAB> pumvisible() ? "\<c-p>" : "\<c-h>"
 function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
@@ -234,18 +235,65 @@ endfunction
 " Make <CR> auto-select the first completion item and notify coc.nvim to
 " format on enter, <cr> could be remapped by other vim plugin
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+                              \: "\<c-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 " Use <c-space> to trigger completion
 inoremap <silent><expr> <c-space> coc#refresh()
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Plugin/Language Configuration Section
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Plugins
 " Show open buffers in airline
 let g:airline#extensions#tabline#enabled = 1
 
-" Languages
+" Set up filetree viewer
+function! s:setup_filetree()
+lua << EOF
+require'nvim-tree'.setup()
+EOF
+endfunction
+call s:setup_filetree()
+" Configure filetree hotkey functions
+nnoremap <leader>y :NvimTreeToggle<CR>
+nnoremap <leader>u :NvimTreeRefresh<CR>
+nnoremap <leader>i :NvimTreeFindFile<CR>
+let g:nvim_tree_show_icons = {
+    \ 'git': 1,
+    \ 'folders': 1,
+    \ 'files': 0,
+    \ 'folder_arrows': 1,
+    \ }
+" Default will show icon by default if no icon is provided
+let g:nvim_tree_icons = {
+    \ 'symlink': '[link]',
+    \ 'git': {
+    \   'unstaged': "[unstaged]",
+    \   'unmerged': "[unmerged]",
+    \   'renamed': "[renamed]",
+    \   'untracked': "[untracked]",
+    \   'deleted': "[deleted]",
+    \   'ignored': "[ignored]"
+    \   },
+    \ 'folder': {
+    \   'arrow_open': "V",
+    \   'arrow_closed': ">",
+    \   }
+    \ }
+
+" Only open variables and stacktrace for Go debugging
+" Cheatsheet:
+" Start debug - :GoDebugStart
+" Start debug with flags - :GoDebugStart . -someflag value
+" Toggle breakpoint (can add line number) - :GoDebugBreakpoint <line_num>
+" Continue to breakpoint - :GoDebugContinue
+" Step execution (see help for differences) - :GoDebug[Next|Step|StepOver|StepOut]
+" Print variable (shouldn't need often) - :GoDebugPrint <variable>
+" Quit session - :GoDebugStop
+" Check vim-go itself - :h vim-go
+let g:go_debug_windows = {
+      \ 'vars':       'rightbelow 60vnew',
+      \ 'stack':      'rightbelow 10new',
+\ }
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Language Configuration Section
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 autocmd Filetype html setlocal tabstop=2 shiftwidth=2 expandtab
 autocmd Filetype javascript setlocal tabstop=2 shiftwidth=2 expandtab
 autocmd Filetype css setlocal tabstop=2 shiftwidth=2 expandtab
