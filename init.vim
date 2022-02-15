@@ -248,4 +248,5 @@ let g:airline#extensions#tabline#enabled = 1
 " Languages
 autocmd Filetype html setlocal tabstop=2 shiftwidth=2 expandtab
 autocmd Filetype javascript setlocal tabstop=2 shiftwidth=2 expandtab
+autocmd Filetype css setlocal tabstop=2 shiftwidth=2 expandtab
 autocmd BufRead,BufNewFile *.json setlocal tabstop=2 shiftwidth=2 expandtab
