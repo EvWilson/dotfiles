@@ -15,7 +15,8 @@ Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-fugitive'
 " Highlight yanked materials
 Plug 'machakann/vim-highlightedyank'
-" Experimenting with new filetree viewer
+
+" File explorer (Lua, requires neovim 0.6+ as of 2/17/2022)
 Plug 'kyazdani42/nvim-web-devicons' " File icons for below
 Plug 'kyazdani42/nvim-tree.lua'
 
@@ -31,12 +32,6 @@ Plug 'tpope/vim-commentary'
 
 " Definition of custom text objects via kana/vim-textobj-user
 Plug 'kana/vim-textobj-user'
-" e.g. `cil` for change in line
-Plug 'kana/vim-textobj-line'
-" e.g. `cie` for change in entire buffer
-Plug 'kana/vim-textobj-entire'
-" e.g. `cii` for change in indent level
-Plug 'kana/vim-textobj-indent'
 " e.g. `cif{char}` for change in between arbitrary characters (`cif_` to
 " change _phrase to change_)
 Plug 'thinca/vim-textobj-between'
@@ -57,8 +52,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Make sure CoC config is updated (:CocConfig)
 Plug 'ziglang/zig.vim'
 
-" Gate behind flag, because it's heavyweight
-if $GO_ENABLE == "1"
+" Only condiitonally download
+if executable('go') == 1
     " All the lovely things you need to work with Go
     " Make sure CoC config is updated (:CocConfig) (snippet at https://github.com/neoclide/coc.nvim)
     Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
@@ -250,8 +245,7 @@ EOF
 endfunction
 call s:setup_filetree()
 " Configure filetree hotkey functions
-nnoremap <leader>y :NvimTreeToggle<CR>
-nnoremap <leader>u :NvimTreeRefresh<CR>
+nnoremap <leader>u :NvimTreeToggle<CR>
 nnoremap <leader>i :NvimTreeFindFile<CR>
 let g:nvim_tree_show_icons = {
     \ 'git': 1,
