@@ -52,7 +52,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Make sure CoC config is updated (:CocConfig)
 Plug 'ziglang/zig.vim'
 
-" Only condiitonally download
+" Only conditionally load
 if executable('go') == 1
     " All the lovely things you need to work with Go
     " Make sure CoC config is updated (:CocConfig) (snippet at https://github.com/neoclide/coc.nvim)
@@ -138,10 +138,6 @@ hi link markdownError Normal
 " Remap leader key because backslash is inconvenient
 let mapleader = " "
 
-" Disable arrow keys for nav - use hjkl!
-nnoremap <Up> <Nop>
-nnoremap <Down> <Nop>
-
 " Automatically match brackets
 inoremap {<CR> {<CR>}<ESC>O
 inoremap {;<CR> {<CR>};<ESC>O
@@ -157,7 +153,9 @@ inoremap jh <ESC>
 
 " Easier line navigation, because the standard bindings for these keys suck
 nnoremap H ^
+vnoremap H ^
 nnoremap L $
+vnoremap L $
 
 " Make Y behave sanely
 nnoremap Y yg_
@@ -165,11 +163,6 @@ nnoremap Y yg_
 " Yank to system clipboard easier
 nnoremap <leader>y "+y
 vnoremap <leader>y "+y
-
-" cn and cN now replace word under cursor and move to the next - spam . to
-" search and replace after at lightning speeds
-nnoremap cn *``cgn
-nnoremap cN *``cgN
 
 " Quicksave
 nnoremap <leader>w :w<CR>
@@ -185,11 +178,9 @@ nnoremap <silent> <c-m> :bnext<CR>
 nnoremap <silent> <c-n> :bprevious<CR>
 
 " My GFM helpers
-nnoremap <c-j> :call gfmdoc#NextInList('down')<CR>
-nnoremap <c-k> :call gfmdoc#NextInList('up')<CR>
-nnoremap <leader>tt :call gfmdoc#ToggleTodo()<CR>
-nnoremap <leader>tf :call gfmdoc#WrapLine(80)<CR>
-nnoremap <leader>tg :call gfmdoc#FormatTable()<CR>
+nnoremap <c-j> :GFMDUpNextList<CR>
+nnoremap <c-k> :GFMDDownNextList<CR>
+nnoremap <leader>tt :GFMDToggleTodo<CR>
 
 " Open fzf commands
 nnoremap <leader>h :Files<CR>
