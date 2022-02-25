@@ -37,7 +37,7 @@ function sourceme {
 
 # History fuzzy-find shortcut
 function hist {
-    history | fzf
+    $(history | sed -e 's/^\ \w*\ \w* //' | fzf)
 }
 
 # Adds gruvbox coloring to Alacritty
