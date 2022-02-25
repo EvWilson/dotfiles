@@ -77,10 +77,3 @@ colors:
     white:   '0xebdbb2'
 EOF
 }
-
-# Downloads iterm gruvbox theme and saves to the gruvbox plugin dir, prints help info for next steps
-function color_iterm {
-    THEME_LOC="~/.local/shared/nvim/plugged/gruvbox/gruvbox.itermcolors"
-    curl https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/schemes/Gruvbox%20Dark.itermcolors -o $THEME_LOC
-    echo "In iTerm, hit Cmd+i, go to colors, import from $THEME_LOC, set new color preference"
-}
