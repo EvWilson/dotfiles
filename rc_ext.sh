@@ -21,7 +21,7 @@ if [ $(uname) == "Linux" ]; then
 fi
 
 # In existing tmux window, open preferred format and change all open windows to cwd
-function winhere {
+function winme {
     CURR_DIR=`pwd`
     tmux split-window -h -p 33
     cd $CURR_DIR
