@@ -9,6 +9,10 @@
     "zls": {
         "command": "zls",
         "filetypes": ["zig"]
+    },
+    "kotlin": {
+      "command": "kotlin-language-server",
+      "filetypes": ["kotlin"]
     }
   }
 }

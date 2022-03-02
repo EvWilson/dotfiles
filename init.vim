@@ -47,16 +47,23 @@ Plug 'junegunn/fzf.vim'
 " CoC
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-" Basic Zig highlighting and file detection
+" Zig
 " For ZLS support, go here: https://github.com/zigtools/zls#neovimvim8
 " Make sure CoC config is updated (:CocConfig)
-Plug 'ziglang/zig.vim'
+if executable('zig') == 1
+    Plug 'ziglang/zig.vim'
+endif
 
-" Only conditionally load
+" Go
 if executable('go') == 1
     " All the lovely things you need to work with Go
     " Make sure CoC config is updated (:CocConfig) (snippet at https://github.com/neoclide/coc.nvim)
     Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+endif
+
+" Kotlin
+if executable('kotlin') == 1
+    Plug 'udalov/kotlin-vim'
 endif
 
 call plug#end()

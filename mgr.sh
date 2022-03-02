@@ -6,11 +6,12 @@ set -eu
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 function usage() {
-    echo "Usage:"
-    echo "link -    symlinks configs for nvim and tmux"
-    echo "refresh - refresh nvim plugins and packages"
-    echo "vimplug-install - install vimplug"
-    echo "zig-install - install Zig and ZLS in current dir (ZLS bin will be in zig dir)"
+    printf "Usage:\n"
+    printf "langs -\tupdate enabled language servers\n"
+    printf "link -\tsymlinks configs for nvim and tmux\n"
+    printf "fresh -\trefresh nvim plugins and packages\n"
+    printf "plug -\tinstall vimplug\n"
+    printf "zigup -\tinstall Zig and ZLS in current dir (ZLS bin will be in zig dir)\n"
 }
 
 # Dotfile symlink management
