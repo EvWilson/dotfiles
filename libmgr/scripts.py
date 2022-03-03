@@ -5,7 +5,6 @@ import libmgr.langs as langs, libmgr.utils as utils
 
 # All-in-one neovim plugin magic
 def refresh_plugins():
-    print("Refreshing neovim plugins...")
     utils.run_command("nvim +PlugInstall +PlugClean +PlugUpdate +UpdateRemotePlugins")
 
 def langup():
