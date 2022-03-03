@@ -47,7 +47,7 @@ Plug 'junegunn/fzf.vim'
 " CoC
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-" Beautfil, incredible, wonderful syntax highlighting
+" Beautful, incredible, wonderful syntax highlighting
 Plug 'sheerun/vim-polyglot'
 
 " Go
