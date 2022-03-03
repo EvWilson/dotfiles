@@ -7,7 +7,7 @@ import os
 import libmgr.utils as utils
 
 def lsp_dir():
-    return f"{os.environ['HOME']}/.local/share/nvim/lsp"
+    return f"{utils.home()}/.local/share/nvim/lsp"
 
 # TODO this needs testing but I'm tired
 def fetch_kotlin_lsp():

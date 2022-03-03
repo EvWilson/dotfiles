@@ -8,7 +8,7 @@ export $LS_COLORS
 
 # Set custom prompt
 PROMPT_COMMAND='PS1X=$(p="${PWD#${HOME}}"; [ "${PWD}" != "${p}" ] && printf "~";IFS=/; for q in ${p:1}; do printf /${q:0:1}; done; printf "${q:1}")'
-PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]${PS1X}\[\033[00m\] '
+PS1='\[\033[01;33m\]\u@\h\[\033[00m\]:\[\033[01;31m\]${PS1X}\[\033[00m\] '
 
 # Adjust FZF to use ripgrep
 export FZF_DEFAULT_COMMAND='rg --files -g "!{.git,node_modules}/*"'
@@ -25,14 +25,9 @@ function winme {
     CURR_DIR=`pwd`
     tmux split-window -h -p 33
     cd $CURR_DIR
-    tmux split-window -v -p 33
+    tmux split-window -v -p 66 -b
     cd $CURR_DIR
     tmux select-pane -t 0
-}
-
-# Source shortcut
-function sourceme {
-    source ~/.bashrc
 }
 
 # History fuzzy-find shortcut

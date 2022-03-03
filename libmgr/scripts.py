@@ -19,18 +19,18 @@ def vimplug_install():
 # Make sure basenames line up (looking at you, tmux)
 def link():
     print("Checking for missing config symlinks...")
-    HOME = os.environ["HOME"]
-    DOTFILE_DIR = os.path.dirname(os.path.realpath(__file__))
     links = [
         ".config/nvim/init.vim",
         ".tmux.conf",
         ".config/nvim/coc-settings.json",
+        ".config/alacritty/alacritty.yml",
     ]
     for l in links:
-        dest = f"{HOME}/{l}"
+        dest = f"{utils.home()}/{l}"
         if os.path.isfile(dest):
             continue
-        src = f"{DOTFILE_DIR}/{os.path.basename(dest)}"
+        src = f"{utils.dotfile_dir()}/{os.path.basename(dest)}"
         print(f"Link {dest} not found, creating {src} -> {dest}")
+        os.makedirs(os.path.dirname(dest))
         os.symlink(src, dest)
 
