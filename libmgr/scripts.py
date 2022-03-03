@@ -31,6 +31,6 @@ def link():
             continue
         src = f"{utils.dotfile_dir()}/{os.path.basename(dest)}"
         print(f"Link {dest} not found, creating {src} -> {dest}")
-        os.makedirs(os.path.dirname(dest))
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
         os.symlink(src, dest)
 
