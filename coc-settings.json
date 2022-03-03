@@ -11,7 +11,7 @@
         "filetypes": ["zig"]
     },
     "kotlin": {
-      "command": "kotlin-language-server",
+      "command": "~/.local/share/nvim/lsp/kotlin/bin/kotlin-language-server",
       "filetypes": ["kotlin"]
     }
   }
