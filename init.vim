@@ -47,23 +47,13 @@ Plug 'junegunn/fzf.vim'
 " CoC
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-" Zig
-" For ZLS support, go here: https://github.com/zigtools/zls#neovimvim8
-" Make sure CoC config is updated (:CocConfig)
-if executable('zig') == 1
-    Plug 'ziglang/zig.vim'
-endif
+" Beautfil, incredible, wonderful syntax highlighting
+Plug 'sheerun/vim-polyglot'
 
 " Go
 if executable('go') == 1
     " All the lovely things you need to work with Go
-    " Make sure CoC config is updated (:CocConfig) (snippet at https://github.com/neoclide/coc.nvim)
     Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-endif
-
-" Kotlin
-if executable('kotlin') == 1
-    Plug 'udalov/kotlin-vim'
 endif
 
 call plug#end()
@@ -194,7 +184,9 @@ let g:rg_command = '
 command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
 nnoremap <leader>k :F<CR>
 
-" CoC-specific settings - leave mode as nmap, nnoremap doesn't work
+" CoC-specific settings
+" For ZLS support, go here: https://github.com/zigtools/zls#neovimvim8
+" Note: Leave mode as nmap, nnoremap doesn't work
 " Navigate diagnostics
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
@@ -208,6 +200,7 @@ nmap <leader>rn <Plug>(coc-rename)
 
 " CoC autocomplete wrangling
 " Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Make sure CoC config is updated (:CocConfig) (snippets at https://github.com/neoclide/coc.nvim)
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
 inoremap <silent><expr> <TAB>
