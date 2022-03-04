@@ -48,11 +48,11 @@ Plug 'junegunn/fzf.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Beautful, incredible, wonderful syntax highlighting
-Plug 'sheerun/vim-polyglot'
+Plug 'udalov/kotlin-vim'
+Plug 'ziglang/zig.vim'
 
-" Go
+" All the lovely things you need to work with Go, gated since it's heavyweight
 if executable('go') == 1
-    " All the lovely things you need to work with Go
     Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 endif
 
