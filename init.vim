@@ -146,9 +146,10 @@ vnoremap L $
 " Make Y behave sanely
 nnoremap Y yg_
 
-" Yank to system clipboard easier
+" Yank/put to/from system clipboard easier
 nnoremap <leader>y "+y
 vnoremap <leader>y "+y
+nnoremap <leader>p "+p
 
 " Quicksave
 nnoremap <leader>w :w<CR>
