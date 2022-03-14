@@ -13,7 +13,7 @@ Plug 'gruvbox-community/gruvbox'
 Plug 'vim-airline/vim-airline'
 " Get Git integration for vim-airline
 Plug 'tpope/vim-fugitive'
-" Highlight yanked materials
+" Does what it says :^)
 Plug 'machakann/vim-highlightedyank'
 
 " File explorer (Lua, requires neovim 0.6+ as of 2/17/2022)
@@ -117,11 +117,6 @@ highlight colorcolumn ctermbg=darkgray ctermfg=black
 " Show me them beautiful spaces
 set list
 set listchars+=space:·
-
-" A dirty hack to clear Markdown error highlighting completely, but I hated
-" having underscores highlighted red, and would prefer to catch MD errors by
-" watching a MD renderer anyway
-hi link markdownError Normal
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Mappings and Plugin Configuration Section
