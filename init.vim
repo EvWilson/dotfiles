@@ -164,8 +164,8 @@ nnoremap <silent> <c-m> :bnext<CR>
 nnoremap <silent> <c-n> :bprevious<CR>
 
 " My GFM helpers
-nnoremap <c-j> :GFMDUpNextList<CR>
-nnoremap <c-k> :GFMDDownNextList<CR>
+nnoremap <c-j> :GFMDDownNextList<CR>
+nnoremap <c-k> :GFMDUpNextList<CR>
 nnoremap <leader>tt :GFMDToggleTodo<CR>
 
 " Open fzf commands
