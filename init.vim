@@ -118,6 +118,11 @@ highlight colorcolumn ctermbg=darkgray ctermfg=black
 set list
 set listchars+=space:·
 
+" A dirty hack to clear Markdown error highlighting completely, but I hated
+" having underscores highlighted red, and would prefer to catch MD errors by
+" watching a MD renderer anyway
+hi link markdownError Normal
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Mappings and Plugin Configuration Section
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
