@@ -8,11 +8,14 @@ def refresh_plugins():
     utils.run_command("nvim +PlugInstall +PlugClean +PlugUpdate +UpdateRemotePlugins")
 
 def langup():
-    langs.fetch_kotlin_lsp()
+    #langs.fetch_kotlin_lsp()
+    langs.zig_install()
 
 def vimplug_install():
     print("Downloading and installing vim-plug...")
-    utils.run_command("curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim]")
+    out_dir = f"~/.local/share/nvim/site/autoload/"
+    os.makedirs(out_dir)
+    utils.curl_to_file("https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim", f"{out_dir}plug.vim")
 
 # Create symlinks from where these files are supposed to be back to the versions
 # within the dotfile directory

@@ -5,6 +5,7 @@
 
 import sys
 import libmgr.scripts as lib
+import libmgr.utils as utils
 
 def print_usage(operations):
     print("Usage: mgr.py <operation>")
@@ -12,6 +13,8 @@ def print_usage(operations):
         print(f" {op}\t{val[0]}")
 
 def main():
+    utils.check_platform()
+
     # Here's the available operations and their descriptions
     operations = {
         "langs": ["update enabled language servers", lib.langup],
