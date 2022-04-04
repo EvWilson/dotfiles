@@ -7,7 +7,7 @@
       "filetypes": ["go"]
     },
     "zls": {
-        "command": "zls",
+        "command": "~/tools/zig/zls/bin/zls",
         "filetypes": ["zig"]
     },
     "kotlin": {

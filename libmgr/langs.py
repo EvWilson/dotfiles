@@ -19,7 +19,14 @@ def fetch_kotlin_lsp():
     utils.curl_to_file(remote_zip_path, local_zip_path)
     utils.run_command(f"unzip {local_zip_path}")
 
+def get_latest_zig_master():
+    releases = utils.curl_to_json(f"https://ziglang.org/download/index.json")
+    tarball_url = releases["master"][f"{url_machine}-{url_system}"]["tarball"]
+
 def zig_install():
+    use_version = "0.9.0"
+
+    start_dir = os.getcwd()
     out_dir = f"{utils.tools_dir()}"
     print(f"Installing zig and zls to {out_dir}...")
     utils.mkdirs_if_not_exist(out_dir)
@@ -35,8 +42,11 @@ def zig_install():
     else:
         url_machine = 'aarch64'
 
-    releases = utils.curl_to_json(f"https://ziglang.org/download/index.json")
-    tarball_url = releases["master"][f"{url_machine}-{url_system}"]["tarball"]
+    tarball_url = ""
+    if use_version == "":
+        tarball_url = get_latest_zig_master()
+    else:
+        tarball_url = f"https://ziglang.org/download/{use_version}/zig-{url_system}-{url_machine}-{use_version}.tar.xz"
     tar_filename = tarball_url.split("/")[-1]
     tar_fullpath = f"{out_dir}/{tar_filename}"
     unpacked_dirname = tar_filename.removesuffix(".tar.xz")
@@ -45,40 +55,13 @@ def zig_install():
     os.remove(tar_fullpath)
     shutil.move(f"{out_dir}/{unpacked_dirname}", f"{out_dir}/zig")
 
-    # TODO install ZLS
-
-    # Below is what was in the shell script, for reference
-    # # Check that needed bins are available
-    # PROGS="jq curl git"
-    # for p in $PROGS; do
-    #     if ! [ -x "$(command -v $p)" ]; then
-    #         echo "error: $p is not installed, aborting" >&2
-    #         exit 1
-    #     fi
-    # done
-
-    # # Get the right platform string, because I'm also on MacOS now :/
-    # PLAT='.master."x86_64-linux".tarball'
-    # if [ $(uname) == "Darwin" ]; then
-    #     PLAT='.master."aarch64-macos".tarball'
-    # fi
-
-    # # Install latest master revision of zig to the directory "bin" in current dir
-    # ZIG_TARBALL=$(curl -s https://ziglang.org/download/index.json | jq -r $PLAT)
-    # TARFILE=$(basename $ZIG_TARBALL)
-    # DIRNAME=$(echo $TARFILE | sed -e "s/.tar.xz$//")
-    # echo "Installing Zig tarball from: $ZIG_TARBALL"
-    # curl -O $ZIG_TARBALL
-    # tar xf $TARFILE
-    # rm $TARFILE
-    # mv $DIRNAME zig
-
-    # # Build ZLS from source and put binary in created "zig" dir
-    # cd zig
-    # git clone --recurse-submodules https://github.com/zigtools/zls
-    # cd zls
-    # ../zig build -Drelease-safe
-    # cd ..
-    # mv zls zls-git
-    # mv ./zls-git/zig-out/bin/zls .
-    # sudo ./zls config
+    if use_version == "":
+        print("Skipping ZLS download due to using Zig master, which I've found largely incompatible")
+        return
+    tarball_url = f"https://github.com/zigtools/zls/releases/download/{use_version}/{url_machine}-{url_system}.tar.xz"
+    utils.mkdirs_if_not_exist(f"{out_dir}/zig/zls")
+    utils.curl_to_file(tarball_url, f"{out_dir}/zig/zls/zls.tar.xz")
+    os.chdir(f"{out_dir}/zig/zls")
+    utils.run_command("tar xf zls.tar.xf")
+    os.chdir(f"{out_dir}/zig/zls/bin")
+    utils.run_command("chmod u+x ./zls && sudo ./zls config")
