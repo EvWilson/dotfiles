@@ -34,3 +34,12 @@ function winme {
 function hist {
     $(history | sed -e 's/^\ \w*\ \w* //' | fzf)
 }
+
+function gitup {
+    if [ $# -eq 0 ]; then
+        MSG="Update"
+    else
+        MSG=$@
+    fi
+    git add -A && git commit -m "$MSG" && git push
+}
