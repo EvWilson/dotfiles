@@ -110,10 +110,6 @@ set signcolumn=yes
 " Allow filtree viewer to set colors properly
 set termguicolors
 
-" 80 character line marking
-set colorcolumn=80
-highlight colorcolumn ctermbg=darkgray ctermfg=black
-
 " Show me them beautiful spaces
 set list
 set listchars+=space:·
