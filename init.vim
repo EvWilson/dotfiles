@@ -162,7 +162,7 @@ nnoremap <leader>d :bd<CR>
 nnoremap <leader>sop :source ~/.config/nvim/init.vim<CR>
 
 " Cycle buffers, using whatever I happen to have below
-nnoremap <silent> <c-b> :bprevious<CR>
+nnoremap <silent> <c-p> :bprevious<CR>
 nnoremap <silent> <c-n> :bnext<CR>
 
 " My GFM helpers
