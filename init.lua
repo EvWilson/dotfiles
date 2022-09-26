@@ -1,3 +1,6 @@
+-- TODO: show all open buffers
+-- TODO: check out https://github.com/mfussenegger/nvim-dap for debugging
+
 --------------------------------------------------------------------------------
 -- >>> Option Configuration <<<
 --------------------------------------------------------------------------------
@@ -79,7 +82,9 @@ require('packer').startup(function(use)
   use 'saadparwaiz1/cmp_luasnip' -- Snippets source for nvim-cmp
   use 'L3MON4D3/LuaSnip' -- Snippets plugin
 
-  use 'vim-airline/vim-airline' -- Status bar upgrade
+  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' } -- Tree-sitter
+  use 'nvim-treesitter/nvim-treesitter-context'
+  use 'nvim-lualine/lualine.nvim' -- Status bar upgrade
   use 'tpope/vim-fugitive' -- Mostly used for git status bar integration
   use 'machakann/vim-highlightedyank' -- Double check your yanks
   use 'tpope/vim-surround' -- Project page: https://github.com/tpope/vim-surround
@@ -88,8 +93,8 @@ require('packer').startup(function(use)
   use 'thinca/vim-textobj-between' -- 'ci{motion}' to change between objects in motion
   use 'Julian/vim-textobj-brace' -- 'cij' to change between brace pair
   use 'junegunn/fzf' -- Fuzzy finder
-  use 'junegunn/fzf.vim' -- And friend
-  use {'fatih/vim-go', run = ':GoUpdateBinaries' }
+  use 'junegunn/fzf.vim' -- And helper friend
+  use {'fatih/vim-go', run = ':GoUpdateBinaries' } -- For all things Go (love this)
   use 'udalov/kotlin-vim' -- Syntax highlight
   use 'ziglang/zig.vim' -- Syntax highlight
 
@@ -101,6 +106,25 @@ end)
 if install_plugins then
   return
 end
+
+-- Quick lualine configuration (mostly disabling extras)
+require('lualine').setup {
+  options = {
+    icons_enabled = false,
+    component_separators = { left = '', right = ''},
+    section_separators = { left = '', right = ''},
+  },
+}
+
+-- Quick treesitter highlighting setup
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = { 'go' }, -- A list of parser names, or "all"
+  sync_install = false, -- Install parsers synchronously (only applied to `ensure_installed`)
+  auto_install = true, -- Automatically install missing parsers when entering buffer
+  highlight = {
+    enable = true,
+  },
+}
 
 -- Only open variables and stacktrace for Go debugging
 -- Cheatsheet:
@@ -117,11 +141,6 @@ let g:go_debug_windows = {
       \ 'vars':       'rightbelow 60vnew',
       \ 'stack':      'rightbelow 10new',
 \ }
-]]
-
--- Show open buffers in airline
-vim.cmd [[
-let g:airline#extensions#tabline#enabled = 1
 ]]
 
 --------------------------------------------------------------------------------
@@ -151,7 +170,7 @@ vim.keymap.set('n', '<c-l>', ':noh<cr>', {desc = 'Clear search highlight'})
 vim.keymap.set('n', '<leader>a', ':keepjumps normal! ggVG<cr>', {desc = 'Select all text in the current buffer'})
 vim.keymap.set('n', '<leader>sop', ':source ~/.config/nvim/init.lua<cr>', {desc = 'Source config file'})
 
--- Plugin keymap configuration
+-- FZF keymap configuration
 vim.keymap.set('n', '<leader>h', ':Files<cr>', {desc = 'Open file selection via fzf'})
 vim.keymap.set('n', '<leader>j', ':Buffers<cr>', {desc = 'Open buffer selection via fzf'})
 -- Make project ripgrep behave as expected when used as the backend to fzf
@@ -182,11 +201,6 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
   vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
   vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
-  -- vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
-  -- vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
-  -- vim.keymap.set('n', '<space>wl', function()
-  --   print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-  -- end, bufopts)
   vim.keymap.set('n', 'gy', vim.lsp.buf.type_definition, bufopts)
   vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
   vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
@@ -251,39 +265,3 @@ cmp.setup {
     { name = 'luasnip' },
   },
 }
-
--- Hopefully deprecating this, keeping for the moment
--- CoC-specific section
--- For ZLS support, go here: https://github.com/zigtools/zls#neovimvim8
--- vim.keymap.set('n', '[g', '<Plug>(coc-diagnostic-prev)', {desc = 'Navigate to previous CoC diagnostic', silent = true})
--- vim.keymap.set('n', ']g', '<Plug>(coc-diagnostic-next)', {desc = 'Navigate to next CoC diagnostic', silent = true})
--- vim.keymap.set('n', 'gd', '<Plug>(coc-definition)', {desc = 'CoC go to definition', silent = true})
--- vim.keymap.set('n', 'gy', '<Plug>(coc-type-definition)', {desc = 'CoC go to type definition', silent = true})
--- vim.keymap.set('n', 'gi', '<Plug>(coc-implementation)', {desc = 'CoC go to implementation', silent = true})
--- vim.keymap.set('n', 'gr', '<Plug>(coc-references)', {desc = 'CoC go to references', silent = true})
--- vim.keymap.set('n', '<leader>rn', '<Plug>(coc-rename)', {desc = 'CoC rename', silent = true})
-
--- CoC autocomplete wrangling
--- Use tab for trigger completion with characters ahead and navigate.
--- NOTE: Make sure CoC config is updated (:CocConfig) (snippets at https://github.com/neoclide/coc.nvim)
--- NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin before putting this into your config.
--- vim.cmd [[
--- inoremap <silent><expr> <TAB>
---       \ pumvisible() ? "\<c-n>" :
---       \ <SID>check_back_space() ? "\<TAB>" :
---       \ coc#refresh()
--- inoremap <expr><S-TAB> pumvisible() ? "\<c-p>" : "\<c-h>"
--- function! s:check_back_space() abort
---   let col = col('.') - 1
---   return !col || getline('.')[col - 1]  =~# '\s'
--- endfunction
--- ]]
--- Make <CR> auto-select the first completion item and notify coc.nvim to
--- format on enter, <cr> could be remapped by other vim plugin
--- Use <c-space> to trigger completion
--- vim.cmd [[
--- inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
---                               \: "\<c-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
--- inoremap <silent><expr> <c-space> coc#refresh()
--- ]]
-
