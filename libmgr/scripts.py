@@ -3,19 +3,9 @@ import libmgr.langs as langs, libmgr.utils as utils
 
 # Purpose: hold quick, one-off scripts and higher level functions
 
-# All-in-one neovim plugin magic
+# TODO: update this to packer way
 def refresh_plugins():
     utils.run_command("nvim +PlugInstall +PlugClean +PlugUpdate +UpdateRemotePlugins")
-
-def langup():
-    #langs.fetch_kotlin_lsp()
-    langs.zig_install()
-
-def vimplug_install():
-    print("Downloading and installing vim-plug...")
-    out_dir = f"~/.local/share/nvim/site/autoload/"
-    os.makedirs(out_dir)
-    utils.curl_to_file("https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim", f"{out_dir}plug.vim")
 
 # Create symlinks from where these files are supposed to be back to the versions
 # within the dotfile directory

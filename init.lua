@@ -2,7 +2,6 @@
     -- https://github.com/mfussenegger/nvim-dap
     -- https://github.com/theHamsta/nvim-dap-virtual-text
     -- https://github.com/rcarriga/nvim-dap-ui
--- TODO: consider new fuzzy finder - telescope
 
 -- Good Lua config reference materials:
   -- https://vonheikemen.github.io/devlog/tools/build-your-first-lua-config-for-neovim/
@@ -29,7 +28,6 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
 -- Set persistent undo
-vim.opt.undodir = "~/.vimdid"
 vim.opt.undofile = true
 
 -- Enhanced tab completion
@@ -39,20 +37,20 @@ vim.opt.wildmenu = true
 vim.opt.scrolloff = 15
 
 -- Enable the mouse to set the cursor location
-vim.opt.mouse = "a"
+vim.opt.mouse = 'a'
 
 -- Best of both worlds sign/number column
-vim.opt.signcolumn = "yes"
+vim.opt.signcolumn = 'yes'
 
 -- Allow filetree viewer to set colors properly
 vim.opt.termguicolors = true
 
 -- I like to see whitespace
 vim.opt.list = true
-vim.opt.listchars:append("space:·")
+vim.opt.listchars:append('space:·')
 
 -- Bash, pls
-vim.opt.shell = "/bin/bash"
+vim.opt.shell = '/bin/bash'
 
 -- Set colorsheme, imported as plugin
 vim.cmd('colorscheme gruvbox')
@@ -89,12 +87,14 @@ require('packer').startup(function(use)
   use 'kana/vim-textobj-user' -- Enables custom text objects in other plugins
   use 'thinca/vim-textobj-between' -- 'ci{motion}' to change between objects in motion
   use 'Julian/vim-textobj-brace' -- 'cij' to change between brace pair
-  use 'junegunn/fzf' -- Fuzzy finder
-  use 'junegunn/fzf.vim' -- And helper friend
   use {'fatih/vim-go', run = ':GoUpdateBinaries' } -- For all things Go (love this)
   -- Nursery - plugins I'm not fully sold on yet
   use { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim' } -- Magit style git management
   use 'ggandor/leap.nvim' -- Simplified motion plugin
+  use { 'nvim-telescope/telescope.nvim', tag = '0.1.x', requires = { {'nvim-lua/plenary.nvim'} } }
+  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+  use { 'rcarriga/nvim-dap-ui', requires = {'mfussenegger/nvim-dap'} }
+  use { 'theHamsta/nvim-dap-virtual-text', requires = {'mfussenegger/nvim-dap'} }
 
   -- Automatically set up your configuration after cloning packer.nvim
   if packer_bootstrap then
@@ -122,7 +122,7 @@ require('lualine').setup {
 
 -- Quick treesitter highlighting config
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = { 'go' }, -- A list of parser names, or "all"
+  ensure_installed = { 'go' }, -- A list of parser names, or 'all'
   sync_install = false, -- Install parsers synchronously (only applied to `ensure_installed`)
   auto_install = true, -- Automatically install missing parsers when entering buffer
   highlight = { enable = true },
@@ -132,6 +132,26 @@ require('leap').set_default_keymaps()
 
 require('neogit').setup {}
 vim.api.nvim_create_user_command('GIT', 'Neogit', {})
+
+require('telescope').setup {
+  extensions = {
+    fzf = {
+      fuzzy = true,                    -- false will only do exact matching
+      override_generic_sorter = true,  -- override the generic sorter
+      override_file_sorter = true,     -- override the file sorter
+      case_mode = 'smart_case',        -- or 'ignore_case' or 'respect_case', default is 'smart_case'
+    }
+  }
+}
+require('telescope').load_extension('fzf')
+
+require('nvim-dap-virtual-text').setup {}
+require('dapui').setup {}
+local dapui_fn = function()
+  vim.fn.echom('Here')
+  require('dapui').open()
+end
+vim.keymap.set('n', '<leader>b', dapui_fn, {desc = 'Toggle dapui'})
 
 -- Only open variables and stacktrace for Go debugging
 -- Cheatsheet:
@@ -176,18 +196,14 @@ vim.keymap.set('i', '{<cr>', '{<cr>}<esc>O', {desc = 'Automatically match bracke
 vim.keymap.set('n', '<c-l>', ':noh<cr>', {desc = 'Clear search highlight'})
 vim.keymap.set('n', '<leader>a', ':keepjumps normal! ggVG<cr>', {desc = 'Select all text in the current buffer'})
 
--- FZF keymap configuration
-vim.keymap.set('n', '<leader>h', ':Files<cr>', {desc = 'Open file selection via fzf'})
-vim.keymap.set('n', '<leader>j', ':Buffers<cr>', {desc = 'Open buffer selection via fzf'})
--- Make project ripgrep behave as expected when used as the backend to fzf
--- Stolen ages ago, need to figure out how to adapt to Lua future
-vim.cmd [[
-let g:rg_command = '
-  \ rg --column --line-number --no-heading --ignore-case --no-ignore --hidden --follow --color "always"
-  \ -g "!{.git,node_modules,vendor}/*" '
-command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
-]]
-vim.keymap.set('n', '<leader>k', ':F<CR>', {desc = 'Open line selection via fzf/rg'})
+-- Set up telescope key mappings
+local set_telescope_keymaps = function()
+  local t = require('telescope.builtin')
+  vim.keymap.set('n', '<leader>h', t.find_files, {desc = 'Telescope find files'})
+  vim.keymap.set('n', '<leader>j', t.buffers, {desc = 'Telescope find buffers'})
+  vim.keymap.set('n', '<leader>k', t.live_grep, {desc = 'Telescope live grep'})
+end
+set_telescope_keymaps()
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight yanked text',

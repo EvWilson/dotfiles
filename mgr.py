@@ -17,10 +17,8 @@ def main():
 
     # Here's the available operations and their descriptions
     operations = {
-        "langs": ["update enabled language servers", lib.langup],
         "link": ["symlinks configs for nvim and tmux", lib.link],
         "fresh": ["refresh nvim plugins and packages", lib.refresh_plugins],
-        "plug": ["install vimplug", lib.vimplug_install],
     }
 
     # Make sure there's one arg, then execute its function
