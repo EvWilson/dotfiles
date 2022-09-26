@@ -1,3 +1,8 @@
+" NOTE: this has been deprecated in favor of the Lua
+" init file in this directory. Keeping this around for
+" reference and gradually stealing last bits, but it
+" will be gone before too long.
+
 " Make sure to use bash shell
 set shell=/bin/bash
 

@@ -4,15 +4,13 @@
     -- https://github.com/rcarriga/nvim-dap-ui
 -- TODO: consider new fuzzy finder - telescope
 
+-- Good Lua config reference materials:
+  -- https://vonheikemen.github.io/devlog/tools/build-your-first-lua-config-for-neovim/
+  -- https://github.com/nanotee/nvim-lua-guide
+  -- https://github.com/ThePrimeagen/.dotfiles/tree/master/nvim/.config/nvim
 --------------------------------------------------------------------------------
 -- >>> Option Configuration <<<
 --------------------------------------------------------------------------------
--- Default tabs to four spaces
-vim.opt.expandtab = true
-vim.opt.softtabstop = 4
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
-
 -- Show relative line number
 vim.opt.relativenumber = true
 
@@ -73,38 +71,42 @@ local ensure_packer = function()
   return false
 end
 local packer_bootstrap = ensure_packer()
-
 -- You may need this for a bit: https://github.com/wbthomason/packer.nvim
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim' -- Let Packer update itself
   use 'gruvbox-community/gruvbox' -- Ze best color scheme
 
   use 'neovim/nvim-lspconfig' -- Configurations for Nvim LSP
-  use 'hrsh7th/nvim-cmp' -- Autocompletion plugin
-  use 'hrsh7th/cmp-nvim-lsp' -- LSP source for nvim-cmp
-  use 'saadparwaiz1/cmp_luasnip' -- Snippets source for nvim-cmp
-  use 'L3MON4D3/LuaSnip' -- Snippets plugin
+  use { 'hrsh7th/nvim-cmp', requires = 'hrsh7th/cmp-nvim-lsp'  } -- Autocompletion plugin
+  use { 'L3MON4D3/LuaSnip', requires = 'saadparwaiz1/cmp_luasnip' } -- Snippets plugin
 
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' } -- Tree-sitter
   use 'nvim-treesitter/nvim-treesitter-context' -- Show function, etc context
   use 'nvim-lualine/lualine.nvim' -- Status bar upgrade
-  use 'ggandor/leap.nvim' -- Simplified motion plugin, in trial period
-  use 'machakann/vim-highlightedyank' -- Double check your yanks
-  use 'tpope/vim-surround' -- Project page: https://github.com/tpope/vim-surround
+  use 'tpope/vim-surround' -- 'cs{old}{new} to change surround, 'ys{motion}{char}' to add surround
   use 'tpope/vim-commentary' -- 'gc' in some permutation to toggle comments!
+  use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
   use 'kana/vim-textobj-user' -- Enables custom text objects in other plugins
   use 'thinca/vim-textobj-between' -- 'ci{motion}' to change between objects in motion
   use 'Julian/vim-textobj-brace' -- 'cij' to change between brace pair
   use 'junegunn/fzf' -- Fuzzy finder
   use 'junegunn/fzf.vim' -- And helper friend
   use {'fatih/vim-go', run = ':GoUpdateBinaries' } -- For all things Go (love this)
+  -- Nursery - plugins I'm not fully sold on yet
+  use { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim' } -- Magit style git management
+  use 'ggandor/leap.nvim' -- Simplified motion plugin
 
   -- Automatically set up your configuration after cloning packer.nvim
   if packer_bootstrap then
     require('packer').sync()
   end
 end)
-if install_plugins then
+if packer_bootstrap then
+    print '=================================='
+    print '    Plugins are being installed'
+    print '    Wait until Packer completes,'
+    print '       then restart nvim'
+    print '=================================='
   return
 end
 
@@ -115,11 +117,7 @@ require('lualine').setup {
     component_separators = { left = '', right = ''},
     section_separators = { left = '', right = ''},
   },
-  tabline = { -- Show open buffers in top line
-    lualine_a = {
-        'buffers'
-    }
-  }
+  tabline = { lualine_a = { 'buffers' } } -- Show open buffers in top line
 }
 
 -- Quick treesitter highlighting config
@@ -127,12 +125,13 @@ require'nvim-treesitter.configs'.setup {
   ensure_installed = { 'go' }, -- A list of parser names, or "all"
   sync_install = false, -- Install parsers synchronously (only applied to `ensure_installed`)
   auto_install = true, -- Automatically install missing parsers when entering buffer
-  highlight = {
-    enable = true,
-  },
+  highlight = { enable = true },
 }
 
 require('leap').set_default_keymaps()
+
+require('neogit').setup {}
+vim.api.nvim_create_user_command('GIT', 'Neogit', {})
 
 -- Only open variables and stacktrace for Go debugging
 -- Cheatsheet:
@@ -176,7 +175,6 @@ vim.keymap.set('n', '<leader>p', '"+p', {desc = 'Paste from clipboard'})
 vim.keymap.set('i', '{<cr>', '{<cr>}<esc>O', {desc = 'Automatically match brackets'})
 vim.keymap.set('n', '<c-l>', ':noh<cr>', {desc = 'Clear search highlight'})
 vim.keymap.set('n', '<leader>a', ':keepjumps normal! ggVG<cr>', {desc = 'Select all text in the current buffer'})
-vim.keymap.set('n', '<leader>sop', ':source ~/.config/nvim/init.lua<cr>', {desc = 'Source config file'})
 
 -- FZF keymap configuration
 vim.keymap.set('n', '<leader>h', ':Files<cr>', {desc = 'Open file selection via fzf'})
@@ -190,6 +188,13 @@ let g:rg_command = '
 command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
 ]]
 vim.keymap.set('n', '<leader>k', ':F<CR>', {desc = 'Open line selection via fzf/rg'})
+
+vim.api.nvim_create_autocmd('TextYankPost', {
+  desc = 'Highlight yanked text',
+  callback = function(event)
+    vim.highlight.on_yank({higroup = 'Visual', timeout = 500})
+  end
+})
 
 --------------------------------------------------------------------------------
 -- >>> Nvim LSP Config <<<
