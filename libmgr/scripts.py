@@ -1,5 +1,5 @@
 import os, subprocess
-import libmgr.langs as langs, libmgr.utils as utils
+import libmgr.utils as utils
 
 # Purpose: hold quick, one-off scripts and higher level functions
 
@@ -15,7 +15,6 @@ def link():
     links = [
         ".config/nvim/init.lua",
         ".tmux.conf",
-        ".config/nvim/coc-settings.json",
         ".config/alacritty/alacritty.yml",
     ]
     for l in links:

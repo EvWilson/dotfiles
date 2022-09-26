@@ -52,9 +52,6 @@ vim.opt.listchars:append('space:·')
 -- Bash, pls
 vim.opt.shell = '/bin/bash'
 
--- Set colorsheme, imported as plugin
-vim.cmd('colorscheme gruvbox')
-
 --------------------------------------------------------------------------------
 -- >>> Plugin Configuration <<<
 --------------------------------------------------------------------------------
@@ -109,6 +106,9 @@ if packer_bootstrap then
     print '=================================='
   return
 end
+
+-- Set colorsheme, imported as plugin
+vim.cmd('colorscheme gruvbox')
 
 -- Quick lualine configuration (mostly disabling extras)
 require('lualine').setup {
