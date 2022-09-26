@@ -1,5 +1,8 @@
--- TODO: show all open buffers
--- TODO: check out https://github.com/mfussenegger/nvim-dap for debugging
+-- TODO: check out generic debugging utilities:
+    -- https://github.com/mfussenegger/nvim-dap
+    -- https://github.com/theHamsta/nvim-dap-virtual-text
+    -- https://github.com/rcarriga/nvim-dap-ui
+-- TODO: consider new fuzzy finder - telescope
 
 --------------------------------------------------------------------------------
 -- >>> Option Configuration <<<
@@ -83,9 +86,9 @@ require('packer').startup(function(use)
   use 'L3MON4D3/LuaSnip' -- Snippets plugin
 
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' } -- Tree-sitter
-  use 'nvim-treesitter/nvim-treesitter-context'
+  use 'nvim-treesitter/nvim-treesitter-context' -- Show function, etc context
   use 'nvim-lualine/lualine.nvim' -- Status bar upgrade
-  use 'tpope/vim-fugitive' -- Mostly used for git status bar integration
+  use 'ggandor/leap.nvim' -- Simplified motion plugin, in trial period
   use 'machakann/vim-highlightedyank' -- Double check your yanks
   use 'tpope/vim-surround' -- Project page: https://github.com/tpope/vim-surround
   use 'tpope/vim-commentary' -- 'gc' in some permutation to toggle comments!
@@ -95,8 +98,6 @@ require('packer').startup(function(use)
   use 'junegunn/fzf' -- Fuzzy finder
   use 'junegunn/fzf.vim' -- And helper friend
   use {'fatih/vim-go', run = ':GoUpdateBinaries' } -- For all things Go (love this)
-  use 'udalov/kotlin-vim' -- Syntax highlight
-  use 'ziglang/zig.vim' -- Syntax highlight
 
   -- Automatically set up your configuration after cloning packer.nvim
   if packer_bootstrap then
@@ -114,9 +115,14 @@ require('lualine').setup {
     component_separators = { left = '', right = ''},
     section_separators = { left = '', right = ''},
   },
+  tabline = { -- Show open buffers in top line
+    lualine_a = {
+        'buffers'
+    }
+  }
 }
 
--- Quick treesitter highlighting setup
+-- Quick treesitter highlighting config
 require'nvim-treesitter.configs'.setup {
   ensure_installed = { 'go' }, -- A list of parser names, or "all"
   sync_install = false, -- Install parsers synchronously (only applied to `ensure_installed`)
@@ -125,6 +131,8 @@ require'nvim-treesitter.configs'.setup {
     enable = true,
   },
 }
+
+require('leap').set_default_keymaps()
 
 -- Only open variables and stacktrace for Go debugging
 -- Cheatsheet:
