@@ -23,7 +23,7 @@ def vimplug_install():
 def link():
     print("Checking for missing config symlinks...")
     links = [
-        ".config/nvim/init.vim",
+        ".config/nvim/init.lua",
         ".tmux.conf",
         ".config/nvim/coc-settings.json",
         ".config/alacritty/alacritty.yml",
