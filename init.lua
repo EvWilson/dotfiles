@@ -1,8 +1,3 @@
--- TODO: check out generic debugging utilities:
-    -- https://github.com/mfussenegger/nvim-dap
-    -- https://github.com/theHamsta/nvim-dap-virtual-text
-    -- https://github.com/rcarriga/nvim-dap-ui
-
 -- Good Lua config reference materials:
   -- https://vonheikemen.github.io/devlog/tools/build-your-first-lua-config-for-neovim/
   -- https://github.com/nanotee/nvim-lua-guide
@@ -90,8 +85,10 @@ require('packer').startup(function(use)
   use 'ggandor/leap.nvim' -- Simplified motion plugin
   use { 'nvim-telescope/telescope.nvim', tag = '0.1.x', requires = { {'nvim-lua/plenary.nvim'} } }
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
-  use { 'rcarriga/nvim-dap-ui', requires = {'mfussenegger/nvim-dap'} }
-  use { 'theHamsta/nvim-dap-virtual-text', requires = {'mfussenegger/nvim-dap'} }
+
+  use { 'rcarriga/nvim-dap-ui', requires = { 'mfussenegger/nvim-dap' } } -- Bring in generic debugger with associated UI
+  use { 'theHamsta/nvim-dap-virtual-text', requires = { 'mfussenegger/nvim-dap' } } -- Display variable values during debug
+  use 'leoluz/nvim-dap-go' -- dap configuration for Go
 
   -- Automatically set up your configuration after cloning packer.nvim
   if packer_bootstrap then
@@ -145,30 +142,16 @@ require('telescope').setup {
 }
 require('telescope').load_extension('fzf')
 
+-- Set up dap generic debugging utilities, and add relevant keybinds/commands
 require('nvim-dap-virtual-text').setup {}
 require('dapui').setup {}
-local dapui_fn = function()
-  vim.fn.echom('Here')
-  require('dapui').open()
-end
-vim.keymap.set('n', '<leader>b', dapui_fn, {desc = 'Toggle dapui'})
-
--- Only open variables and stacktrace for Go debugging
--- Cheatsheet:
--- Start debug - :GoDebugStart
--- Start debug with flags - :GoDebugStart . -someflag value
--- Toggle breakpoint (can add line number) - :GoDebugBreakpoint <line_num>
--- Continue to breakpoint - :GoDebugContinue
--- Step execution (see help for differences) - :GoDebug[Next|Step|StepOver|StepOut]
--- Print variable (shouldn't need often) - :GoDebugPrint <variable>
--- Quit session - :GoDebugStop
--- Check vim-go itself - :h vim-go
-vim.cmd [[
-let g:go_debug_windows = {
-      \ 'vars':       'rightbelow 60vnew',
-      \ 'stack':      'rightbelow 10new',
-\ }
-]]
+require('dap-go').setup {}
+vim.keymap.set('n', '<F7>', require('dap').toggle_breakpoint, { desc = 'Set dap breakpoint' })
+vim.keymap.set('n', '<F8>', require('dap').continue, { desc = 'Launch and continue dap session' })
+vim.keymap.set('n', '<F9>', require('dap').step_over, { desc = 'Step over inside dap session' })
+vim.keymap.set('n', '<F10>', require('dap').step_into, { desc = 'Step into inside dap session' })
+vim.api.nvim_create_user_command('DbgUI', require('dapui').toggle, { desc = 'Toggle dap UI during session' })
+vim.api.nvim_create_user_command('DbgTest', require('dap-go').debug_test, { desc = 'Test nearest Go test to cursor' })
 
 --------------------------------------------------------------------------------
 -- >>> Key Mappings <<<
@@ -177,31 +160,31 @@ let g:go_debug_windows = {
 vim.g.mapleader = ' '
 
 -- My old faithfuls, you can't convince me these aren't right
-vim.keymap.set('n', '<leader>w', ':w<cr>', {desc = 'Quicksave'})
-vim.keymap.set('n', ';', ':', {desc = 'Enter command mode easier'})
-vim.keymap.set('i', 'jh', '<esc>', {desc = 'Escape insert mode from home'})
-vim.keymap.set('n', '<leader>d', ':bd<cr>', {desc = 'Delete current buffer'})
-vim.keymap.set('n', '<c-n>', ':bnext<cr>', {desc = 'Cycle to next buffer', silent = true})
-vim.keymap.set('n', '<c-p>', ':bprevious<cr>', {desc = 'Cycle to previous buffer', silent = true})
+vim.keymap.set('n', '<leader>w', ':w<cr>', { desc = 'Quicksave' })
+vim.keymap.set('n', ';', ':', { desc = 'Enter command mode easier' })
+vim.keymap.set('i', 'jh', '<esc>', { desc = 'Escape insert mode from home' })
+vim.keymap.set('n', '<leader>d', ':bd<cr>', { desc = 'Delete current buffer' })
+vim.keymap.set('n', '<c-n>', ':bnext<cr>', { desc = 'Cycle to next buffer', silent = true })
+vim.keymap.set('n', '<c-p>', ':bprevious<cr>', { desc = 'Cycle to previous buffer', silent = true })
 
 -- Make navigating, yanking, etc easier
-vim.keymap.set({'n', 'v'}, 'H', '^', {desc = 'Navigate to line start'})
-vim.keymap.set({'n', 'v'}, 'L', '$', {desc = 'Navigate to line end'})
-vim.keymap.set('n', 'Y', 'yg_', {desc = 'Make Y behave sanely'})
-vim.keymap.set({'n', 'v'}, '<leader>y', '"+y', {desc = 'Yank to clipboard'})
-vim.keymap.set('n', '<leader>p', '"+p', {desc = 'Paste from clipboard'})
+vim.keymap.set({'n', 'v'}, 'H', '^', { desc = 'Navigate to line start' })
+vim.keymap.set({'n', 'v'}, 'L', '$', { desc = 'Navigate to line end' })
+vim.keymap.set('n', 'Y', 'yg_', { desc = 'Make Y behave sanely' })
+vim.keymap.set({'n', 'v'}, '<leader>y', '"+y', { desc = 'Yank to clipboard' })
+vim.keymap.set('n', '<leader>p', '"+p', { desc = 'Paste from clipboard' })
 
 -- Niceties
-vim.keymap.set('i', '{<cr>', '{<cr>}<esc>O', {desc = 'Automatically match brackets'})
-vim.keymap.set('n', '<c-l>', ':noh<cr>', {desc = 'Clear search highlight'})
-vim.keymap.set('n', '<leader>a', ':keepjumps normal! ggVG<cr>', {desc = 'Select all text in the current buffer'})
+vim.keymap.set('i', '{<cr>', '{<cr>}<esc>O', { desc = 'Automatically match brackets' })
+vim.keymap.set('n', '<c-l>', ':noh<cr>', { desc = 'Clear search highlight' })
+vim.keymap.set('n', '<leader>a', ':keepjumps normal! ggVG<cr>', { desc = 'Select all text in the current buffer' })
 
 -- Set up telescope key mappings
 local set_telescope_keymaps = function()
   local t = require('telescope.builtin')
-  vim.keymap.set('n', '<leader>h', t.find_files, {desc = 'Telescope find files'})
-  vim.keymap.set('n', '<leader>j', t.buffers, {desc = 'Telescope find buffers'})
-  vim.keymap.set('n', '<leader>k', t.live_grep, {desc = 'Telescope live grep'})
+  vim.keymap.set('n', '<leader>h', t.find_files, { desc = 'Telescope find files' })
+  vim.keymap.set('n', '<leader>j', t.buffers, { desc = 'Telescope find buffers' })
+  vim.keymap.set('n', '<leader>k', t.live_grep, { desc = 'Telescope live grep' })
 end
 set_telescope_keymaps()
 
@@ -216,7 +199,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- >>> Nvim LSP Config <<<
 --------------------------------------------------------------------------------
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-local opts = { noremap=true, silent=true }
+local opts = { noremap = true, silent = true }
 vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
@@ -231,8 +214,8 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
   vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
   vim.keymap.set('n', 'gy', vim.lsp.buf.type_definition, bufopts)
-  vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
-  vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
+  vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
+  vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
   -- vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, bufopts)
 end
