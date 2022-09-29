@@ -47,6 +47,9 @@ vim.opt.listchars:append('space:·')
 -- Bash, pls
 vim.opt.shell = '/bin/bash'
 
+-- Some formatters insist on tabs, make them 4 spaces wide
+vim.opt.tabstop = 4
+
 --------------------------------------------------------------------------------
 -- >>> Plugin Configuration <<<
 --------------------------------------------------------------------------------
