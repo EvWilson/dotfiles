@@ -114,7 +114,8 @@ require('lualine').setup {
     component_separators = { left = '', right = ''},
     section_separators = { left = '', right = ''},
   },
-  tabline = { lualine_a = { 'buffers' } } -- Show open buffers in top line
+  sections = { lualine_c = { { 'filename', path = 1 } } },
+  tabline = { lualine_a = { { 'buffers', show_filename_only = false } } } -- Show open buffers in top line
 }
 
 -- Quick treesitter highlighting config
@@ -219,19 +220,18 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
   -- vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, bufopts)
 end
-local lsp_flags = {
-  debounce_text_changes = 150, -- This is the default in Nvim 0.7+
-}
 -- Add additional capabilities supported by nvim-cmp
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
--- Per-LSP setup here, attach keybinds
+-- Per-LSP setup here, attach keybinds. Make sure lang servers are on PATH as needed.
 local lspconfig = require('lspconfig')
-local servers = { 'gopls' }
+local servers = { 'gopls', 'kotlin_language_server' }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
     on_attach = on_attach,
-    flags = lsp_flags,
+    flags = {
+      debounce_text_changes = 150 -- This is the default in Nvim 0.7+
+    },
     capabilities = capabilities,
   }
 end
