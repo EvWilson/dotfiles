@@ -91,7 +91,6 @@ require('packer').startup(function(use)
   -- Nursery - plugins I'm not fully sold on yet
   use { 'tpope/vim-dadbod', requires = 'tpope/vim-dotenv' } -- SQL mgmt
   use {'kristijanhusak/vim-dadbod-ui', requires = 'kristijanhusak/vim-dadbod-completion'} -- Nice UI/completions for the above SQL
-  use { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim' } -- Magit style git management
   use 'ggandor/leap.nvim' -- Simplified motion plugin
   use { 'rcarriga/nvim-dap-ui', requires = { 'mfussenegger/nvim-dap' } } -- Bring in generic debugger with associated UI
   use { 'theHamsta/nvim-dap-virtual-text', requires = { 'mfussenegger/nvim-dap' } } -- Display variable values during debug
