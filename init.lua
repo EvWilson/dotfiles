@@ -69,26 +69,30 @@ require('packer').startup(function(use)
   use 'wbthomason/packer.nvim' -- Let Packer update itself
   use 'gruvbox-community/gruvbox' -- Ze best color scheme
 
+  -- Autocomplete subsection
   use 'neovim/nvim-lspconfig' -- Configurations for Nvim LSP
   use { 'hrsh7th/nvim-cmp', requires = 'hrsh7th/cmp-nvim-lsp'  } -- Autocompletion plugin
   use { 'L3MON4D3/LuaSnip', requires = 'saadparwaiz1/cmp_luasnip' } -- Snippets plugin
+  use 'hrsh7th/cmp-buffer' -- Completions from buffer
+  use 'hrsh7th/cmp-path' -- Path completions
 
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' } -- Tree-sitter
   use 'nvim-treesitter/nvim-treesitter-context' -- Show function, etc context
   use 'nvim-lualine/lualine.nvim' -- Status bar upgrade
   use 'tpope/vim-surround' -- 'cs{old}{new} to change surround, 'ys{motion}{char}' to add surround
-  use 'tpope/vim-commentary' -- 'gc' in some permutation to toggle comments!
+  use 'tpope/vim-commentary' -- 'gc' in some permutation to toggle comments!, NOTE: see Commentary.nvim for future
   use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
   use 'kana/vim-textobj-user' -- Enables custom text objects in other plugins
   use 'thinca/vim-textobj-between' -- 'ci{motion}' to change between objects in motion
   use 'Julian/vim-textobj-brace' -- 'cij' to change between brace pair
   use {'fatih/vim-go', run = ':GoUpdateBinaries' } -- For all things Go (love this)
+  use { 'nvim-telescope/telescope.nvim', tag = '0.1.x', requires = { {'nvim-lua/plenary.nvim'} } } -- Fuzzy finder
+  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- Native extension to improve fuzzy find speed
   -- Nursery - plugins I'm not fully sold on yet
+  use { 'tpope/vim-dadbod', requires = 'tpope/vim-dotenv' } -- SQL mgmt
+  use {'kristijanhusak/vim-dadbod-ui', requires = 'kristijanhusak/vim-dadbod-completion'} -- Nice UI/completions for the above SQL
   use { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim' } -- Magit style git management
   use 'ggandor/leap.nvim' -- Simplified motion plugin
-  use { 'nvim-telescope/telescope.nvim', tag = '0.1.x', requires = { {'nvim-lua/plenary.nvim'} } }
-  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
-
   use { 'rcarriga/nvim-dap-ui', requires = { 'mfussenegger/nvim-dap' } } -- Bring in generic debugger with associated UI
   use { 'theHamsta/nvim-dap-virtual-text', requires = { 'mfussenegger/nvim-dap' } } -- Display variable values during debug
   use 'leoluz/nvim-dap-go' -- dap configuration for Go
@@ -110,7 +114,7 @@ end
 -- Set colorsheme, imported as plugin
 vim.cmd('colorscheme gruvbox')
 
--- Quick lualine configuration (mostly disabling extras)
+-- Quick lualine configuration (mostly disabling extra/special characters)
 require('lualine').setup {
   options = {
     icons_enabled = false,
@@ -121,18 +125,12 @@ require('lualine').setup {
   tabline = { lualine_a = { { 'buffers', show_filename_only = false } } } -- Show open buffers in top line
 }
 
--- Quick treesitter highlighting config
 require'nvim-treesitter.configs'.setup {
   ensure_installed = { 'go' }, -- A list of parser names, or 'all'
   sync_install = false, -- Install parsers synchronously (only applied to `ensure_installed`)
   auto_install = true, -- Automatically install missing parsers when entering buffer
   highlight = { enable = true },
 }
-
-require('leap').set_default_keymaps()
-
-require('neogit').setup {}
-vim.api.nvim_create_user_command('GIT', 'Neogit', {})
 
 require('telescope').setup {
   extensions = {
@@ -145,6 +143,24 @@ require('telescope').setup {
   }
 }
 require('telescope').load_extension('fzf')
+
+-- Open SQL mgmt pane, add completions, disable special keybinds, add save query
+-- NOTE: config stored in ~/.dbenv, as DB_UI_SOMETHING_COOL="connection_string_here"
+vim.api.nvim_create_user_command('OpenDB', function()
+    require('cmp').setup.buffer { sources = { { name = 'vim-dadbod-completion' } } }
+    -- vim.g.db_ui_disable_mappings = 1 -- This borks navigation for some reason
+    vim.cmd [[ autocmd FileType dbui setlocal shiftwidth=2 tabstop=2 ]]
+    vim.cmd [[ Dotenv ~/.dbenv ]]
+    vim.cmd [[ DBUIToggle ]]
+    vim.keymap.set('n', '<Leader>s', '<Plug>(DBUI_SaveQuery)')
+  end
+, {})
+
+require('leap').set_default_keymaps()
+
+require('neogit').setup {}
+vim.api.nvim_create_user_command('GIT', 'Neogit', {})
+
 
 -- Set up dap generic debugging utilities, and add relevant keybinds/commands
 require('nvim-dap-virtual-text').setup {}
@@ -277,6 +293,8 @@ cmp.setup {
   }),
   sources = {
     { name = 'nvim_lsp' },
+    { name = 'path' },
     { name = 'luasnip' },
+    { name = 'buffer', keyword_length = 5 },
   },
 }
