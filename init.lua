@@ -157,10 +157,6 @@ vim.api.nvim_create_user_command('OpenDB', function()
 
 require('leap').set_default_keymaps()
 
-require('neogit').setup {}
-vim.api.nvim_create_user_command('GIT', 'Neogit', {})
-
-
 -- Set up dap generic debugging utilities, and add relevant keybinds/commands
 require('nvim-dap-virtual-text').setup {}
 require('dapui').setup {}
