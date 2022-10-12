@@ -88,9 +88,9 @@ require('packer').startup(function(use)
   use {'fatih/vim-go', run = ':GoUpdateBinaries' } -- For all things Go (love this)
   use { 'nvim-telescope/telescope.nvim', tag = '0.1.x', requires = { {'nvim-lua/plenary.nvim'} } } -- Fuzzy finder
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- Native extension to improve fuzzy find speed
-  -- Nursery - plugins I'm not fully sold on yet
   use { 'tpope/vim-dadbod', requires = 'tpope/vim-dotenv' } -- SQL mgmt
   use {'kristijanhusak/vim-dadbod-ui', requires = 'kristijanhusak/vim-dadbod-completion'} -- Nice UI/completions for the above SQL
+  -- Nursery - plugins I'm not fully sold on yet
   use 'ggandor/leap.nvim' -- Simplified motion plugin
   use { 'rcarriga/nvim-dap-ui', requires = { 'mfussenegger/nvim-dap' } } -- Bring in generic debugger with associated UI
   use { 'theHamsta/nvim-dap-virtual-text', requires = { 'mfussenegger/nvim-dap' } } -- Display variable values during debug
@@ -239,7 +239,7 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 -- Per-LSP setup here, attach keybinds. Make sure lang servers are on PATH as needed.
 local lspconfig = require('lspconfig')
-local servers = { 'gopls', 'kotlin_language_server' }
+local servers = { 'gopls', 'kotlin_language_server', 'rust_analyzer', 'tsserver', 'zls' }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
     on_attach = on_attach,
