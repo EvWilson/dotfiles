@@ -2,6 +2,8 @@
   -- https://vonheikemen.github.io/devlog/tools/build-your-first-lua-config-for-neovim/
   -- https://github.com/nanotee/nvim-lua-guide
   -- https://github.com/ThePrimeagen/.dotfiles/tree/master/nvim/.config/nvim
+-- TODO:
+  -- Possibly have yank highlight be different based on buffer dest (distinguish clipboard yank)
 --------------------------------------------------------------------------------
 -- >>> Option Configuration <<<
 --------------------------------------------------------------------------------
