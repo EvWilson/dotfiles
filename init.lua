@@ -240,8 +240,7 @@ local on_attach = function(client, bufnr)
   -- vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, bufopts)
 end
 -- Add additional capabilities supported by nvim-cmp
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 -- Per-LSP setup here, attach keybinds. Make sure lang servers are on PATH as needed.
 local lspconfig = require('lspconfig')
 local servers = { 'gopls', 'kotlin_language_server', 'rust_analyzer', 'tsserver', 'zls' }
