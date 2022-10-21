@@ -52,6 +52,9 @@ vim.opt.shell = '/bin/bash'
 -- Some formatters insist on tabs, make them 4 spaces wide
 vim.opt.tabstop = 4
 
+-- Change line wrapping and such behavior in markdown, for legibility while writing
+vim.cmd [[autocmd FileType markdown setlocal nolist wrap linebreak]]
+
 --------------------------------------------------------------------------------
 -- >>> Plugin Configuration <<<
 --------------------------------------------------------------------------------
