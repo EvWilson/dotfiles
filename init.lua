@@ -96,7 +96,6 @@ require('packer').startup(function(use)
   use { 'tpope/vim-dadbod', requires = 'tpope/vim-dotenv' } -- SQL mgmt
   use {'kristijanhusak/vim-dadbod-ui', requires = 'kristijanhusak/vim-dadbod-completion'} -- Nice UI/completions for the above SQL
   -- Nursery - plugins I'm not fully sold on yet
-  use 'ggandor/leap.nvim' -- Simplified motion plugin
   use { 'rcarriga/nvim-dap-ui', requires = { 'mfussenegger/nvim-dap' } } -- Bring in generic debugger with associated UI
   use { 'theHamsta/nvim-dap-virtual-text', requires = { 'mfussenegger/nvim-dap' } } -- Display variable values during debug
   use 'leoluz/nvim-dap-go' -- dap configuration for Go
@@ -159,8 +158,6 @@ vim.api.nvim_create_user_command('OpenDB', function()
     vim.keymap.set('n', '<Leader>s', '<Plug>(DBUI_SaveQuery)')
   end
 , {})
-
-require('leap').set_default_keymaps()
 
 -- Set up dap generic debugging utilities, and add relevant keybinds/commands
 require('nvim-dap-virtual-text').setup {}
