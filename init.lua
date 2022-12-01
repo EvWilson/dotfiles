@@ -56,6 +56,9 @@ vim.opt.shiftwidth = 4
 -- Change line wrapping and such behavior in markdown, for legibility while writing
 vim.cmd [[autocmd FileType markdown setlocal nolist wrap linebreak]]
 
+-- Yank/put to/from system clipboard for convenience
+vim.opt.clipboard:append('unnamedplus')
+
 --------------------------------------------------------------------------------
 -- >>> Plugin Configuration <<<
 --------------------------------------------------------------------------------
@@ -115,7 +118,7 @@ if packer_bootstrap then
   return
 end
 
--- Set colorsheme, imported as plugin
+-- Set colorscheme, imported as plugin
 vim.cmd('colorscheme gruvbox')
 
 -- Quick lualine configuration (mostly disabling extra/special characters)
@@ -189,8 +192,6 @@ vim.keymap.set('n', '<c-p>', ':bprevious<cr>', { desc = 'Cycle to previous buffe
 vim.keymap.set({'n', 'v'}, 'H', '^', { desc = 'Navigate to line start' })
 vim.keymap.set({'n', 'v'}, 'L', '$', { desc = 'Navigate to line end' })
 vim.keymap.set('n', 'Y', 'yg_', { desc = 'Make Y behave sanely' })
-vim.keymap.set({'n', 'v'}, '<leader>y', '"+y', { desc = 'Yank to clipboard' })
-vim.keymap.set('n', '<leader>p', '"+p', { desc = 'Paste from clipboard' })
 
 -- Niceties
 vim.keymap.set('i', '{<cr>', '{<cr>}<esc>O', { desc = 'Automatically match brackets' })
