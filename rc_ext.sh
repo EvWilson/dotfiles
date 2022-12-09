@@ -29,7 +29,7 @@ fi
 
 # In existing tmux window, open preferred format and change all open windows to cwd
 function winme {
-    CURR_DIR=`pwd`
+    local CURR_DIR=`pwd`
     tmux split-window -h -p 33
     cd $CURR_DIR
     tmux split-window -v -p 66 -b
@@ -37,16 +37,11 @@ function winme {
     tmux select-pane -t 0
 }
 
-# History fuzzy-find shortcut
-function hist {
-    $(history | sed -e 's/^\ \w*\ \w* //' | fzf)
-}
-
 function gitup {
     if [ $# -eq 0 ]; then
-        MSG="Update"
+        local MSG="Update"
     else
-        MSG=$@
+        local MSG=$@
     fi
     git add -A && git commit -m "$MSG" && git push
 }
