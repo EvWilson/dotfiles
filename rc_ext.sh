@@ -38,6 +38,7 @@ winme() {
 }
 
 neovim_update() {
+    echo "Updating neovim dependencies..."
     nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
 }
 
