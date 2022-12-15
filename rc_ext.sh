@@ -28,7 +28,7 @@ if [ $(uname) == "Linux" ]; then
 fi
 
 # In existing tmux window, open preferred format and change all open windows to cwd
-function winme {
+winme() {
     local CURR_DIR=`pwd`
     tmux split-window -h -p 33
     cd $CURR_DIR
@@ -37,7 +37,11 @@ function winme {
     tmux select-pane -t 0
 }
 
-function gitup {
+neovim_update() {
+    nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
+}
+
+gitup() {
     if [ $# -eq 0 ]; then
         local MSG="Update"
     else
