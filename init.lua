@@ -6,7 +6,7 @@
 -- Currently working through:
   -- Get this under your fingers: https://thevaluable.dev/vim-advanced/
 -- TODO:
-  -- Possibly have yank highlight be different based on buffer dest (distinguish clipboard yank)
+  -- See https://www.youtube.com/watch?v=w7i4amO_zaE about simplifying LSP setup with https://github.com/VonHeikemen/lsp-zero.nvim
 --------------------------------------------------------------------------------
 -- >>> Option Configuration <<<
 --------------------------------------------------------------------------------
