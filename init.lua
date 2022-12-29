@@ -1,70 +1,47 @@
--- Links, Resources, and Lists
--- Good Lua config reference materials:
-  -- https://vonheikemen.github.io/devlog/tools/build-your-first-lua-config-for-neovim/
-  -- https://github.com/nanotee/nvim-lua-guide
-  -- https://github.com/ThePrimeagen/.dotfiles/tree/master/nvim/.config/nvim
--- Currently working through:
-  -- Get this under your fingers: https://thevaluable.dev/vim-advanced/
--- TODO:
-  -- See https://www.youtube.com/watch?v=w7i4amO_zaE about simplifying LSP setup with https://github.com/VonHeikemen/lsp-zero.nvim
 --------------------------------------------------------------------------------
 -- >>> Option Configuration <<<
 --------------------------------------------------------------------------------
 -- Show relative line number
 vim.opt.relativenumber = true
-
 -- Required for options modifying multiple buffers like rename
 vim.opt.hidden = true
-
 -- Prevent backups, which can cause issues for some servers (and I don't use)
 vim.opt.backup = false
 vim.opt.writebackup = false
-
 -- Short update time, because I don't ssh much on this setup
 vim.opt.updatetime = 50
-
 -- Better default for case sensitvity when searching
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
-
 -- Set persistent undo
 vim.opt.undofile = true
-
 -- Enhanced tab completion
 vim.opt.wildmenu = true
-
 -- Maintain this many lines of context when scrolling, if possible
 vim.opt.scrolloff = 15
-
 -- Enable the mouse to set the cursor location
 vim.opt.mouse = 'a'
-
 -- Best of both worlds sign/number column
 vim.opt.signcolumn = 'yes'
-
 -- Allow filetree viewer to set colors properly
 vim.opt.termguicolors = true
-
 -- I like to see whitespace
 vim.opt.list = true
 vim.opt.listchars:append('space:·')
-
 -- Bash, pls
 vim.opt.shell = '/bin/bash'
-
 -- Some formatters insist on tabs, make them 4 spaces wide
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
-
 -- Change line wrapping and such behavior in markdown, for legibility while writing
 vim.cmd [[autocmd FileType markdown setlocal nolist wrap linebreak]]
-
 -- Yank/put to/from system clipboard for convenience
 vim.opt.clipboard:append('unnamedplus')
 
 --------------------------------------------------------------------------------
 -- >>> Plugin Configuration <<<
 --------------------------------------------------------------------------------
+-- Check this to make sure this stays up to date: https://github.com/wbthomason/packer.nvim
 local ensure_packer = function()
   local fn = vim.fn
   local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
@@ -76,17 +53,36 @@ local ensure_packer = function()
   return false
 end
 local packer_bootstrap = ensure_packer()
--- You may need this for a bit: https://github.com/wbthomason/packer.nvim
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim' -- Let Packer update itself
   use 'gruvbox-community/gruvbox' -- Ze best color scheme
 
-  -- Autocomplete subsection
-  use 'neovim/nvim-lspconfig' -- Configurations for Nvim LSP
-  use { 'hrsh7th/nvim-cmp', requires = 'hrsh7th/cmp-nvim-lsp'  } -- Autocompletion plugin
-  use { 'L3MON4D3/LuaSnip', requires = 'saadparwaiz1/cmp_luasnip' } -- Snippets plugin
-  use 'hrsh7th/cmp-buffer' -- Completions from buffer
-  use 'hrsh7th/cmp-path' -- Path completions
+  -- LSP configuration support
+  -- See: https://github.com/VonHeikemen/lsp-zero.nvim
+  use {
+    'VonHeikemen/lsp-zero.nvim',
+    requires = {
+      -- LSP Support
+      {'neovim/nvim-lspconfig'},
+      {'williamboman/mason.nvim'},
+      {'williamboman/mason-lspconfig.nvim'},
+
+      -- Autocompletion
+      {'hrsh7th/nvim-cmp'},
+      {'hrsh7th/cmp-buffer'},
+      {'hrsh7th/cmp-path'},
+      {'saadparwaiz1/cmp_luasnip'},
+      {'hrsh7th/cmp-nvim-lsp'},
+      {'hrsh7th/cmp-nvim-lua'},
+
+      -- Snippets
+      {'L3MON4D3/LuaSnip'},
+      {'rafamadriz/friendly-snippets'},
+
+      -- Formatting
+      { 'mhartington/formatter.nvim' },
+    }
+  }
 
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' } -- Tree-sitter
   use 'nvim-treesitter/nvim-treesitter-context' -- Show function, etc context
@@ -97,7 +93,7 @@ require('packer').startup(function(use)
   use 'kana/vim-textobj-user' -- Enables custom text objects in other plugins
   use 'thinca/vim-textobj-between' -- 'ci{motion}' to change between objects in motion
   use 'Julian/vim-textobj-brace' -- 'cij' to change between brace pair
-  use {'fatih/vim-go', run = ':GoUpdateBinaries' } -- For all things Go (love this)
+  -- use {'fatih/vim-go', run = ':GoUpdateBinaries' } -- For all things Go (love this)
   use { 'nvim-telescope/telescope.nvim', tag = '0.1.x', requires = { {'nvim-lua/plenary.nvim'} } } -- Fuzzy finder
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- Native extension to improve fuzzy find speed
   use { 'tpope/vim-dadbod', requires = 'tpope/vim-dotenv' } -- SQL mgmt
@@ -123,6 +119,35 @@ end
 
 -- Set colorscheme, imported as plugin
 vim.cmd('colorscheme gruvbox')
+
+-- Get a package manager set up for all our LSP, DAP, formatters, etc
+require('mason').setup()
+
+-- Get a default LSP setup
+local lsp = require('lsp-zero')
+lsp.preset('recommended')
+lsp.setup()
+
+-- Set up our formatters
+-- TODO: make default resolver work right
+require("formatter").setup {
+  -- logging = true,
+  -- log_level = vim.log.levels.DEBUG,
+  filetype = {
+    go = {
+      require('formatter.filetypes.go').gofmt
+    },
+    ["*"] = {
+      require("formatter.filetypes.any").remove_trailing_whitespace
+    }
+  }
+}
+vim.cmd([[
+augroup FormatAutogroup
+  autocmd!
+  autocmd BufWritePost * FormatWrite
+augroup END
+]])
 
 -- Quick lualine configuration (mostly disabling extra/special characters)
 require('lualine').setup {
@@ -216,86 +241,3 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank({higroup = 'Visual', timeout = 500})
   end
 })
-
---------------------------------------------------------------------------------
--- >>> Nvim LSP Config <<<
---------------------------------------------------------------------------------
--- See `:help vim.diagnostic.*` for documentation on any of the below functions
-local opts = { noremap = true, silent = true }
-vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
-vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
--- Use an on_attach function to only map the following keys after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  local bufopts = { noremap=true, silent=true, buffer=bufnr }
-  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-  vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
-  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
-  vim.keymap.set('n', 'gy', vim.lsp.buf.type_definition, bufopts)
-  vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
-  vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
-  vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-  -- vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, bufopts)
-end
--- Add additional capabilities supported by nvim-cmp
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
--- Per-LSP setup here, attach keybinds. Make sure lang servers are on PATH as needed.
-local lspconfig = require('lspconfig')
-local servers = { 'gopls', 'kotlin_language_server', 'rust_analyzer', 'tsserver', 'zls' }
-for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
-    on_attach = on_attach,
-    flags = {
-      debounce_text_changes = 150 -- This is the default in Nvim 0.7+
-    },
-    capabilities = capabilities,
-  }
-end
-
--- Autocomplete (nvim-cmp and friends) setup
-local luasnip = require 'luasnip'
-local cmp = require 'cmp'
-cmp.setup {
-  snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end,
-  },
-  mapping = cmp.mapping.preset.insert({
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<CR>'] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
-    },
-    ['<Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
-    ['<S-Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
-  }),
-  sources = {
-    { name = 'nvim_lsp' },
-    { name = 'path' },
-    { name = 'luasnip' },
-    { name = 'buffer', keyword_length = 5 },
-  },
-}

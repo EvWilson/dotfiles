@@ -25,3 +25,10 @@ thank god this repo is here to get me back on my feet as quick as possible.
 - Set git credential store (e.g. Linux - git config --global credential.helper store)
 - Add assorted applications from managed shop du jour
     - e.g. Discord, Zoom, VLC media player, VSCode
+
+## Things I'm working on
+Good Lua config reference materials:
+- https://vonheikemen.github.io/devlog/tools/build-your-first-lua-config-for-neovim/
+- https://github.com/nanotee/nvim-lua-guide
+- https://github.com/ThePrimeagen/.dotfiles/tree/master/nvim/.config/nvim
+- Currently working through: https://thevaluable.dev/vim-advanced/
