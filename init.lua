@@ -55,7 +55,9 @@ end
 local packer_bootstrap = ensure_packer()
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim' -- Let Packer update itself
-  use 'gruvbox-community/gruvbox' -- Ze best color scheme
+  -- My current color scheme
+  -- use 'gruvbox-community/gruvbox'
+  use 'folke/tokyonight.nvim'
 
   -- LSP configuration support
   -- See: https://github.com/VonHeikemen/lsp-zero.nvim
@@ -80,7 +82,7 @@ require('packer').startup(function(use)
       {'rafamadriz/friendly-snippets'},
 
       -- Formatting
-      { 'mhartington/formatter.nvim' },
+      {'mhartington/formatter.nvim'},
     }
   }
 
@@ -89,7 +91,7 @@ require('packer').startup(function(use)
     'nvim-treesitter/nvim-treesitter',
     run = ':TSUpdate',
     requires = {
-      { 'nvim-treesitter/nvim-treesitter-context' },
+      {'nvim-treesitter/nvim-treesitter-context'},
     }
   }
 
@@ -106,8 +108,8 @@ require('packer').startup(function(use)
     'nvim-telescope/telescope.nvim',
     tag = '0.1.x',
     requires = {
-      { 'nvim-lua/plenary.nvim' },
-      { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
+      {'nvim-lua/plenary.nvim'},
+      {'nvim-telescope/telescope-fzf-native.nvim', run = 'make'},
     }
   }
 
@@ -115,9 +117,9 @@ require('packer').startup(function(use)
   use {
     'tpope/vim-dadbod',
     requires = {
-      { 'tpope/vim-dotenv' },
-      { 'kristijanhusak/vim-dadbod-ui' },
-      { 'kristijanhusak/vim-dadbod-completion' },
+      {'tpope/vim-dotenv'},
+      {'kristijanhusak/vim-dadbod-ui'},
+      {'kristijanhusak/vim-dadbod-completion'},
     }
   }
   -- Nursery - plugins I'm not fully sold on yet
@@ -140,7 +142,8 @@ if packer_bootstrap then
 end
 
 -- Set colorscheme, imported as plugin
-vim.cmd('colorscheme gruvbox')
+-- vim.cmd('colorscheme gruvbox')
+vim.cmd('colorscheme tokyonight-night')
 
 -- Get a package manager set up for all our LSP, DAP, formatters, etc
 require('mason').setup()
@@ -156,7 +159,7 @@ require("formatter").setup {
   -- log_level = vim.log.levels.DEBUG,
   filetype = {
     go = {
-      require('formatter.filetypes.go').gofmt
+      require('formatter.filetypes.go').goimports
     },
   }
 }
