@@ -255,7 +255,7 @@ vim.keymap.set('n', 'Y', 'yg_', { desc = 'Make Y behave sanely' })
 
 -- Filetree keybinds
 vim.keymap.set('n', 'tt', ':NvimTreeToggle<CR>', { desc = 'Toggle filetree viewer' })
-vim.keymap.set('n', 'tc', ':NvimTreeCollapseKeepBuffers<CR>', { desc = 'Close open folders in filetree viewer' })
+vim.keymap.set('n', 'tc', ':NvimTreeCollapse<CR>', { desc = 'Close open folders in filetree viewer' })
 vim.keymap.set('n', 'tf', ':NvimTreeFindFileToggle<CR>', { desc = 'Open filetree to current file' })
 vim.keymap.set('n', 'to', ':lua require("nvim-tree.api").tree.expand_all()<CR>', { desc = 'Open filetree and expand all directories' })
 
