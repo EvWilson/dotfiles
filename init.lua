@@ -30,6 +30,9 @@ vim.opt.list = true
 vim.opt.listchars:append('space:·')
 -- Bash, pls
 vim.opt.shell = '/bin/bash'
+-- Disable netrw, in favor of a more featureful filetree viewer
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 -- Some formatters insist on tabs, make them 4 spaces wide
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
@@ -58,6 +61,14 @@ require('packer').startup(function(use)
   -- My current color scheme
   -- use 'gruvbox-community/gruvbox'
   use 'folke/tokyonight.nvim'
+
+  use {
+    'nvim-tree/nvim-tree.lua',
+    requires = {
+      'nvim-tree/nvim-web-devicons', -- for file icons
+    },
+    tag = 'nightly' -- optional, updated every week
+  }
 
   -- LSP configuration support
   -- See: https://github.com/VonHeikemen/lsp-zero.nvim
@@ -145,6 +156,8 @@ end
 -- vim.cmd('colorscheme gruvbox')
 vim.cmd('colorscheme tokyonight-night')
 
+require("nvim-tree").setup()
+
 -- Get a package manager set up for all our LSP, DAP, formatters, etc
 require('mason').setup()
 
@@ -155,8 +168,6 @@ lsp.setup()
 
 -- Set up our formatters
 require("formatter").setup {
-  -- logging = true,
-  -- log_level = vim.log.levels.DEBUG,
   filetype = {
     go = {
       require('formatter.filetypes.go').goimports
@@ -172,11 +183,11 @@ augroup END
 
 -- Quick lualine configuration (mostly disabling extra/special characters)
 require('lualine').setup {
-  options = {
-    icons_enabled = false,
-    component_separators = { left = '', right = ''},
-    section_separators = { left = '', right = ''},
-  },
+  -- options = {
+  --   icons_enabled = false,
+  --   component_separators = { left = '', right = ''},
+  --   section_separators = { left = '', right = ''},
+  -- },
   sections = { lualine_c = { { 'filename', path = 1 } } },
   tabline = { lualine_a = { { 'buffers', show_filename_only = false } } } -- Show open buffers in top line
 }
@@ -241,6 +252,12 @@ vim.keymap.set('n', '<c-p>', ':bprevious<cr>', { desc = 'Cycle to previous buffe
 vim.keymap.set({'n', 'v'}, 'H', '^', { desc = 'Navigate to line start' })
 vim.keymap.set({'n', 'v'}, 'L', '$', { desc = 'Navigate to line end' })
 vim.keymap.set('n', 'Y', 'yg_', { desc = 'Make Y behave sanely' })
+
+-- Filetree keybinds
+vim.keymap.set('n', 'tt', ':NvimTreeToggle<CR>', { desc = 'Toggle filetree viewer' })
+vim.keymap.set('n', 'tc', ':NvimTreeCollapseKeepBuffers<CR>', { desc = 'Close open folders in filetree viewer' })
+vim.keymap.set('n', 'tf', ':NvimTreeFindFileToggle<CR>', { desc = 'Open filetree to current file' })
+vim.keymap.set('n', 'to', ':lua require("nvim-tree.api").tree.expand_all()<CR>', { desc = 'Open filetree and expand all directories' })
 
 -- Niceties
 vim.keymap.set('i', '{<cr>', '{<cr>}<esc>O', { desc = 'Automatically match brackets' })
