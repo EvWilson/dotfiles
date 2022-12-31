@@ -10,7 +10,7 @@ vim.opt.backup = false
 vim.opt.writebackup = false
 -- Short update time, because I don't ssh much on this setup
 vim.opt.updatetime = 50
--- Better default for case sensitvity when searching
+-- Better default for case sensitivity when searching
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 -- Set persistent undo
@@ -84,20 +84,42 @@ require('packer').startup(function(use)
     }
   }
 
-  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' } -- Tree-sitter
-  use 'nvim-treesitter/nvim-treesitter-context' -- Show function, etc context
+  -- Tree-sitter
+  use {
+    'nvim-treesitter/nvim-treesitter',
+    run = ':TSUpdate',
+    requires = {
+      { 'nvim-treesitter/nvim-treesitter-context' },
+    }
+  }
+
   use 'nvim-lualine/lualine.nvim' -- Status bar upgrade
   use 'tpope/vim-surround' -- 'cs{old}{new} to change surround, 'ys{motion}{char}' to add surround
   use 'tpope/vim-commentary' -- 'gc' in some permutation to toggle comments!, NOTE: see Commentary.nvim for future
   use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
   use 'kana/vim-textobj-user' -- Enables custom text objects in other plugins
   use 'thinca/vim-textobj-between' -- 'ci{motion}' to change between objects in motion
-  use 'Julian/vim-textobj-brace' -- 'cij' to change between brace pair
   -- use {'fatih/vim-go', run = ':GoUpdateBinaries' } -- For all things Go (love this)
-  use { 'nvim-telescope/telescope.nvim', tag = '0.1.x', requires = { {'nvim-lua/plenary.nvim'} } } -- Fuzzy finder
-  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- Native extension to improve fuzzy find speed
-  use { 'tpope/vim-dadbod', requires = 'tpope/vim-dotenv' } -- SQL mgmt
-  use {'kristijanhusak/vim-dadbod-ui', requires = 'kristijanhusak/vim-dadbod-completion'} -- Nice UI/completions for the above SQL
+
+  -- Fuzzy finder for all things
+  use {
+    'nvim-telescope/telescope.nvim',
+    tag = '0.1.x',
+    requires = {
+      { 'nvim-lua/plenary.nvim' },
+      { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
+    }
+  }
+
+  -- SQL mgmt
+  use {
+    'tpope/vim-dadbod',
+    requires = {
+      { 'tpope/vim-dotenv' },
+      { 'kristijanhusak/vim-dadbod-ui' },
+      { 'kristijanhusak/vim-dadbod-completion' },
+    }
+  }
   -- Nursery - plugins I'm not fully sold on yet
   use { 'rcarriga/nvim-dap-ui', requires = { 'mfussenegger/nvim-dap' } } -- Bring in generic debugger with associated UI
   use { 'theHamsta/nvim-dap-virtual-text', requires = { 'mfussenegger/nvim-dap' } } -- Display variable values during debug
@@ -129,7 +151,6 @@ lsp.preset('recommended')
 lsp.setup()
 
 -- Set up our formatters
--- TODO: make default resolver work right
 require("formatter").setup {
   -- logging = true,
   -- log_level = vim.log.levels.DEBUG,
@@ -137,9 +158,6 @@ require("formatter").setup {
     go = {
       require('formatter.filetypes.go').gofmt
     },
-    ["*"] = {
-      require("formatter.filetypes.any").remove_trailing_whitespace
-    }
   }
 }
 vim.cmd([[

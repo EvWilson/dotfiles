@@ -16,19 +16,11 @@ thank god this repo is here to get me back on my feet as quick as possible.
     - tmux
     - tree
     - fzf
-- Install language toolchains
-    - [nvm](https://github.com/nvm-sh/nvm)
-    - [update-golang](https://github.com/udhos/update-golang)
-    - [rustup](https://rustup.rs/)
-    - [zig](https://github.com/ziglang/zig) and [zls](https://github.com/zigtools/zls)
-- Set up config symlinks, install vimplug, add bash extensions (see respective scripts)
+- Install language toolchains as needed
+- Set up config symlinks, add bash extensions (see respective scripts)
 - Set git credential store (e.g. Linux - git config --global credential.helper store)
 - Add assorted applications from managed shop du jour
     - e.g. Discord, Zoom, VLC media player, VSCode
 
 ## Things I'm working on
-Good Lua config reference materials:
-- https://vonheikemen.github.io/devlog/tools/build-your-first-lua-config-for-neovim/
-- https://github.com/nanotee/nvim-lua-guide
-- https://github.com/ThePrimeagen/.dotfiles/tree/master/nvim/.config/nvim
 - Currently working through: https://thevaluable.dev/vim-advanced/
