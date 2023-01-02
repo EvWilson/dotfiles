@@ -198,6 +198,7 @@ vim.keymap.set('n', 'Y', 'yg_', { desc = 'Make Y behave sanely' })
 
 -- Niceties
 vim.keymap.set('i', '{<cr>', '{<cr>}<esc>O', { desc = 'Automatically match brackets' })
+vim.keymap.set('i', '(<cr>', '(<cr>)<esc>O', { desc = 'Automatically match parens' })
 vim.keymap.set('n', '<c-l>', ':noh<cr>', { desc = 'Clear search highlight' })
 vim.keymap.set('n', '<leader>a', ':keepjumps normal! ggVG<cr>', { desc = 'Select all text in the current buffer' })
 
