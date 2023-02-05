@@ -137,6 +137,7 @@ require('packer').startup(function(use)
   use { 'rcarriga/nvim-dap-ui', requires = { 'mfussenegger/nvim-dap' } } -- Bring in generic debugger with associated UI
   use { 'theHamsta/nvim-dap-virtual-text', requires = { 'mfussenegger/nvim-dap' } } -- Display variable values during debug
   use 'leoluz/nvim-dap-go' -- dap configuration for Go
+  use 'jpalardy/vim-slime' -- send file contents to listening REPL
 
   -- Automatically set up your configuration after cloning packer.nvim
   if packer_bootstrap then
@@ -281,6 +282,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end
 })
 
+--------------------------------------------------------------------------------
+-- >>> Language-specific Config <<<
+--------------------------------------------------------------------------------
+-- Go
 local function go_tags(op, tagnames)
   local joined = string.gsub(tagnames, " ", ",")
   local cmd_args = { "gomodifytags", "-file", vim.fn.expand("%"), "-struct", vim.fn.expand("<cword>"), op, joined, "-w" }
@@ -289,3 +294,10 @@ local function go_tags(op, tagnames)
 end
 vim.api.nvim_create_user_command('GoAddTag', function(names) go_tags('-add-tags', names.args) end, { desc = "Add tags to Go struct on this line", nargs='*' })
 vim.api.nvim_create_user_command('GoRmTag', function(names) go_tags('-remove-tags', names.args) end, { desc = "Remove tags from Go struct on this line", nargs='*' })
+
+-- Lisp
+-- See: https://github.com/jpalardy/vim-slime#tmux
+vim.cmd [[
+let g:slime_target = "tmux"
+let g:slime_default_config = {"socket_name": get(split($TMUX, ","), 0), "target_pane": ":0.2"}
+]]
