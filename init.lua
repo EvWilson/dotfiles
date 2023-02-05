@@ -280,3 +280,12 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank({higroup = 'Visual', timeout = 500})
   end
 })
+
+local function go_tags(op, tagnames)
+  local joined = string.gsub(tagnames, " ", ",")
+  local cmd_args = { "gomodifytags", "-file", vim.fn.expand("%"), "-struct", vim.fn.expand("<cword>"), op, joined, "-w" }
+  vim.fn.system(cmd_args)
+  vim.cmd("edit")
+end
+vim.api.nvim_create_user_command('GoAddTag', function(names) go_tags('-add-tags', names.args) end, { desc = "Add tags to Go struct on this line", nargs='*' })
+vim.api.nvim_create_user_command('GoRmTag', function(names) go_tags('-remove-tags', names.args) end, { desc = "Remove tags from Go struct on this line", nargs='*' })
