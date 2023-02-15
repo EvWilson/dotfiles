@@ -286,6 +286,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- >>> Language-specific Config <<<
 --------------------------------------------------------------------------------
 -- Go
+-- Note: need "run test under cursor" next
 local function go_tags(op, tagnames)
   local joined = string.gsub(tagnames, " ", ",")
   local cmd_args = { "gomodifytags", "-file", vim.fn.expand("%"), "-struct", vim.fn.expand("<cword>"), op, joined, "-w" }
