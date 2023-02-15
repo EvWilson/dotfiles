@@ -44,6 +44,7 @@ vim.opt.clipboard:append('unnamedplus')
 --------------------------------------------------------------------------------
 -- >>> Plugin Configuration <<<
 --------------------------------------------------------------------------------
+-- TODO: replace packer with https://github.com/folke/lazy.nvim
 -- Check this to make sure this stays up to date: https://github.com/wbthomason/packer.nvim
 local ensure_packer = function()
   local fn = vim.fn
@@ -286,7 +287,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- >>> Language-specific Config <<<
 --------------------------------------------------------------------------------
 -- Go
--- Note: need "run test under cursor" next
+-- TODO: need "run test under cursor" next
 local function go_tags(op, tagnames)
   local joined = string.gsub(tagnames, " ", ",")
   local cmd_args = { "gomodifytags", "-file", vim.fn.expand("%"), "-struct", vim.fn.expand("<cword>"), op, joined, "-w" }
