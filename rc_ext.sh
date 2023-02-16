@@ -26,6 +26,8 @@ if [ $(uname) == "Linux" ]; then
     alias ls='ls --color=auto'
 fi
 
+alias epoch='date +%s'
+
 # In existing tmux window, open preferred format and change all open windows to cwd
 winme() {
     local CURR_DIR=`pwd`
