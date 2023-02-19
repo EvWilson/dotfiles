@@ -60,7 +60,6 @@ local packer_bootstrap = ensure_packer()
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim' -- Let Packer update itself
   -- My current color scheme
-  -- use 'gruvbox-community/gruvbox'
   use 'folke/tokyonight.nvim'
 
   use {
@@ -113,7 +112,6 @@ require('packer').startup(function(use)
   use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
   use 'kana/vim-textobj-user' -- Enables custom text objects in other plugins
   use 'thinca/vim-textobj-between' -- 'ci{motion}' to change between objects in motion
-  -- use {'fatih/vim-go', run = ':GoUpdateBinaries' } -- For all things Go (love this)
 
   -- Fuzzy finder for all things
   use {
@@ -155,7 +153,6 @@ if packer_bootstrap then
 end
 
 -- Set colorscheme, imported as plugin
--- vim.cmd('colorscheme gruvbox')
 vim.cmd('colorscheme tokyonight-night')
 
 require("nvim-tree").setup()
@@ -294,11 +291,13 @@ local function go_tags(op, tagnames)
   vim.fn.system(cmd_args)
   vim.cmd("edit")
 end
-vim.api.nvim_create_user_command('GoAddTag', function(names) go_tags('-add-tags', names.args) end, { desc = "Add tags to Go struct on this line", nargs='*' })
-vim.api.nvim_create_user_command('GoRmTag', function(names) go_tags('-remove-tags', names.args) end, { desc = "Remove tags from Go struct on this line", nargs='*' })
+vim.api.nvim_create_user_command('GoAddTag', function(names) go_tags('-add-tags', names.args) end, { desc = "Add tags to Go struct name under cursor", nargs='*' })
+vim.api.nvim_create_user_command('GoRmTag', function(names) go_tags('-remove-tags', names.args) end, { desc = "Remove tags from Go struct name under cursor", nargs='*' })
 
 -- Lisp
+-- TODO: paren/bracket closer next
 -- See: https://github.com/jpalardy/vim-slime#tmux
+-- TODO: just rewrite the portion of this plugin I'm using in Lua
 vim.cmd [[
 let g:slime_target = "tmux"
 let g:slime_default_config = {"socket_name": get(split($TMUX, ","), 0), "target_pane": ":0.2"}
