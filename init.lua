@@ -111,10 +111,31 @@ require("lazy").setup({
       {'L3MON4D3/LuaSnip'},
     },
     config = function()
-      local lsp = require('lsp-zero').preset({})
+      local lsp = require('lsp-zero').preset({
+        name = "recommended",
+      })
       lsp.on_attach(function(_, bufnr)
         lsp.default_keymaps({buffer = bufnr})
+        lsp.buffer_autoformat()
       end)
+
+      local cmp = require('cmp')
+      cmp.setup({
+        mapping = {
+          ['<CR>'] = cmp.mapping.confirm({select = false}),
+        }
+      })
+
+      lsp.format_on_save({
+        format_opts = {
+          async = false,
+          timeout_ms = 10000,
+        },
+        servers = {
+          ['goimports'] = {'go'},
+        }
+      })
+
       -- (Optional) Configure lua language server for neovim
       require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
       lsp.setup()

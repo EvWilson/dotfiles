@@ -21,6 +21,3 @@ thank god this repo is here to get me back on my feet as quick as possible.
 - Set git credential store (e.g. Linux - git config --global credential.helper store)
 - Add assorted applications from managed shop du jour
     - e.g. Discord, Zoom, VLC media player, VSCode
-
-## Things I'm working on
-- Currently working through: https://thevaluable.dev/vim-advanced/
