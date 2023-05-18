@@ -51,3 +51,43 @@ gitup() {
     fi
     git add -A && git commit -m "$MSG" && git push
 }
+
+isnum() {
+    case $1 in
+        ''|*[!0-9]*) echo '' ;;
+        *) echo 'isnum' ;;
+    esac
+}
+
+nagger() {
+    PERIOD=$1
+    shift
+    TEXT=$@
+    echo $PERIOD $TEXT
+    sleep $PERIOD
+    osascript -e "display notification \"${TEXT}\" with title \"Nag Me\""
+}
+
+nagme() {
+    if (( $# < 2 )); then
+        echo "Please supply a number to represent minutes, and then the text of your notification"
+        return 1
+    fi
+    PERIOD=$1
+    VALUE=${PERIOD::-1}
+    shift
+    TEXT=$@
+    if [[ ! $(isnum $VALUE) ]]; then
+        echo "Period value $VALUE does not appear to be a number"
+        return 1
+    fi
+    if [[ "$PERIOD" == *m ]]; then
+        VALUE=$(($VALUE * 60))
+    elif [[ "$PERIOD" == *s ]]; then
+        :
+    else
+        echo "Unknown period, specify a time in minutes or seconds. E.g.: 5s, 10m"
+        return 1
+    fi
+    nagger $VALUE $TEXT & disown
+}
