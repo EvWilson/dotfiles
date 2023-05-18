@@ -63,7 +63,6 @@ nagger() {
     PERIOD=$1
     shift
     TEXT=$@
-    echo $PERIOD $TEXT
     sleep $PERIOD
     osascript -e "display notification \"${TEXT}\" with title \"Nag Me\""
 }
@@ -74,7 +73,7 @@ nagme() {
         return 1
     fi
     PERIOD=$1
-    VALUE=${PERIOD::-1}
+    VALUE=$(echo $PERIOD | sed 's/.$//')
     shift
     TEXT=$@
     if [[ ! $(isnum $VALUE) ]]; then
