@@ -2,8 +2,6 @@
 --	- I'd love a query to highlight matching brackets for the current paragraph/block/context
 --	- this was a bit of an inspiration: https://github.com/lukas-reineke/indent-blankline.nvim
 --- better wrangle DAP
---- better wrangle SQL-mode
---	- write own plugin?
 
 --------------------------------------------------------------------------------
 -- >>> Option Configuration <<<
@@ -46,7 +44,7 @@ vim.g.loaded_netrwPlugin = 1
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 -- Change line wrapping and such behavior in markdown, for legibility while writing
-vim.cmd[[autocmd FileType markdown setlocal nolist wrap linebreak]]
+vim.cmd [[autocmd FileType markdown setlocal nolist wrap linebreak]]
 -- Yank/put to/from system clipboard for convenience
 vim.opt.clipboard:append('unnamedplus')
 
@@ -69,7 +67,8 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Configure lazy.nvim packages
 require("lazy").setup({
-  { -- Colorscheme
+  {
+    -- Colorscheme
     "folke/tokyonight.nvim",
     lazy = false,
     priority = 1000,
@@ -77,7 +76,8 @@ require("lazy").setup({
       vim.cmd([[colorscheme tokyonight-night]])
     end,
   },
-  { -- Filetree viewer
+  {
+    -- Filetree viewer
     'nvim-tree/nvim-tree.lua',
     dependencies = {
       'nvim-tree/nvim-web-devicons',
@@ -88,41 +88,43 @@ require("lazy").setup({
       vim.keymap.set('n', 'tt', ':NvimTreeToggle<CR>', { desc = 'Toggle filetree viewer' })
       vim.keymap.set('n', 'tc', ':NvimTreeCollapse<CR>', { desc = 'Close open folders in filetree viewer' })
       vim.keymap.set('n', 'tf', ':NvimTreeFindFileToggle<CR>', { desc = 'Open filetree to current file' })
-      vim.keymap.set('n', 'to', ':lua require("nvim-tree.api").tree.expand_all()<CR>', { desc = 'Open filetree and expand all directories' })
+      vim.keymap.set('n', 'to', ':lua require("nvim-tree.api").tree.expand_all()<CR>',
+        { desc = 'Open filetree and expand all directories' })
     end,
   },
-  { -- LSP setup and config
+  {
+    -- LSP setup and config
     'VonHeikemen/lsp-zero.nvim',
     branch = 'v2.x',
     dependencies = {
       -- LSP Support
-      {'neovim/nvim-lspconfig'},
+      { 'neovim/nvim-lspconfig' },
       {
         'williamboman/mason.nvim',
         build = function()
           vim.cmd([[MasonUpdate]])
         end,
       },
-      {'williamboman/mason-lspconfig.nvim'},
+      { 'williamboman/mason-lspconfig.nvim' },
 
       -- Autocompletion
-      {'hrsh7th/nvim-cmp'},
-      {'hrsh7th/cmp-nvim-lsp'},
-      {'L3MON4D3/LuaSnip'},
+      { 'hrsh7th/nvim-cmp' },
+      { 'hrsh7th/cmp-nvim-lsp' },
+      { 'L3MON4D3/LuaSnip' },
     },
     config = function()
       local lsp = require('lsp-zero').preset({
         name = "recommended",
       })
       lsp.on_attach(function(_, bufnr)
-        lsp.default_keymaps({buffer = bufnr})
+        lsp.default_keymaps({ buffer = bufnr })
         lsp.buffer_autoformat()
       end)
 
       local cmp = require('cmp')
       cmp.setup({
         mapping = {
-          ['<CR>'] = cmp.mapping.confirm({select = false}),
+          ['<CR>'] = cmp.mapping.confirm({ select = false }),
         }
       })
 
@@ -132,7 +134,7 @@ require("lazy").setup({
           timeout_ms = 10000,
         },
         servers = {
-          ['goimports'] = {'go'},
+          ['goimports'] = { 'go' },
         }
       })
 
@@ -141,36 +143,38 @@ require("lazy").setup({
       lsp.setup()
     end,
   },
-  { -- Tree-sitter and related config
+  {
+    -- Tree-sitter and related config
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     dependencies = {
-      {'nvim-treesitter/nvim-treesitter-context'},
+      { 'nvim-treesitter/nvim-treesitter-context' },
     },
     config = function()
       require('nvim-treesitter.configs').setup {
         ensure_installed = { 'go' }, -- A list of parser names, or 'all'
-        sync_install = false, -- Install parsers synchronously (only applied to `ensure_installed`)
-        auto_install = true, -- Automatically install missing parsers when entering buffer
+        sync_install = false,        -- Install parsers synchronously (only applied to `ensure_installed`)
+        auto_install = true,         -- Automatically install missing parsers when entering buffer
         highlight = { enable = true },
       }
     end,
   },
-  { -- Fuzzy finder
+  {
+    -- Fuzzy finder
     'nvim-telescope/telescope.nvim',
     version = '0.1.1',
     dependencies = {
-      {'nvim-lua/plenary.nvim'},
-      {'nvim-telescope/telescope-fzf-native.nvim', build = 'make'},
+      { 'nvim-lua/plenary.nvim' },
+      { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
     },
     config = function()
       require('telescope').setup {
         extensions = {
           fzf = {
-            fuzzy = true,                    -- false will only do exact matching
-            override_generic_sorter = true,  -- override the generic sorter
-            override_file_sorter = true,     -- override the file sorter
-            case_mode = 'smart_case',        -- or 'ignore_case' or 'respect_case', default is 'smart_case'
+            fuzzy = true,                   -- false will only do exact matching
+            override_generic_sorter = true, -- override the generic sorter
+            override_file_sorter = true,    -- override the file sorter
+            case_mode = 'smart_case',       -- or 'ignore_case' or 'respect_case', default is 'smart_case'
           }
         }
       }
@@ -181,30 +185,32 @@ require("lazy").setup({
       vim.keymap.set('n', '<leader>k', t.live_grep, { desc = 'Telescope live grep' })
     end,
   },
-  { -- SQL utilities
+  {
+    -- SQL utilities
     'tpope/vim-dadbod',
     dependencies = {
-      {'tpope/vim-dotenv'},
-      {'kristijanhusak/vim-dadbod-ui'},
-      {'kristijanhusak/vim-dadbod-completion'},
+      { 'tpope/vim-dotenv' },
+      { 'kristijanhusak/vim-dadbod-ui' },
+      { 'kristijanhusak/vim-dadbod-completion' },
     },
     config = function()
       -- Open SQL mgmt pane, add completions, disable special keybinds, add save query
       -- NOTE: config stored in ~/.dbenv, as DB_UI_SOMETHING_COOL="connection_string_here"
       vim.api.nvim_create_user_command('OpenDB', function()
-          require('cmp').setup.buffer { sources = { { name = 'vim-dadbod-completion' } } }
-          -- vim.g.db_ui_disable_mappings = 1 -- This borks navigation for some reason
-          vim.cmd [[ autocmd FileType dbui setlocal shiftwidth=2 tabstop=2 ]]
-          vim.cmd [[ Dotenv ~/.dbenv ]]
-          vim.cmd [[ DBUIToggle ]]
-          vim.keymap.set('n', '<Leader>s', '<Plug>(DBUI_SaveQuery)')
-        end
+        require('cmp').setup.buffer { sources = { { name = 'vim-dadbod-completion' } } }
+        -- vim.g.db_ui_disable_mappings = 1 -- This borks navigation for some reason
+        vim.cmd [[ autocmd FileType dbui setlocal shiftwidth=2 tabstop=2 ]]
+        vim.cmd [[ Dotenv ~/.dbenv ]]
+        vim.cmd [[ DBUIToggle ]]
+        vim.keymap.set('n', '<Leader>s', '<Plug>(DBUI_SaveQuery)')
+      end
       , {})
     end,
   },
 
   -- Assorted and miscellaneous
-  { -- Status bar upgrade
+  {
+    -- Status bar upgrade
     'nvim-lualine/lualine.nvim',
     config = function()
       require('lualine').setup {
@@ -213,14 +219,15 @@ require("lazy").setup({
       }
     end
   },
-  'tpope/vim-surround', -- 'cs{old}{new} to change surround, 'ys{motion}{char}' to add surround
-  'tpope/vim-commentary', -- 'gc' in some permutation to toggle comments!, NOTE: see Commentary.nvim for future
-  'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  'tpope/vim-surround',    -- 'cs{old}{new} to change surround, 'ys{motion}{char}' to add surround
+  'tpope/vim-commentary',  -- 'gc' in some permutation to toggle comments!, NOTE: see Commentary.nvim for future
+  'tpope/vim-sleuth',      -- Detect tabstop and shiftwidth automatically
   'kana/vim-textobj-user', -- Enables custom text objects in other plugins
   -- 'thinca/vim-textobj-between', -- 'ci{motion}' to change between objects in motion
 
   -- Nursery - plugins I'm not fully sold on yet
-  { 'rcarriga/nvim-dap-ui', -- Bring in generic debugger with associated UI
+  {
+    'rcarriga/nvim-dap-ui', -- Bring in generic debugger with associated UI
     dependencies = {
       'mfussenegger/nvim-dap',
       'theHamsta/nvim-dap-virtual-text',
@@ -248,8 +255,8 @@ vim.keymap.set('n', '<c-n>', ':bnext<cr>', { desc = 'Cycle to next buffer', sile
 vim.keymap.set('n', '<c-p>', ':bprevious<cr>', { desc = 'Cycle to previous buffer', silent = true })
 
 -- Make navigating, yanking, etc easier
-vim.keymap.set({'n', 'v'}, 'H', '^', { desc = 'Navigate to line start' })
-vim.keymap.set({'n', 'v'}, 'L', '$', { desc = 'Navigate to line end' })
+vim.keymap.set({ 'n', 'v' }, 'H', '^', { desc = 'Navigate to line start' })
+vim.keymap.set({ 'n', 'v' }, 'L', '$', { desc = 'Navigate to line end' })
 vim.keymap.set('n', 'Y', 'yg_', { desc = 'Make Y behave sanely' })
 
 -- Niceties
@@ -261,7 +268,7 @@ vim.keymap.set('n', '<leader>a', ':keepjumps normal! ggVG<cr>', { desc = 'Select
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight yanked text',
   callback = function(_)
-    vim.highlight.on_yank({higroup = 'Visual', timeout = 500})
+    vim.highlight.on_yank({ higroup = 'Visual', timeout = 500 })
   end
 })
 
@@ -276,8 +283,10 @@ local function go_tags(op, tagnames)
   vim.fn.system(cmd_args)
   vim.cmd("edit")
 end
-vim.api.nvim_create_user_command('GoAddTag', function(names) go_tags('-add-tags', names.args) end, { desc = "Add tags to Go struct name under cursor", nargs='*' })
-vim.api.nvim_create_user_command('GoRmTag', function(names) go_tags('-remove-tags', names.args) end, { desc = "Remove tags from Go struct name under cursor", nargs='*' })
+vim.api.nvim_create_user_command('GoAddTag', function(names) go_tags('-add-tags', names.args) end,
+  { desc = "Add tags to Go struct name under cursor", nargs = '*' })
+vim.api.nvim_create_user_command('GoRmTag', function(names) go_tags('-remove-tags', names.args) end,
+  { desc = "Remove tags from Go struct name under cursor", nargs = '*' })
 
 -- Lisp
 -- TODO: paren/bracket closer next
