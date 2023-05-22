@@ -219,6 +219,17 @@ require("lazy").setup({
       }
     end
   },
+  {
+    -- Send text to tmux panes
+    'EvWilson/slimux.nvim',
+    config = function()
+      require("slimux").setup({ target_pane = "0.2" })
+      vim.keymap.set('v', '<leader>r', ':lua require("slimux").send_highlighted_text()<CR>',
+        { desc = 'Send currently highlighted text to configured tmux pane' })
+      vim.keymap.set('n', '<leader>r', ':lua require("slimux").send_paragraph_text()<CR>',
+        { desc = 'Send paragraph under cursor to configured tmux pane' })
+    end
+  },
   'tpope/vim-surround',    -- 'cs{old}{new} to change surround, 'ys{motion}{char}' to add surround
   'tpope/vim-commentary',  -- 'gc' in some permutation to toggle comments!, NOTE: see Commentary.nvim for future
   'tpope/vim-sleuth',      -- Detect tabstop and shiftwidth automatically
@@ -239,7 +250,7 @@ require("lazy").setup({
     end,
   },
   'leoluz/nvim-dap-go', -- dap configuration for Go
-  'jpalardy/vim-slime', -- send file contents to listening REPL
+  -- 'jpalardy/vim-slime', -- send file contents to listening REPL
 })
 
 --------------------------------------------------------------------------------
