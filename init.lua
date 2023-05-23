@@ -223,7 +223,10 @@ require("lazy").setup({
     -- Send text to tmux panes
     'EvWilson/slimux.nvim',
     config = function()
-      require("slimux").setup({ target_pane = "0.2" })
+      require('slimux').setup({
+        target_socket = require('slimux').get_tmux_socket(),
+        target_pane = "0.2",
+      })
       vim.keymap.set('v', '<leader>r', ':lua require("slimux").send_highlighted_text()<CR>',
         { desc = 'Send currently highlighted text to configured tmux pane' })
       vim.keymap.set('n', '<leader>r', ':lua require("slimux").send_paragraph_text()<CR>',
@@ -234,7 +237,6 @@ require("lazy").setup({
   'tpope/vim-commentary',  -- 'gc' in some permutation to toggle comments!, NOTE: see Commentary.nvim for future
   'tpope/vim-sleuth',      -- Detect tabstop and shiftwidth automatically
   'kana/vim-textobj-user', -- Enables custom text objects in other plugins
-  -- 'thinca/vim-textobj-between', -- 'ci{motion}' to change between objects in motion
 
   -- Nursery - plugins I'm not fully sold on yet
   {
@@ -250,7 +252,6 @@ require("lazy").setup({
     end,
   },
   'leoluz/nvim-dap-go', -- dap configuration for Go
-  -- 'jpalardy/vim-slime', -- send file contents to listening REPL
 })
 
 --------------------------------------------------------------------------------
@@ -298,12 +299,3 @@ vim.api.nvim_create_user_command('GoAddTag', function(names) go_tags('-add-tags'
   { desc = "Add tags to Go struct name under cursor", nargs = '*' })
 vim.api.nvim_create_user_command('GoRmTag', function(names) go_tags('-remove-tags', names.args) end,
   { desc = "Remove tags from Go struct name under cursor", nargs = '*' })
-
--- Lisp
--- TODO: paren/bracket closer next
--- See: https://github.com/jpalardy/vim-slime#tmux
--- TODO: just rewrite the portion of this plugin I'm using in Lua
-vim.cmd [[
-let g:slime_target = "tmux"
-let g:slime_default_config = {"socket_name": get(split($TMUX, ","), 0), "target_pane": ":0.2"}
-]]
