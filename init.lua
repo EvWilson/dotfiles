@@ -223,9 +223,10 @@ require("lazy").setup({
     -- Send text to tmux panes
     'EvWilson/slimux.nvim',
     config = function()
-      require('slimux').setup({
-        target_socket = require('slimux').get_tmux_socket(),
-        target_pane = "0.2",
+      local slimux = require('slimux')
+      slimux.setup({
+        target_socket = slimux.get_tmux_socket(),
+        target_pane = string.format('%s.2', slimux.get_tmux_window()),
       })
       vim.keymap.set('v', '<leader>r', ':lua require("slimux").send_highlighted_text()<CR>',
         { desc = 'Send currently highlighted text to configured tmux pane' })
@@ -283,6 +284,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank({ higroup = 'Visual', timeout = 500 })
   end
 })
+
+
 
 --------------------------------------------------------------------------------
 -- >>> Language-specific Config <<<
