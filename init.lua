@@ -1,6 +1,3 @@
---- explore treesitter highlighting
---	- I'd love a query to highlight matching brackets for the current paragraph/block/context
---	- this was a bit of an inspiration: https://github.com/lukas-reineke/indent-blankline.nvim
 --- better wrangle DAP
 
 --------------------------------------------------------------------------------
@@ -190,28 +187,6 @@ require("lazy").setup({
       vim.keymap.set('n', '<leader>k', t.live_grep, { desc = 'Telescope live grep' })
     end,
   },
-  {
-    -- SQL utilities
-    'tpope/vim-dadbod',
-    dependencies = {
-      { 'tpope/vim-dotenv' },
-      { 'kristijanhusak/vim-dadbod-ui' },
-      { 'kristijanhusak/vim-dadbod-completion' },
-    },
-    config = function()
-      -- Open SQL mgmt pane, add completions, disable special keybinds, add save query
-      -- NOTE: config stored in ~/.dbenv, as DB_UI_SOMETHING_COOL="connection_string_here"
-      vim.api.nvim_create_user_command('OpenDB', function()
-        require('cmp').setup.buffer { sources = { { name = 'vim-dadbod-completion' } } }
-        -- vim.g.db_ui_disable_mappings = 1 -- This borks navigation for some reason
-        vim.cmd [[ autocmd FileType dbui setlocal shiftwidth=2 tabstop=2 ]]
-        vim.cmd [[ Dotenv ~/.dbenv ]]
-        vim.cmd [[ DBUIToggle ]]
-        vim.keymap.set('n', '<Leader>s', '<Plug>(DBUI_SaveQuery)')
-      end
-      , {})
-    end,
-  },
 
   -- Assorted and miscellaneous
   {
@@ -231,7 +206,7 @@ require("lazy").setup({
       local slimux = require('slimux')
       slimux.setup({
         target_socket = slimux.get_tmux_socket(),
-        target_pane = string.format('%s.2', slimux.get_tmux_window()),
+        target_pane = string.format('%s.1', slimux.get_tmux_window()),
       })
       vim.keymap.set('v', '<leader>r', ':lua require("slimux").send_highlighted_text()<CR>',
         { desc = 'Send currently highlighted text to configured tmux pane' })
