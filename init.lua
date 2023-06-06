@@ -200,10 +200,11 @@ require("lazy").setup({
       require("nvim-dap-virtual-text").setup()
       require('dap-go').setup()
 
-      vim.keymap.set('n', '<leader>gb', ':lua require("dap").toggle_breakpoint()<CR>', { desc = 'TODO' })
-      vim.keymap.set('n', '<leader>gc', ':lua require("dap").continue()<CR>', { desc = 'TODO' })
-      vim.keymap.set('n', '<leader>gso', ':lua require("dap").step_over()<CR>', { desc = 'TODO' })
-      vim.keymap.set('n', '<leader>gsi', ':lua require("dap").step_into()<CR>', { desc = 'TODO' })
+      vim.keymap.set('n', '<leader>gb', ':lua require("dap").toggle_breakpoint()<CR>', { desc = 'Toggle DAP breakpoint' })
+      vim.keymap.set('n', '<leader>gc', ':lua require("dap").continue()<CR>', { desc = 'Continue in DAP' })
+      vim.keymap.set('n', '<leader>gso', ':lua require("dap").step_over()<CR>', { desc = 'Step over in DAP' })
+      vim.keymap.set('n', '<leader>gsi', ':lua require("dap").step_into()<CR>', { desc = 'Step into in DAP' })
+      vim.keymap.set('n', '<leader>gq', ':lua require("dap").terminate()<CR>', { desc = 'Terminate DAP session' })
     end,
   },
 
