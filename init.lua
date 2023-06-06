@@ -115,19 +115,23 @@ require("lazy").setup({
         lsp.default_keymaps({ buffer = bufnr })
         lsp.buffer_autoformat()
       end)
-
-      local cmp = require('cmp')
-      cmp.setup({
-        mapping = {
-          ['<CR>'] = cmp.mapping.confirm({ select = false }),
-        }
-      })
-
       lsp.format_on_save({
         format_opts = {
           async = false,
           timeout_ms = 10000,
         },
+      })
+      lsp.setup()
+
+      local cmp = require('cmp')
+      cmp.setup({
+        preselect = 'item',
+        completion = {
+          completeopt = 'menu,menuone,noinsert'
+        },
+        mapping = {
+          ['<CR>'] = cmp.mapping.confirm({ select = false }),
+        }
       })
 
       -- Taken from: https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports
@@ -140,7 +144,6 @@ require("lazy").setup({
 
       -- (Optional) Configure lua language server for neovim
       require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
-      lsp.setup()
     end,
   },
   {
