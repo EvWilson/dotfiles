@@ -1,5 +1,3 @@
---- better wrangle DAP
-
 --------------------------------------------------------------------------------
 -- >>> Option Configuration <<<
 --------------------------------------------------------------------------------
@@ -187,6 +185,24 @@ require("lazy").setup({
       vim.keymap.set('n', '<leader>k', t.live_grep, { desc = 'Telescope live grep' })
     end,
   },
+  {
+    'rcarriga/nvim-dap-ui', -- Debug Adapter Protocol with associated UI
+    dependencies = {
+      'mfussenegger/nvim-dap',
+      'theHamsta/nvim-dap-virtual-text',
+      'leoluz/nvim-dap-go',
+    },
+    config = function()
+      require("dapui").setup()
+      require("nvim-dap-virtual-text").setup()
+      require('dap-go').setup()
+
+      vim.keymap.set('n', '<leader>gb', ':lua require("dap").toggle_breakpoint()<CR>', { desc = 'TODO' })
+      vim.keymap.set('n', '<leader>gc', ':lua require("dap").continue()<CR>', { desc = 'TODO' })
+      vim.keymap.set('n', '<leader>gso', ':lua require("dap").step_over()<CR>', { desc = 'TODO' })
+      vim.keymap.set('n', '<leader>gsi', ':lua require("dap").step_into()<CR>', { desc = 'TODO' })
+    end,
+  },
 
   -- Assorted and miscellaneous
   {
@@ -218,25 +234,10 @@ require("lazy").setup({
   'tpope/vim-commentary',  -- 'gc' in some permutation to toggle comments!, NOTE: see Commentary.nvim for future
   'tpope/vim-sleuth',      -- Detect tabstop and shiftwidth automatically
   'kana/vim-textobj-user', -- Enables custom text objects in other plugins
-
-  -- Nursery - plugins I'm not fully sold on yet
-  {
-    'rcarriga/nvim-dap-ui', -- Bring in generic debugger with associated UI
-    dependencies = {
-      'mfussenegger/nvim-dap',
-      'theHamsta/nvim-dap-virtual-text',
-    },
-    config = function()
-      -- TODO: configure DAP key mappings
-      require("dapui").setup()
-      require("nvim-dap-virtual-text").setup()
-    end,
-  },
-  'leoluz/nvim-dap-go', -- dap configuration for Go
 })
 
 --------------------------------------------------------------------------------
--- >>> Key Mappings <<<
+-- >>> Non-Plugin Key Mappings <<<
 -- NOTE: keymaps are default non-recursive now, yay!
 --------------------------------------------------------------------------------
 -- My old faithfuls, you can't convince me these aren't right
