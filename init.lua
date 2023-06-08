@@ -1,8 +1,3 @@
---- explore treesitter highlighting
---	- I'd love a query to highlight matching brackets for the current paragraph/block/context
---	- this was a bit of an inspiration: https://github.com/lukas-reineke/indent-blankline.nvim
---- better wrangle DAP
-
 --------------------------------------------------------------------------------
 -- >>> Option Configuration <<<
 --------------------------------------------------------------------------------
@@ -122,19 +117,23 @@ require("lazy").setup({
         lsp.default_keymaps({ buffer = bufnr })
         lsp.buffer_autoformat()
       end)
-
-      local cmp = require('cmp')
-      cmp.setup({
-        mapping = {
-          ['<CR>'] = cmp.mapping.confirm({ select = false }),
-        }
-      })
-
       lsp.format_on_save({
         format_opts = {
           async = false,
           timeout_ms = 10000,
         },
+      })
+      lsp.setup()
+
+      local cmp = require('cmp')
+      cmp.setup({
+        preselect = 'item',
+        completion = {
+          completeopt = 'menu,menuone,noinsert'
+        },
+        mapping = {
+          ['<CR>'] = cmp.mapping.confirm({ select = false }),
+        }
       })
 
       -- Taken from: https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports
@@ -147,7 +146,6 @@ require("lazy").setup({
 
       -- (Optional) Configure lua language server for neovim
       require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
-      lsp.setup()
     end,
   },
   {
@@ -193,25 +191,22 @@ require("lazy").setup({
     end,
   },
   {
-    -- SQL utilities
-    'tpope/vim-dadbod',
+    'rcarriga/nvim-dap-ui', -- Debug Adapter Protocol with associated UI
     dependencies = {
-      { 'tpope/vim-dotenv' },
-      { 'kristijanhusak/vim-dadbod-ui' },
-      { 'kristijanhusak/vim-dadbod-completion' },
+      'mfussenegger/nvim-dap',
+      'theHamsta/nvim-dap-virtual-text',
+      'leoluz/nvim-dap-go',
     },
     config = function()
-      -- Open SQL mgmt pane, add completions, disable special keybinds, add save query
-      -- NOTE: config stored in ~/.dbenv, as DB_UI_SOMETHING_COOL="connection_string_here"
-      vim.api.nvim_create_user_command('OpenDB', function()
-        require('cmp').setup.buffer { sources = { { name = 'vim-dadbod-completion' } } }
-        -- vim.g.db_ui_disable_mappings = 1 -- This borks navigation for some reason
-        vim.cmd [[ autocmd FileType dbui setlocal shiftwidth=2 tabstop=2 ]]
-        vim.cmd [[ Dotenv ~/.dbenv ]]
-        vim.cmd [[ DBUIToggle ]]
-        vim.keymap.set('n', '<Leader>s', '<Plug>(DBUI_SaveQuery)')
-      end
-      , {})
+      require("dapui").setup()
+      require("nvim-dap-virtual-text").setup()
+      require('dap-go').setup()
+
+      vim.keymap.set('n', '<leader>gb', ':lua require("dap").toggle_breakpoint()<CR>', { desc = 'Toggle DAP breakpoint' })
+      vim.keymap.set('n', '<leader>gc', ':lua require("dap").continue()<CR>', { desc = 'Continue in DAP' })
+      vim.keymap.set('n', '<leader>go', ':lua require("dap").step_over()<CR>', { desc = 'Step over in DAP' })
+      vim.keymap.set('n', '<leader>gi', ':lua require("dap").step_into()<CR>', { desc = 'Step into in DAP' })
+      vim.keymap.set('n', '<leader>gq', ':lua require("dap").terminate()<CR>', { desc = 'Terminate DAP session' })
     end,
   },
 
@@ -233,7 +228,7 @@ require("lazy").setup({
       local slimux = require('slimux')
       slimux.setup({
         target_socket = slimux.get_tmux_socket(),
-        target_pane = string.format('%s.2', slimux.get_tmux_window()),
+        target_pane = string.format('%s.1', slimux.get_tmux_window()),
       })
       vim.keymap.set('v', '<leader>r', ':lua require("slimux").send_highlighted_text()<CR>',
         { desc = 'Send currently highlighted text to configured tmux pane' })
@@ -245,25 +240,10 @@ require("lazy").setup({
   'tpope/vim-commentary',  -- 'gc' in some permutation to toggle comments!, NOTE: see Commentary.nvim for future
   'tpope/vim-sleuth',      -- Detect tabstop and shiftwidth automatically
   'kana/vim-textobj-user', -- Enables custom text objects in other plugins
-
-  -- Nursery - plugins I'm not fully sold on yet
-  {
-    'rcarriga/nvim-dap-ui', -- Bring in generic debugger with associated UI
-    dependencies = {
-      'mfussenegger/nvim-dap',
-      'theHamsta/nvim-dap-virtual-text',
-    },
-    config = function()
-      -- TODO: configure DAP key mappings
-      require("dapui").setup()
-      require("nvim-dap-virtual-text").setup()
-    end,
-  },
-  'leoluz/nvim-dap-go', -- dap configuration for Go
 })
 
 --------------------------------------------------------------------------------
--- >>> Key Mappings <<<
+-- >>> Non-Plugin Key Mappings <<<
 -- NOTE: keymaps are default non-recursive now, yay!
 --------------------------------------------------------------------------------
 -- My old faithfuls, you can't convince me these aren't right
