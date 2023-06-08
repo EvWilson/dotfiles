@@ -90,6 +90,8 @@ require("lazy").setup({
       vim.keymap.set('n', 'tf', ':NvimTreeFindFileToggle<CR>', { desc = 'Open filetree to current file' })
       vim.keymap.set('n', 'to', ':lua require("nvim-tree.api").tree.expand_all()<CR>',
         { desc = 'Open filetree and expand all directories' })
+      vim.keymap.set('n', 'ts', ':NvimTreeResize -20<CR>', { desc = 'Make filetree window smaller' })
+      vim.keymap.set('n', 'tb', ':NvimTreeResize +20<CR>', { desc = 'Make filetree window bigger' })
     end,
   },
   {
