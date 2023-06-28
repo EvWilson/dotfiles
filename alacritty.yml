@@ -95,9 +95,9 @@ schemes:
 
 # Currently set color
 colors: *tokyo-night
-# Got from: https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/FiraMono.zip
-# Sadly, typo seems embedded in the font itself
+# Extract fonts from below to ~/.local/share/fonts, then run `fc-cache -vf`
+# https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/FiraCode.zip
 font:
   normal:
-    family: FuraMono Nerd Font Mono
+    family: FiraCode Nerd Font Mono
     style: Regular
