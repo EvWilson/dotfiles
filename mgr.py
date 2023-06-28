@@ -6,7 +6,7 @@
 import os, platform, sys
 
 def dotfile_dir():
-    return os.path.split(os.path.dirname(os.path.realpath(__file__)))[0]
+    return os.path.dirname(os.path.realpath(__file__))
 
 def home():
     return os.environ["HOME"]
