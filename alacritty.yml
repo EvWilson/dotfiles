@@ -96,6 +96,7 @@ schemes:
 # Currently set color
 colors: *tokyo-night
 # Extract fonts from below to ~/.local/share/fonts, then run `fc-cache -vf`
+# Or, on Darwin, just install via Finder
 # https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/FiraCode.zip
 font:
   normal:
