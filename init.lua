@@ -113,6 +113,7 @@ require("lazy").setup({
       local lsp = require('lsp-zero').preset({
         name = "recommended",
       })
+      -- Keymaps ref: https://github.com/VonHeikemen/lsp-zero.nvim#keybindings
       lsp.on_attach(function(_, bufnr)
         lsp.default_keymaps({ buffer = bufnr })
         lsp.buffer_autoformat()
