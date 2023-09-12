@@ -273,7 +273,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end
 })
 
-
+vim.api.nvim_create_user_command('BufOnly',
+  'execute "%bd|e#|bd#"',
+  { desc = 'Close all buffers (including filetree) other than the current' }
+)
 
 --------------------------------------------------------------------------------
 -- >>> Language-specific Config <<<
