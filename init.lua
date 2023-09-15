@@ -289,6 +289,7 @@ local function go_tags(op, tagnames)
   vim.fn.system(cmd_args)
   vim.cmd("edit")
 end
+-- Make sure to put the cursor over the struct definition line
 vim.api.nvim_create_user_command('GoAddTag', function(names) go_tags('-add-tags', names.args) end,
   { desc = "Add tags to Go struct name under cursor", nargs = '*' })
 vim.api.nvim_create_user_command('GoRmTag', function(names) go_tags('-remove-tags', names.args) end,
