@@ -20,8 +20,7 @@ export FZF_DEFAULT_COMMAND='rg --files -g "!{.git,node_modules}/*"'
 
 alias cdd='cd $(fd --type directory | fzf)'
 alias n='nvim'
-alias nfd='nvim $(fd | fzf)'
-alias gch='git checkout'
+alias gimme='n $(fd . ~/Documents | fzf)'
 
 if [ $(uname) == "Linux" ]; then
     alias ls='ls --color=auto'
