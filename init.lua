@@ -192,7 +192,8 @@ require("lazy").setup({
     end,
   },
   {
-    'rcarriga/nvim-dap-ui', -- Debug Adapter Protocol with associated UI
+    -- Debug Adapter Protocol with associated UI
+    'rcarriga/nvim-dap-ui',
     dependencies = {
       'mfussenegger/nvim-dap',
       'theHamsta/nvim-dap-virtual-text',
