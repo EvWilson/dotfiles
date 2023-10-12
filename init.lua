@@ -92,7 +92,7 @@ require("lazy").setup({
   {
     -- LSP setup and config
     'VonHeikemen/lsp-zero.nvim',
-    branch = 'v2.x',
+    branch = 'v3.x',
     dependencies = {
       -- LSP Support
       { 'neovim/nvim-lspconfig' },
@@ -113,6 +113,19 @@ require("lazy").setup({
       local lsp = require('lsp-zero').preset({
         name = "recommended",
       })
+
+      require('mason').setup({})
+      require('mason-lspconfig').setup({
+        ensure_installed = { 'gopls' },
+        handlers = {
+          lsp.default_setup,
+          lua_ls = function()
+            local lua_opts = lsp.nvim_lua_ls()
+            require('lspconfig').lua_ls.setup(lua_opts)
+          end,
+        }
+      })
+
       -- Keymaps ref: https://github.com/VonHeikemen/lsp-zero.nvim#keybindings
       lsp.on_attach(function(_, bufnr)
         lsp.default_keymaps({ buffer = bufnr })
@@ -144,9 +157,6 @@ require("lazy").setup({
           vim.lsp.buf.code_action({ context = { only = { 'source.organizeImports' } }, apply = true })
         end
       })
-
-      -- (Optional) Configure lua language server for neovim
-      require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
     end,
   },
   {
@@ -168,7 +178,7 @@ require("lazy").setup({
   {
     -- Fuzzy finder
     'nvim-telescope/telescope.nvim',
-    version = '0.1.1',
+    tag = '0.1.4',
     dependencies = {
       { 'nvim-lua/plenary.nvim' },
       { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
