@@ -31,9 +31,9 @@ alias epoch='date +%s'
 # In existing tmux window, open preferred format and change all open windows to cwd
 winme() {
     local CURR_DIR=`pwd`
-    tmux split-window -h -p 33
+    tmux split-window -h -l 33%
     cd $CURR_DIR
-    tmux split-window -v -p 66 -b
+    tmux split-window -v -l 66% -b
     cd $CURR_DIR
     tmux select-pane -t 0
 }
