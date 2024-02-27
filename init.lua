@@ -239,6 +239,7 @@ require("lazy").setup({
   {
     -- Send text to tmux panes
     'EvWilson/slimux.nvim',
+    -- dir = "~/Documents/slimux.nvim",
     config = function()
       local slimux = require('slimux')
       slimux.setup({
