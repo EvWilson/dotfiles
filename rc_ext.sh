@@ -22,9 +22,7 @@ alias cdd='cd $(fd --type directory | fzf)'
 alias n='nvim'
 alias gimme='n $(fd . ~/Documents | fzf)'
 
-if [ $(uname) == "Linux" ]; then
-    alias ls='ls --color=auto'
-fi
+alias ls='ls --color=auto'
 
 alias epoch='date +%s'
 
