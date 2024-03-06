@@ -36,6 +36,10 @@ winme() {
     tmux select-pane -t 0
 }
 
+ports() {
+    lsof -iTCP -sTCP:LISTEN -n -P | awk '{print $1, substr($0, index($0,$9))}'
+}
+
 neovim_update() {
     echo "Updating neovim dependencies..."
     nvim --headless "+Lazy! sync" +qa
