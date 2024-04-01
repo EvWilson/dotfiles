@@ -24,7 +24,7 @@ def link():
     links = [
         ".config/nvim/init.lua",
         ".tmux.conf",
-        ".config/alacritty/alacritty.yml",
+        ".config/alacritty/alacritty.toml",
     ]
     for l in links:
         dest = f"{home()}/{l}"

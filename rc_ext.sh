@@ -22,9 +22,7 @@ alias cdd='cd $(fd --type directory | fzf)'
 alias n='nvim'
 alias gimme='n $(fd . ~/Documents | fzf)'
 
-if [ $(uname) == "Linux" ]; then
-    alias ls='ls --color=auto'
-fi
+alias ls='ls --color=auto'
 
 alias epoch='date +%s'
 
@@ -36,6 +34,10 @@ winme() {
     tmux split-window -v -l 66% -b
     cd $CURR_DIR
     tmux select-pane -t 0
+}
+
+ports() {
+    lsof -iTCP -sTCP:LISTEN -n -P | awk '{print $1, substr($0, index($0,$9))}'
 }
 
 neovim_update() {
