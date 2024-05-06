@@ -119,7 +119,6 @@ require("lazy").setup({
 
       require('mason').setup({})
       require('mason-lspconfig').setup({
-        ensure_installed = { 'gopls' },
         handlers = {
           lsp.default_setup,
           lua_ls = function()
@@ -171,7 +170,6 @@ require("lazy").setup({
     },
     config = function()
       require('nvim-treesitter.configs').setup {
-        ensure_installed = { 'go' }, -- A list of parser names, or 'all'
         sync_install = false,        -- Install parsers synchronously (only applied to `ensure_installed`)
         auto_install = true,         -- Automatically install missing parsers when entering buffer
         highlight = { enable = true },
