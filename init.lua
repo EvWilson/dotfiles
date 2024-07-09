@@ -152,6 +152,8 @@ require("lazy").setup({
         }
       })
 
+      require 'lspconfig'.zls.setup {}
+
       -- Taken from: https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports
       vim.api.nvim_create_autocmd('BufWritePre', {
         pattern = '*.go',
@@ -170,8 +172,8 @@ require("lazy").setup({
     },
     config = function()
       require('nvim-treesitter.configs').setup {
-        sync_install = false,        -- Install parsers synchronously (only applied to `ensure_installed`)
-        auto_install = true,         -- Automatically install missing parsers when entering buffer
+        sync_install = false, -- Install parsers synchronously (only applied to `ensure_installed`)
+        auto_install = true,  -- Automatically install missing parsers when entering buffer
         highlight = { enable = true },
       }
     end,
