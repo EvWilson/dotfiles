@@ -3,8 +3,8 @@
 --------------------------------------------------------------------------------
 -- Space leader best leader
 vim.g.mapleader = ' '
--- Show relative line number
-vim.opt.relativenumber = true
+-- Show line numbers
+vim.opt.number = true
 -- Required for options modifying multiple buffers like rename
 vim.opt.hidden = true
 -- Prevent backups, which can cause issues for some servers (and I don't use)
