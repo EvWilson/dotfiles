@@ -47,24 +47,24 @@ vim.opt.clipboard:append('unnamedplus')
 -- >>> Plugin Configuration <<<
 --------------------------------------------------------------------------------
 -- Bootstrap lazy.nvim: https://github.com/folke/lazy.nvim#-installation
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
+    'git',
+    'clone',
+    '--filter=blob:none',
+    'https://github.com/folke/lazy.nvim.git',
+    '--branch=stable', -- latest stable release
     lazypath,
   })
 end
 vim.opt.rtp:prepend(lazypath)
 
 -- Configure lazy.nvim packages
-require("lazy").setup({
+require('lazy').setup({
   {
     -- Colorscheme
-    "folke/tokyonight.nvim",
+    'folke/tokyonight.nvim',
     lazy = false,
     priority = 1000,
     config = function()
@@ -79,7 +79,7 @@ require("lazy").setup({
     },
     version = '*',
     config = function()
-      require("nvim-tree").setup()
+      require('nvim-tree').setup()
       vim.keymap.set('n', 'tt', ':NvimTreeToggle<CR>', { desc = 'Toggle filetree viewer' })
       vim.keymap.set('n', 'tc', ':NvimTreeCollapse<CR>', { desc = 'Close open folders in filetree viewer' })
       vim.keymap.set('n', 'tf', ':NvimTreeFindFileToggle<CR>', { desc = 'Open filetree to current file' })
@@ -109,12 +109,12 @@ require("lazy").setup({
       { 'hrsh7th/cmp-nvim-lsp' },
       {
         'L3MON4D3/LuaSnip',
-        version = "v2.*",
+        version = 'v2.*',
       },
     },
     config = function()
       local lsp = require('lsp-zero').preset({
-        name = "recommended",
+        name = 'recommended',
       })
 
       require('mason').setup({})
@@ -164,16 +164,16 @@ require("lazy").setup({
     end,
   },
   {
-    "scalameta/nvim-metals",
+    'scalameta/nvim-metals',
     dependencies = {
-      "nvim-lua/plenary.nvim",
+      'nvim-lua/plenary.nvim',
     },
-    ft = { "scala", "sbt", "java" },
+    ft = { 'scala', 'sbt', 'java' },
     opts = function()
-      local metals_config = require("metals").bare_config()
+      local metals_config = require('metals').bare_config()
       metals_config.on_attach = function(client, bufnr)
         local lsp = require('lsp-zero').preset({
-          name = "recommended",
+          name = 'recommended',
         })
         lsp.default_keymaps({ buffer = bufnr })
         lsp.buffer_autoformat()
@@ -182,15 +182,31 @@ require("lazy").setup({
       return metals_config
     end,
     config = function(self, metals_config)
-      local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
-      vim.api.nvim_create_autocmd("FileType", {
+      local nvim_metals_group = vim.api.nvim_create_augroup('nvim-metals', { clear = true })
+      vim.api.nvim_create_autocmd('FileType', {
         pattern = self.ft,
         callback = function()
-          require("metals").initialize_or_attach(metals_config)
+          require('metals').initialize_or_attach(metals_config)
         end,
         group = nvim_metals_group,
       })
     end
+  },
+  {
+    "kdheepak/lazygit.nvim",
+    cmd = {
+      "LazyGit",
+      "LazyGitConfig",
+      "LazyGitCurrentFile",
+      "LazyGitFilter",
+      "LazyGitFilterCurrentFile",
+    },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+    keys = {
+      { "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" }
+    }
   },
   {
     -- Tree-sitter and related config
@@ -243,8 +259,8 @@ require("lazy").setup({
       'leoluz/nvim-dap-go',
     },
     config = function()
-      require("dapui").setup()
-      require("nvim-dap-virtual-text").setup()
+      require('dapui').setup()
+      require('nvim-dap-virtual-text').setup()
       require('dap-go').setup()
 
       vim.keymap.set('n', '<leader>gb', ':lua require("dap").toggle_breakpoint()<CR>', { desc = 'Toggle DAP breakpoint' })
@@ -253,6 +269,13 @@ require("lazy").setup({
       vim.keymap.set('n', '<leader>gi', ':lua require("dap").step_into()<CR>', { desc = 'Step into in DAP' })
       vim.keymap.set('n', '<leader>gq', ':lua require("dap").terminate()<CR>', { desc = 'Terminate DAP session' })
     end,
+  },
+  {
+    'ruifm/gitlinker.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      require('gitlinker').setup()
+    end
   },
 
   -- Assorted and miscellaneous
