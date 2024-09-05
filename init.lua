@@ -79,7 +79,11 @@ require('lazy').setup({
     },
     version = '*',
     config = function()
-      require('nvim-tree').setup()
+      require('nvim-tree').setup({
+        renderer = {
+          group_empty = true,
+        }
+      })
       vim.keymap.set('n', 'tt', ':NvimTreeToggle<CR>', { desc = 'Toggle filetree viewer' })
       vim.keymap.set('n', 'tc', ':NvimTreeCollapse<CR>', { desc = 'Close open folders in filetree viewer' })
       vim.keymap.set('n', 'tf', ':NvimTreeFindFileToggle<CR>', { desc = 'Open filetree to current file' })
