@@ -96,7 +96,7 @@ require('lazy').setup({
   {
     -- LSP setup and config
     'VonHeikemen/lsp-zero.nvim',
-    branch = 'v3.x',
+    branch = 'v4.x',
     dependencies = {
       -- LSP Support
       { 'neovim/nvim-lspconfig' },
@@ -111,39 +111,32 @@ require('lazy').setup({
       -- Autocompletion
       { 'hrsh7th/nvim-cmp' },
       { 'hrsh7th/cmp-nvim-lsp' },
-      {
-        'L3MON4D3/LuaSnip',
-        version = 'v2.*',
-      },
+      { 'L3MON4D3/LuaSnip' },
     },
     config = function()
-      local lsp = require('lsp-zero').preset({
-        name = 'recommended',
+      local lsp_zero = require('lsp-zero')
+      local lsp_attach = function(client, bufnr)
+        -- see :help lsp-zero-keybindings
+        lsp_zero.default_keymaps({buffer = bufnr})
+        lsp_zero.buffer_autoformat()
+      end
+      lsp_zero.extend_lspconfig({
+        capabilities = require('cmp_nvim_lsp').default_capabilities(),
+        lsp_attach = lsp_attach,
+        float_border = 'rounded',
+        sign_text = true,
       })
 
       require('mason').setup({})
       require('mason-lspconfig').setup({
         handlers = {
-          lsp.default_setup,
+          lsp_zero.default_setup,
           lua_ls = function()
             local lua_opts = lsp.nvim_lua_ls()
             require('lspconfig').lua_ls.setup(lua_opts)
           end,
         }
       })
-
-      -- Keymaps ref: https://github.com/VonHeikemen/lsp-zero.nvim#keybindings
-      lsp.on_attach(function(_, bufnr)
-        lsp.default_keymaps({ buffer = bufnr })
-        lsp.buffer_autoformat()
-      end)
-      lsp.format_on_save({
-        format_opts = {
-          async = false,
-          timeout_ms = 10000,
-        },
-      })
-      lsp.setup()
 
       local cmp = require('cmp')
       cmp.setup({
@@ -174,16 +167,7 @@ require('lazy').setup({
     },
     ft = { 'scala', 'sbt', 'java' },
     opts = function()
-      local metals_config = require('metals').bare_config()
-      metals_config.on_attach = function(client, bufnr)
-        local lsp = require('lsp-zero').preset({
-          name = 'recommended',
-        })
-        lsp.default_keymaps({ buffer = bufnr })
-        lsp.buffer_autoformat()
-      end
-
-      return metals_config
+      return require('metals').bare_config()
     end,
     config = function(self, metals_config)
       local nvim_metals_group = vim.api.nvim_create_augroup('nvim-metals', { clear = true })
