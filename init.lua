@@ -44,265 +44,6 @@ vim.cmd [[autocmd FileType markdown setlocal nolist wrap linebreak]]
 vim.opt.clipboard:append('unnamedplus')
 
 --------------------------------------------------------------------------------
--- >>> Plugin Configuration <<<
---------------------------------------------------------------------------------
--- Bootstrap lazy.nvim: https://github.com/folke/lazy.nvim#-installation
-local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
-if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    'git',
-    'clone',
-    '--filter=blob:none',
-    'https://github.com/folke/lazy.nvim.git',
-    '--branch=stable', -- latest stable release
-    lazypath,
-  })
-end
-vim.opt.rtp:prepend(lazypath)
-
--- Configure lazy.nvim packages
-require('lazy').setup({
-  {
-    -- Colorscheme
-    'folke/tokyonight.nvim',
-    lazy = false,
-    priority = 1000,
-    config = function()
-      vim.cmd([[colorscheme tokyonight-night]])
-    end,
-  },
-  {
-    -- Filetree viewer
-    'nvim-tree/nvim-tree.lua',
-    dependencies = {
-      'nvim-tree/nvim-web-devicons',
-    },
-    version = '*',
-    config = function()
-      require('nvim-tree').setup({
-        renderer = {
-          group_empty = true,
-        }
-      })
-      vim.keymap.set('n', 'tt', ':NvimTreeToggle<CR>', { desc = 'Toggle filetree viewer' })
-      vim.keymap.set('n', 'tc', ':NvimTreeCollapse<CR>', { desc = 'Close open folders in filetree viewer' })
-      vim.keymap.set('n', 'tf', ':NvimTreeFindFileToggle<CR>', { desc = 'Open filetree to current file' })
-      vim.keymap.set('n', 'to', ':lua require("nvim-tree.api").tree.expand_all()<CR>',
-        { desc = 'Open filetree and expand all directories' })
-      vim.keymap.set('n', 'ts', ':NvimTreeResize -20<CR>', { desc = 'Make filetree window smaller' })
-      vim.keymap.set('n', 'tb', ':NvimTreeResize +20<CR>', { desc = 'Make filetree window bigger' })
-    end,
-  },
-  {
-    -- LSP setup and config
-    'VonHeikemen/lsp-zero.nvim',
-    branch = 'v4.x',
-    dependencies = {
-      -- LSP Support
-      { 'neovim/nvim-lspconfig' },
-      {
-        'williamboman/mason.nvim',
-        build = function()
-          vim.cmd([[MasonUpdate]])
-        end,
-      },
-      { 'williamboman/mason-lspconfig.nvim' },
-
-      -- Autocompletion
-      { 'hrsh7th/nvim-cmp' },
-      { 'hrsh7th/cmp-nvim-lsp' },
-      { 'L3MON4D3/LuaSnip' },
-    },
-    config = function()
-      local lsp_zero = require('lsp-zero')
-      local lsp_attach = function(client, bufnr)
-        -- see :help lsp-zero-keybindings
-        lsp_zero.default_keymaps({buffer = bufnr})
-        lsp_zero.buffer_autoformat()
-      end
-      lsp_zero.extend_lspconfig({
-        capabilities = require('cmp_nvim_lsp').default_capabilities(),
-        lsp_attach = lsp_attach,
-        float_border = 'rounded',
-        sign_text = true,
-      })
-
-      require('mason').setup({})
-      require('mason-lspconfig').setup({
-        handlers = {
-          lsp_zero.default_setup,
-          lua_ls = function()
-            local lua_opts = lsp.nvim_lua_ls()
-            require('lspconfig').lua_ls.setup(lua_opts)
-          end,
-        }
-      })
-
-      local cmp = require('cmp')
-      cmp.setup({
-        preselect = 'item',
-        completion = {
-          completeopt = 'menu,menuone,noinsert'
-        },
-        mapping = {
-          ['<CR>'] = cmp.mapping.confirm({ select = false }),
-        }
-      })
-
-      require 'lspconfig'.zls.setup {}
-
-      -- Taken from: https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports
-      vim.api.nvim_create_autocmd('BufWritePre', {
-        pattern = '*.go',
-        callback = function()
-          vim.lsp.buf.code_action({ context = { only = { 'source.organizeImports' } }, apply = true })
-        end
-      })
-    end,
-  },
-  {
-    'scalameta/nvim-metals',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-    },
-    ft = { 'scala', 'sbt', 'java' },
-    opts = function()
-      return require('metals').bare_config()
-    end,
-    config = function(self, metals_config)
-      local nvim_metals_group = vim.api.nvim_create_augroup('nvim-metals', { clear = true })
-      vim.api.nvim_create_autocmd('FileType', {
-        pattern = self.ft,
-        callback = function()
-          require('metals').initialize_or_attach(metals_config)
-        end,
-        group = nvim_metals_group,
-      })
-    end
-  },
-  {
-    "kdheepak/lazygit.nvim",
-    cmd = {
-      "LazyGit",
-      "LazyGitConfig",
-      "LazyGitCurrentFile",
-      "LazyGitFilter",
-      "LazyGitFilterCurrentFile",
-    },
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-    },
-    keys = {
-      { "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" }
-    }
-  },
-  {
-    -- Tree-sitter and related config
-    'nvim-treesitter/nvim-treesitter',
-    build = ':TSUpdate',
-    dependencies = {
-      { 'nvim-treesitter/nvim-treesitter-context' },
-    },
-    config = function()
-      require('nvim-treesitter.configs').setup {
-        sync_install = false, -- Install parsers synchronously (only applied to `ensure_installed`)
-        auto_install = true,  -- Automatically install missing parsers when entering buffer
-        highlight = { enable = true },
-      }
-    end,
-  },
-  {
-    -- Fuzzy finder
-    'nvim-telescope/telescope.nvim',
-    branch = '0.1.x',
-    dependencies = {
-      { 'nvim-lua/plenary.nvim' },
-      { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
-    },
-    config = function()
-      require('telescope').setup {
-        defaults = {
-          layout_strategy = 'vertical'
-        },
-        extensions = {
-          fzf = {
-            fuzzy = true,                   -- false will only do exact matching
-            override_generic_sorter = true, -- override the generic sorter
-            override_file_sorter = true,    -- override the file sorter
-            case_mode = 'smart_case',       -- or 'ignore_case' or 'respect_case', default is 'smart_case'
-          }
-        }
-      }
-      require('telescope').load_extension('fzf')
-      local t = require('telescope.builtin')
-      vim.keymap.set('n', '<leader>h', t.find_files, { desc = 'Telescope find files' })
-      vim.keymap.set('n', '<leader>j', t.buffers, { desc = 'Telescope find buffers' })
-      vim.keymap.set('n', '<leader>k', t.live_grep, { desc = 'Telescope live grep' })
-    end,
-  },
-  {
-    -- Debug Adapter Protocol with associated UI
-    'rcarriga/nvim-dap-ui',
-    dependencies = {
-      'mfussenegger/nvim-dap',
-      'nvim-neotest/nvim-nio',
-      'theHamsta/nvim-dap-virtual-text',
-      'leoluz/nvim-dap-go',
-    },
-    config = function()
-      require('dapui').setup()
-      require('nvim-dap-virtual-text').setup()
-      require('dap-go').setup()
-
-      vim.keymap.set('n', '<leader>gb', ':lua require("dap").toggle_breakpoint()<CR>', { desc = 'Toggle DAP breakpoint' })
-      vim.keymap.set('n', '<leader>gc', ':lua require("dap").continue()<CR>', { desc = 'Continue in DAP' })
-      vim.keymap.set('n', '<leader>go', ':lua require("dap").step_over()<CR>', { desc = 'Step over in DAP' })
-      vim.keymap.set('n', '<leader>gi', ':lua require("dap").step_into()<CR>', { desc = 'Step into in DAP' })
-      vim.keymap.set('n', '<leader>gq', ':lua require("dap").terminate()<CR>', { desc = 'Terminate DAP session' })
-    end,
-  },
-  {
-    'ruifm/gitlinker.nvim',
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    config = function()
-      require('gitlinker').setup()
-    end
-  },
-
-  -- Assorted and miscellaneous
-  {
-    -- Status bar upgrade
-    'nvim-lualine/lualine.nvim',
-    config = function()
-      require('lualine').setup {
-        sections = { lualine_c = { { 'filename', path = 1 } } },
-        tabline = { lualine_a = { { 'buffers', show_filename_only = false } } } -- Show open buffers in top line
-      }
-    end
-  },
-  {
-    -- Send text to tmux panes
-    'EvWilson/slimux.nvim',
-    -- dir = "~/Documents/slimux.nvim",
-    config = function()
-      local slimux = require('slimux')
-      slimux.setup({
-        target_socket = slimux.get_tmux_socket(),
-        target_pane = string.format('%s.2', slimux.get_tmux_window()),
-      })
-      vim.keymap.set('v', '<leader>r', ':lua require("slimux").send_highlighted_text()<CR>',
-        { desc = 'Send currently highlighted text to configured tmux pane' })
-      vim.keymap.set('n', '<leader>r', ':lua require("slimux").send_paragraph_text()<CR>',
-        { desc = 'Send paragraph under cursor to configured tmux pane' })
-    end
-  },
-  'tpope/vim-surround',    -- 'cs{old}{new} to change surround, 'ys{motion}{char}' to add surround
-  'tpope/vim-commentary',  -- 'gc' in some permutation to toggle comments!, NOTE: see Commentary.nvim for future
-  'tpope/vim-sleuth',      -- Detect tabstop and shiftwidth automatically
-  'kana/vim-textobj-user', -- Enables custom text objects in other plugins
-})
-
---------------------------------------------------------------------------------
 -- >>> Non-Plugin Key Mappings <<<
 -- NOTE: keymaps are default non-recursive now, yay!
 --------------------------------------------------------------------------------
@@ -337,19 +78,314 @@ vim.api.nvim_create_user_command('BufOnly',
   { desc = 'Close all buffers (including filetree) other than the current' }
 )
 
---------------------------------------------------------------------------------
--- >>> Language-specific Config <<<
---------------------------------------------------------------------------------
--- Go
--- TODO: need "run test under cursor" next
-local function go_tags(op, tagnames)
-  local joined = string.gsub(tagnames, " ", ",")
-  local cmd_args = { "gomodifytags", "-file", vim.fn.expand("%"), "-struct", vim.fn.expand("<cword>"), op, joined, "-w" }
-  vim.fn.system(cmd_args)
-  vim.cmd("edit")
+local lsp_keybinds = function(client, bufnr)
+  -- Other not-yet-explicitly-bound options:
+  -- vim.lsp.buf.declaration
+  -- vim.lsp.buf.add_workspace_folder
+  -- vim.lsp.buf.remove_workspace_folder
+  -- lsp.buf.list_workspace_folders
+  -- vim.lsp.buf.type_definition
+  -- vim.diagnostic.goto_prev
+  -- vim.diagnostic.goto_next
+  -- vim.diagnostic.setloclist
+  local map = vim.keymap.set
+  map('n', 'gd', vim.lsp.buf.definition)
+  map('n', 'K', vim.lsp.buf.hover)
+  map('n', 'gi', vim.lsp.buf.implementation)
+  map('n', 'gr', vim.lsp.buf.references)
+  -- map('n', 'gds', vim.lsp.buf.document_symbol)
+  map('n', 'gws', vim.lsp.buf.workspace_symbol)
+  map('n', '<leader>cl', vim.lsp.codelens.run)
+  map('n', '<leader>sh', vim.lsp.buf.signature_help)
+  map('n', '<leader>rn', vim.lsp.buf.rename)
+  map('n', '<leader>f', vim.lsp.buf.format)
+  map('n', '<leader>ca', vim.lsp.buf.code_action)
 end
--- Make sure to put the cursor over the struct definition line
-vim.api.nvim_create_user_command('GoAddTag', function(names) go_tags('-add-tags', names.args) end,
-  { desc = "Add tags to Go struct name under cursor", nargs = '*' })
-vim.api.nvim_create_user_command('GoRmTag', function(names) go_tags('-remove-tags', names.args) end,
-  { desc = "Remove tags from Go struct name under cursor", nargs = '*' })
+
+--------------------------------------------------------------------------------
+-- >>> Plugin Configuration <<<
+--------------------------------------------------------------------------------
+-- Bootstrap lazy.nvim: https://github.com/folke/lazy.nvim#-installation
+local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    'git',
+    'clone',
+    '--filter=blob:none',
+    'https://github.com/folke/lazy.nvim.git',
+    '--branch=stable', -- latest stable release
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+
+require('lazy').setup({
+  {
+    'folke/tokyonight.nvim',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      vim.cmd([[colorscheme tokyonight-night]])
+    end,
+  },
+  {
+    'nvim-tree/nvim-tree.lua',
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+    },
+    version = '*',
+    config = function()
+      require('nvim-tree').setup({
+        renderer = {
+          group_empty = true,
+        }
+      })
+      local set = vim.keymap.set
+      set('n', 'tt', ':NvimTreeToggle<CR>', { desc = 'Toggle filetree viewer' })
+      set('n', 'tc', ':NvimTreeCollapse<CR>', { desc = 'Close open folders in filetree viewer' })
+      set('n', 'tf', ':NvimTreeFindFileToggle<CR>', { desc = 'Open filetree to current file' })
+      set('n', 'to', ':lua require("nvim-tree.api").tree.expand_all()<CR>', { desc = 'Open filetree and expand all directories' })
+      set('n', 'ts', ':NvimTreeResize -20<CR>', { desc = 'Make filetree window smaller' })
+      set('n', 'tb', ':NvimTreeResize +20<CR>', { desc = 'Make filetree window bigger' })
+    end,
+  },
+  {
+    'hrsh7th/nvim-cmp',
+    dependencies = {
+      { 'hrsh7th/cmp-nvim-lsp' },
+      { 'L3MON4D3/LuaSnip' },
+      { 'saadparwaiz1/cmp_luasnip' },
+    },
+    config = function()
+      local cmp = require('cmp')
+      local luasnip = require('luasnip')
+
+      cmp.setup({
+        preselect = 'item',
+        completion = {
+          completeopt = 'menu,menuone,noinsert'
+        },
+        snippet = {
+          expand = function(args)
+            luasnip.lsp_expand(args.body)
+          end,
+        },
+        mapping = {
+          ['<CR>'] = cmp.mapping(function(fallback)
+              if cmp.visible() then
+                  if luasnip.expandable() then
+                      luasnip.expand()
+                  else
+                      cmp.confirm({
+                          select = true,
+                      })
+                  end
+              else
+                  fallback()
+              end
+          end),
+          ['<Tab>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item()
+            elseif luasnip.locally_jumpable(1) then
+              luasnip.jump(1)
+            else
+              fallback()
+            end
+          end, { 'i', 's' }),
+          ['<S-Tab>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item()
+            elseif luasnip.locally_jumpable(-1) then
+              luasnip.jump(-1)
+            else
+              fallback()
+            end
+          end, { 'i', 's' }),
+        },
+        sources = cmp.config.sources({
+          { name = 'nvim_lsp' },
+          { name = 'luasnip' },
+        }, {
+          { name = 'buffer' },
+        })
+      })
+    end,
+  },
+  {
+    'neovim/nvim-lspconfig',
+    ft = { 'go' },
+    config = function()
+      local lspconfig = require('lspconfig')
+      local capabilities = require('cmp_nvim_lsp').default_capabilities()
+      local lsps = { "gopls" }
+      for _, lsp in pairs(lsps) do
+        lspconfig[lsp].setup {
+          capabilities = capabilities,
+          on_attach = lsp_keybinds,
+        }
+      end
+      -- Taken from: https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports
+      vim.api.nvim_create_autocmd('BufWritePre', {
+        pattern = '*.go',
+        callback = function()
+          vim.lsp.buf.code_action({ context = { only = { 'source.organizeImports' } }, apply = true })
+        end
+      })
+    end,
+  },
+  {
+    'scalameta/nvim-metals',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      {
+        'j-hui/fidget.nvim',
+        opts = {},
+      },
+    },
+    ft = { 'scala', 'sbt', 'java' },
+    opts = function()
+      local metals_config = require('metals').bare_config()
+      metals_config.settings = {
+        showImplicitArguments = true,
+      }
+      metals_config.init_options.statusBarProvider = 'off'
+      metals_config.on_attach = lsp_keybinds
+      return metals_config
+    end,
+    config = function(self, metals_config)
+      local nvim_metals_group = vim.api.nvim_create_augroup('nvim-metals', { clear = true })
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = self.ft,
+        callback = function()
+          require('metals').initialize_or_attach(metals_config)
+        end,
+        group = nvim_metals_group,
+      })
+    end
+  },
+  {
+    'williamboman/mason.nvim',
+    build = function()
+      vim.cmd([[MasonUpdate]])
+    end,
+    config = function()
+      require("mason").setup()
+    end
+  },
+  {
+    'kdheepak/lazygit.nvim',
+    cmd = {
+      'LazyGit',
+      'LazyGitConfig',
+      'LazyGitCurrentFile',
+      'LazyGitFilter',
+      'LazyGitFilterCurrentFile',
+    },
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+    keys = {
+      { '<leader>lg', '<cmd>LazyGit<cr>', desc = 'LazyGit' }
+    }
+  },
+  {
+    'nvim-treesitter/nvim-treesitter',
+    build = ':TSUpdate',
+    dependencies = {
+      { 'nvim-treesitter/nvim-treesitter-context' },
+    },
+    config = function()
+      require('nvim-treesitter.configs').setup {
+        sync_install = false, -- Install parsers synchronously (only applied to `ensure_installed`)
+        auto_install = true,  -- Automatically install missing parsers when entering buffer
+        highlight = { enable = true },
+      }
+    end,
+  },
+  {
+    'nvim-telescope/telescope.nvim',
+    branch = '0.1.x',
+    dependencies = {
+      { 'nvim-lua/plenary.nvim' },
+      { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+    },
+    config = function()
+      require('telescope').setup {
+        defaults = {
+          layout_strategy = 'vertical'
+        },
+        extensions = {
+          fzf = {
+            fuzzy = true,                   -- false will only do exact matching
+            override_generic_sorter = true, -- override the generic sorter
+            override_file_sorter = true,    -- override the file sorter
+            case_mode = 'smart_case',       -- or 'ignore_case' or 'respect_case', default is 'smart_case'
+          }
+        }
+      }
+      require('telescope').load_extension('fzf')
+      local t = require('telescope.builtin')
+      local set = vim.keymap.set
+      set('n', '<leader>h', t.find_files, { desc = 'Telescope find files' })
+      set('n', '<leader>j', t.buffers, { desc = 'Telescope find buffers' })
+      set('n', '<leader>k', t.live_grep, { desc = 'Telescope live grep' })
+    end,
+  },
+  {
+    -- Debug Adapter Protocol with associated UI
+    'rcarriga/nvim-dap-ui',
+    dependencies = {
+      'mfussenegger/nvim-dap',
+      'nvim-neotest/nvim-nio',
+      'theHamsta/nvim-dap-virtual-text',
+      'leoluz/nvim-dap-go',
+    },
+    config = function()
+      require('dapui').setup()
+      require('nvim-dap-virtual-text').setup()
+      require('dap-go').setup()
+
+      local set = vim.keymap.set
+      set('n', '<leader>gb', ':lua require("dap").toggle_breakpoint()<CR>', { desc = 'Toggle DAP breakpoint' })
+      set('n', '<leader>gc', ':lua require("dap").continue()<CR>', { desc = 'Continue in DAP' })
+      set('n', '<leader>go', ':lua require("dap").step_over()<CR>', { desc = 'Step over in DAP' })
+      set('n', '<leader>gi', ':lua require("dap").step_into()<CR>', { desc = 'Step into in DAP' })
+      set('n', '<leader>gq', ':lua require("dap").terminate()<CR>', { desc = 'Terminate DAP session' })
+    end,
+  },
+  {
+    'ruifm/gitlinker.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      require('gitlinker').setup()
+    end
+  },
+  {
+    'nvim-lualine/lualine.nvim',
+    config = function()
+      require('lualine').setup {
+        sections = { lualine_c = { { 'filename', path = 1 } } },
+        tabline = { lualine_a = { { 'buffers', show_filename_only = false } } } -- Show open buffers in top line
+      }
+    end
+  },
+  {
+    'EvWilson/slimux.nvim',
+    -- dir = "~/Documents/slimux.nvim",
+    config = function()
+      local slimux = require('slimux')
+      slimux.setup({
+        target_socket = slimux.get_tmux_socket(),
+        target_pane = string.format('%s.2', slimux.get_tmux_window()),
+      })
+      local set = vim.keymap.set
+      set('v', '<leader>r', ':lua require("slimux").send_highlighted_text()<CR>', { desc = 'Send currently highlighted text to configured tmux pane' })
+      set('n', '<leader>r', ':lua require("slimux").send_paragraph_text()<CR>', { desc = 'Send paragraph under cursor to configured tmux pane' })
+    end
+  },
+  'tpope/vim-surround',    -- 'cs{old}{new} to change surround, 'ys{motion}{char}' to add surround
+  'tpope/vim-commentary',  -- 'gc' in some permutation to toggle comments!, NOTE: see Commentary.nvim for future
+  'tpope/vim-sleuth',      -- Detect tabstop and shiftwidth automatically
+  'kana/vim-textobj-user', -- Enables custom text objects in other plugins
+})
