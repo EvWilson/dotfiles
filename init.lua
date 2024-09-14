@@ -141,10 +141,11 @@ require('lazy').setup({
         }
       })
       local set = vim.keymap.set
-      set('n', 'tt', ':NvimTreeToggle<CR>', { desc = 'Toggle filetree viewer' })
-      set('n', 'tc', ':NvimTreeCollapse<CR>', { desc = 'Close open folders in filetree viewer' })
-      set('n', 'tf', ':NvimTreeFindFileToggle<CR>', { desc = 'Open filetree to current file' })
-      set('n', 'to', ':lua require("nvim-tree.api").tree.expand_all()<CR>', { desc = 'Open filetree and expand all directories' })
+      local api = require('nvim-tree.api')
+      set('n', 'tt', api.tree.toggle, { desc = 'Toggle filetree viewer' })
+      set('n', 'tc', api.tree.collapse_all, { desc = 'Close open folders in filetree viewer' })
+      set('n', 'tf', api.tree.find_file, { desc = 'Open filetree to current file' })
+      set('n', 'to', api.tree.expand_all, { desc = 'Open filetree and expand all directories' })
       set('n', 'ts', ':NvimTreeResize -20<CR>', { desc = 'Make filetree window smaller' })
       set('n', 'tb', ':NvimTreeResize +20<CR>', { desc = 'Make filetree window bigger' })
     end,
@@ -262,6 +263,7 @@ require('lazy').setup({
         end,
         group = nvim_metals_group,
       })
+      vim.keymap.set('n', '<leader>gg', require("telescope").extensions.metals.commands, { desc = 'Pull up Metals commands in Telescope picker' })
     end
   },
   {
