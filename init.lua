@@ -100,6 +100,8 @@ local lsp_keybinds = function(client, bufnr)
   map('n', '<leader>rn', vim.lsp.buf.rename)
   map('n', '<leader>f', vim.lsp.buf.format)
   map('n', '<leader>ca', vim.lsp.buf.code_action)
+
+  vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
 end
 
 --------------------------------------------------------------------------------
@@ -249,6 +251,8 @@ require('lazy').setup({
       local metals_config = require('metals').bare_config()
       metals_config.settings = {
         showImplicitArguments = true,
+        showImplicitConversionsAndClasses = true,
+        showInferredType = true,
       }
       metals_config.init_options.statusBarProvider = 'off'
       metals_config.on_attach = lsp_keybinds
