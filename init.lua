@@ -308,6 +308,9 @@ require('lazy').setup({
         auto_install = true,  -- Automatically install missing parsers when entering buffer
         highlight = { enable = true },
       }
+      require'treesitter-context'.setup {
+        enable = false, -- Default to false, because it can be annoying, but keeping it around in case I want it
+      }
     end,
   },
   {
