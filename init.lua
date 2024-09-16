@@ -391,7 +391,6 @@ require('lazy').setup({
     end
   },
   'tpope/vim-surround',    -- 'cs{old}{new} to change surround, 'ys{motion}{char}' to add surround
-  'tpope/vim-commentary',  -- 'gc' in some permutation to toggle comments!, NOTE: see Commentary.nvim for future
   'tpope/vim-sleuth',      -- Detect tabstop and shiftwidth automatically
   'kana/vim-textobj-user', -- Enables custom text objects in other plugins
 })
