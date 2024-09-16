@@ -102,6 +102,7 @@ local lsp_keybinds = function(client, bufnr)
   map('n', '<leader>ca', vim.lsp.buf.code_action)
 
   vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
+  vim.lsp.inlay_hint.enable(true)
 end
 
 --------------------------------------------------------------------------------
