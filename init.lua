@@ -101,11 +101,9 @@ local lsp_keybinds = function(client, bufnr)
   map('n', '<leader>f', vim.lsp.buf.format)
   map('n', '<leader>ca', vim.lsp.buf.code_action)
 
-  -- Trying to replace this
-  -- vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
   vim.api.nvim_create_autocmd('BufWritePre', {
-    callback = function() vim.lsp.buf.format({ async = false, timeout = 2000 }) end,
-    desc = 'Format on save'
+    command = 'silent! lua vim.lsp.buf.format({ async = false, timeout = 2000 })',
+    desc = 'Format on save',
   })
   vim.lsp.inlay_hint.enable(true)
 end
