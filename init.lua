@@ -78,7 +78,7 @@ vim.api.nvim_create_user_command('BufOnly',
   { desc = 'Close all buffers (including filetree) other than the current' }
 )
 
-local lsp_keybinds = function(client, bufnr)
+local lsp_keybinds = function(_, _)
   -- Other not-yet-explicitly-bound options:
   -- vim.lsp.buf.declaration
   -- vim.lsp.buf.add_workspace_folder
@@ -179,17 +179,17 @@ require('lazy').setup({
         },
         mapping = {
           ['<CR>'] = cmp.mapping(function(fallback)
-              if cmp.visible() then
-                  if luasnip.expandable() then
-                      luasnip.expand()
-                  else
-                      cmp.confirm({
-                          select = true,
-                      })
-                  end
+            if cmp.visible() then
+              if luasnip.expandable() then
+                luasnip.expand()
               else
-                  fallback()
+                cmp.confirm({
+                  select = true,
+                })
               end
+            else
+              fallback()
+            end
           end),
           ['<Tab>'] = cmp.mapping(function(fallback)
             if cmp.visible() then
@@ -221,17 +221,33 @@ require('lazy').setup({
   },
   {
     'neovim/nvim-lspconfig',
-    ft = { 'go' },
     config = function()
       local lspconfig = require('lspconfig')
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
-      local lsps = { "gopls" }
-      for _, lsp in pairs(lsps) do
-        lspconfig[lsp].setup {
-          capabilities = capabilities,
-          on_attach = lsp_keybinds,
+
+      lspconfig.ts_ls.setup({
+        capabilities = capabilities,
+        on_attach = lsp_keybinds,
+        filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+      })
+
+      lspconfig.gopls.setup({
+        capabilities = capabilities,
+        on_attach = lsp_keybinds,
+        filetypes = { "go" },
+      })
+
+      lspconfig.lua_ls.setup({
+        capabilities = capabilities,
+        on_attach = lsp_keybinds,
+        filetypes = { "lua" },
+        settings = {
+          Lua = {
+            diagnostics = { globals = { 'vim' } }
+          }
         }
-      end
+      })
+
       -- Taken from: https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports
       vim.api.nvim_create_autocmd('BufWritePre', {
         pattern = '*.go',
@@ -271,7 +287,8 @@ require('lazy').setup({
         end,
         group = nvim_metals_group,
       })
-      vim.keymap.set('n', '<leader>gg', require("telescope").extensions.metals.commands, { desc = 'Pull up Metals commands in Telescope picker' })
+      vim.keymap.set('n', '<leader>gg', require("telescope").extensions.metals.commands,
+        { desc = 'Pull up Metals commands in Telescope picker' })
     end
   },
   {
@@ -311,7 +328,7 @@ require('lazy').setup({
         auto_install = true,  -- Automatically install missing parsers when entering buffer
         highlight = { enable = true },
       }
-      require'treesitter-context'.setup {
+      require 'treesitter-context'.setup {
         enable = false, -- Default to false, because it can be annoying, but keeping it around in case I want it
       }
     end,
@@ -393,8 +410,10 @@ require('lazy').setup({
         target_pane = string.format('%s.2', slimux.get_tmux_window()),
       })
       local set = vim.keymap.set
-      set('v', '<leader>r', ':lua require("slimux").send_highlighted_text()<CR>', { desc = 'Send currently highlighted text to configured tmux pane' })
-      set('n', '<leader>r', ':lua require("slimux").send_paragraph_text()<CR>', { desc = 'Send paragraph under cursor to configured tmux pane' })
+      set('v', '<leader>r', ':lua require("slimux").send_highlighted_text()<CR>',
+        { desc = 'Send currently highlighted text to configured tmux pane' })
+      set('n', '<leader>r', ':lua require("slimux").send_paragraph_text()<CR>',
+        { desc = 'Send paragraph under cursor to configured tmux pane' })
     end
   },
   'tpope/vim-surround',    -- 'cs{old}{new} to change surround, 'ys{motion}{char}' to add surround
