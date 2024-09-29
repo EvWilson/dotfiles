@@ -419,4 +419,78 @@ require('lazy').setup({
   'tpope/vim-surround',    -- 'cs{old}{new} to change surround, 'ys{motion}{char}' to add surround
   'tpope/vim-sleuth',      -- Detect tabstop and shiftwidth automatically
   'kana/vim-textobj-user', -- Enables custom text objects in other plugins
+  {
+    -- See: https://github.com/yetone/avante.nvim?tab=readme-ov-file#installation
+    "yetone/avante.nvim",
+    cond = function()
+      return os.getenv("LOAD_NVIM_AVANTE") == "1"
+    end,
+    keys = function(_, keys)
+      local opts =
+          require("lazy.core.plugin").values(require("lazy.core.config").spec.plugins["avante.nvim"], "opts", false)
+
+      local mappings = {
+        {
+          opts.mappings.ask,
+          function() require("avante.api").ask() end,
+          desc = "avante: ask",
+          mode = { "n", "v" },
+        },
+        {
+          opts.mappings.refresh,
+          function() require("avante.api").refresh() end,
+          desc = "avante: refresh",
+          mode = "v",
+        },
+        {
+          opts.mappings.edit,
+          function() require("avante.api").edit() end,
+          desc = "avante: edit",
+          mode = { "n", "v" },
+        },
+      }
+      mappings = vim.tbl_filter(function(m) return m[1] and #m[1] > 0 end, mappings)
+      return vim.list_extend(mappings, keys)
+    end,
+    opts = {
+      mappings = {
+        ask = "<leader>ua",
+        edit = "<leader>ue",
+        refresh = "<leader>ur",
+      },
+    },
+    event = "VeryLazy",
+    lazy = false,
+    version = false,
+    build = "make",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "stevearc/dressing.nvim",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      "nvim-tree/nvim-web-devicons",
+      "zbirenbaum/copilot.lua",
+      {
+        "HakonHarnes/img-clip.nvim",
+        event = "VeryLazy",
+        opts = {
+          default = {
+            embed_image_as_base64 = false,
+            prompt_for_file_name = false,
+            drag_and_drop = {
+              insert_mode = true,
+            },
+            use_absolute_path = true,
+          },
+        },
+      },
+      {
+        'MeanderingProgrammer/render-markdown.nvim',
+        opts = {
+          file_types = { "Avante" },
+        },
+        ft = { "Avante" },
+      },
+    },
+  }
 })
