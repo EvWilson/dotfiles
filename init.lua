@@ -229,22 +229,25 @@ require('lazy').setup({
       lspconfig.ts_ls.setup({
         capabilities = capabilities,
         on_attach = lsp_keybinds,
-        filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+        filetypes = { 'typescript', 'typescriptreact', 'javascript', 'javascriptreact' },
       })
 
       lspconfig.gopls.setup({
         capabilities = capabilities,
         on_attach = lsp_keybinds,
-        filetypes = { "go" },
+        filetypes = { 'go' },
       })
 
       lspconfig.lua_ls.setup({
         capabilities = capabilities,
         on_attach = lsp_keybinds,
-        filetypes = { "lua" },
+        filetypes = { 'lua' },
         settings = {
           Lua = {
-            diagnostics = { globals = { 'vim' } }
+            diagnostics = { globals = { 'vim' } },
+            workspace = {
+              library = vim.api.nvim_get_runtime_file('', true),
+            },
           }
         }
       })
@@ -288,7 +291,7 @@ require('lazy').setup({
         end,
         group = nvim_metals_group,
       })
-      vim.keymap.set('n', '<leader>gg', require("telescope").extensions.metals.commands,
+      vim.keymap.set('n', '<leader>gg', require('telescope').extensions.metals.commands,
         { desc = 'Pull up Metals commands in Telescope picker' })
     end
   },
@@ -298,7 +301,7 @@ require('lazy').setup({
       vim.cmd([[MasonUpdate]])
     end,
     config = function()
-      require("mason").setup()
+      require('mason').setup()
     end
   },
   {
@@ -417,37 +420,43 @@ require('lazy').setup({
         { desc = 'Send paragraph under cursor to configured tmux pane' })
     end
   },
+  {
+    'EvWilson/spelunk.nvim',
+    config = function()
+      require('spelunk').setup()
+    end
+  },
   'tpope/vim-surround',    -- 'cs{old}{new} to change surround, 'ys{motion}{char}' to add surround
   'tpope/vim-sleuth',      -- Detect tabstop and shiftwidth automatically
   'kana/vim-textobj-user', -- Enables custom text objects in other plugins
   {
     -- See: https://github.com/yetone/avante.nvim?tab=readme-ov-file#installation
-    "yetone/avante.nvim",
+    'yetone/avante.nvim',
     cond = function()
-      return os.getenv("LOAD_NVIM_AVANTE") == "1"
+      return os.getenv('LOAD_NVIM_AVANTE') == '1'
     end,
     keys = function(_, keys)
       local opts =
-          require("lazy.core.plugin").values(require("lazy.core.config").spec.plugins["avante.nvim"], "opts", false)
+          require('lazy.core.plugin').values(require('lazy.core.config').spec.plugins['avante.nvim'], 'opts', false)
 
       local mappings = {
         {
           opts.mappings.ask,
-          function() require("avante.api").ask() end,
-          desc = "avante: ask",
-          mode = { "n", "v" },
+          function() require('avante.api').ask() end,
+          desc = 'avante: ask',
+          mode = { 'n', 'v' },
         },
         {
           opts.mappings.refresh,
-          function() require("avante.api").refresh() end,
-          desc = "avante: refresh",
-          mode = "v",
+          function() require('avante.api').refresh() end,
+          desc = 'avante: refresh',
+          mode = 'v',
         },
         {
           opts.mappings.edit,
-          function() require("avante.api").edit() end,
-          desc = "avante: edit",
-          mode = { "n", "v" },
+          function() require('avante.api').edit() end,
+          desc = 'avante: edit',
+          mode = { 'n', 'v' },
         },
       }
       mappings = vim.tbl_filter(function(m) return m[1] and #m[1] > 0 end, mappings)
@@ -455,25 +464,25 @@ require('lazy').setup({
     end,
     opts = {
       mappings = {
-        ask = "<leader>ua",
-        edit = "<leader>ue",
-        refresh = "<leader>ur",
+        ask = '<leader>ua',
+        edit = '<leader>ue',
+        refresh = '<leader>ur',
       },
     },
-    event = "VeryLazy",
+    event = 'VeryLazy',
     lazy = false,
     version = false,
-    build = "make",
+    build = 'make',
     dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      "stevearc/dressing.nvim",
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-      "nvim-tree/nvim-web-devicons",
-      "zbirenbaum/copilot.lua",
+      'nvim-treesitter/nvim-treesitter',
+      'stevearc/dressing.nvim',
+      'nvim-lua/plenary.nvim',
+      'MunifTanjim/nui.nvim',
+      'nvim-tree/nvim-web-devicons',
+      'zbirenbaum/copilot.lua',
       {
-        "HakonHarnes/img-clip.nvim",
-        event = "VeryLazy",
+        'HakonHarnes/img-clip.nvim',
+        event = 'VeryLazy',
         opts = {
           default = {
             embed_image_as_base64 = false,
@@ -488,9 +497,9 @@ require('lazy').setup({
       {
         'MeanderingProgrammer/render-markdown.nvim',
         opts = {
-          file_types = { "Avante" },
+          file_types = { 'Avante' },
         },
-        ft = { "Avante" },
+        ft = { 'Avante' },
       },
     },
   }
