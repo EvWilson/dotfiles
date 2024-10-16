@@ -406,7 +406,6 @@ require('lazy').setup({
   },
   {
     'EvWilson/slimux.nvim',
-    -- dir = "~/Documents/slimux.nvim",
     config = function()
       local slimux = require('slimux')
       slimux.setup({
