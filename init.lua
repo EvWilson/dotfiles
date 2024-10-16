@@ -422,6 +422,7 @@ require('lazy').setup({
   },
   {
     'EvWilson/spelunk.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()
       require('spelunk').setup()
     end
