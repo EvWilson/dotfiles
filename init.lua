@@ -423,12 +423,31 @@ require('lazy').setup({
     'EvWilson/spelunk.nvim',
     dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()
-      require('spelunk').setup()
+      require('spelunk').setup({
+        base_mappings = {
+          next_bookmark = '<C-j>',
+          prev_bookmark = '<C-k>',
+        },
+        enable_persist = true,
+      })
     end
   },
-  'tpope/vim-surround',    -- 'cs{old}{new} to change surround, 'ys{motion}{char}' to add surround
-  'tpope/vim-sleuth',      -- Detect tabstop and shiftwidth automatically
-  'kana/vim-textobj-user', -- Enables custom text objects in other plugins
+  {
+    "kylechui/nvim-surround",
+    version = "*",
+    event = "VeryLazy",
+    config = function()
+      require("nvim-surround").setup({})
+    end
+  },
+  'tpope/vim-sleuth',
+  {
+    'ggandor/leap.nvim',
+    dependencies = { 'tpope/vim-repeat' },
+    config = function()
+      require('leap').create_default_mappings()
+    end
+  },
   {
     -- See: https://github.com/yetone/avante.nvim?tab=readme-ov-file#installation
     'yetone/avante.nvim',
