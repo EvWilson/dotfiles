@@ -399,7 +399,12 @@ require('lazy').setup({
     'nvim-lualine/lualine.nvim',
     config = function()
       require('lualine').setup {
-        sections = { lualine_c = { { 'filename', path = 1 } } },
+        sections = {
+          lualine_b = { 'branch', 'diff', 'diagnostics', 'spelunk' },
+          lualine_c = {
+            { 'filename', path = 1 }
+          }
+        },
         tabline = { lualine_a = { { 'buffers', show_filename_only = false } } } -- Show open buffers in top line
       }
     end
@@ -421,7 +426,10 @@ require('lazy').setup({
   },
   {
     'EvWilson/spelunk.nvim',
-    dependencies = { 'nvim-lua/plenary.nvim' },
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope.nvim',
+    },
     config = function()
       require('spelunk').setup({
         base_mappings = {
