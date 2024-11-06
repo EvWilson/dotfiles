@@ -433,6 +433,7 @@ require('lazy').setup({
     config = function()
       require('spelunk').setup({
         base_mappings = {
+          toggle = '<C-h>',
           next_bookmark = '<C-j>',
           prev_bookmark = '<C-k>',
         },
