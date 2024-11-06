@@ -446,7 +446,11 @@ require('lazy').setup({
     version = "*",
     event = "VeryLazy",
     config = function()
-      require("nvim-surround").setup({})
+      require("nvim-surround").setup({
+        keymaps = {
+          delete = '<leader>ds'
+        }
+      })
     end
   },
   'tpope/vim-sleuth',
