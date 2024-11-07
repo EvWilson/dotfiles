@@ -26,6 +26,17 @@ alias ls='ls --color=auto'
 
 alias epoch='date +%s'
 
+assert_arglen() {
+	local expected_count="$1"
+	shift
+	if [ "$#" -ne "$expected_count" ]; then
+		local caller="${FUNCNAME[1]:-main}"
+		echo "error: $caller requires exactly $expected_count argument(s), but got $#" >&2
+		return 1
+	fi
+	return 0
+}
+
 # In existing tmux window, open preferred format and change all open windows to cwd
 winme() {
     local CURR_DIR=`pwd`
@@ -71,7 +82,7 @@ nagger() {
 
 nagme() {
     if (( $# < 2 )); then
-        echo "Please supply a number to represent minutes, and then the text of your notification"
+        echo "Please supply a period (e.g. 10m, 5s), and then the text of your notification"
         return 1
     fi
     PERIOD=$1
@@ -93,18 +104,7 @@ nagme() {
     nagger $VALUE $TEXT & disown
 }
 
-assert_arglen() {
-	local expected_count="$1"
-	shift
-	if [ "$#" -ne "$expected_count" ]; then
-		local caller="${FUNCNAME[1]:-main}"
-		echo "error: $caller requires exactly $expected_count argument(s), but got $#" >&2
-		return 1
-	fi
-	return 0
-}
 
 cdme() {
-	assert_arglen 1 $@ || return 1
-	cd "$(fd -t d $1 ~/Documents | fzf --preview 'tree -L 1 {}')"
+	cd "$(fd -t d . ~/Documents | fzf --preview 'tree -L 1 {}')"
 }
