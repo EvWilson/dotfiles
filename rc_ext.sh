@@ -92,3 +92,19 @@ nagme() {
     fi
     nagger $VALUE $TEXT & disown
 }
+
+assert_arglen() {
+	local expected_count="$1"
+	shift
+	if [ "$#" -ne "$expected_count" ]; then
+		local caller="${FUNCNAME[1]:-main}"
+		echo "error: $caller requires exactly $expected_count argument(s), but got $#" >&2
+		return 1
+	fi
+	return 0
+}
+
+cdme() {
+	assert_arglen 1 $@ || return 1
+	cd "$(fd -t d $1 ~/Documents | fzf --preview 'tree -L 1 {}')"
+}
