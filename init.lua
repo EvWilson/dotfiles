@@ -242,14 +242,6 @@ require('lazy').setup({
         capabilities = capabilities,
         on_attach = lsp_keybinds,
         filetypes = { 'lua' },
-        settings = {
-          Lua = {
-            diagnostics = { globals = { 'vim' } },
-            workspace = {
-              library = vim.api.nvim_get_runtime_file('', true),
-            },
-          }
-        }
       })
 
       -- Taken from: https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports
