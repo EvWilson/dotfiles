@@ -430,6 +430,7 @@ require('lazy').setup({
           prev_bookmark = '<C-k>',
         },
         enable_persist = true,
+        orientation = 'horizontal',
       })
     end
   },
