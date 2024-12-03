@@ -31,7 +31,7 @@ vim.opt.termguicolors = true
 vim.opt.list = true
 vim.opt.listchars:append('space:·')
 -- Bash, pls
-vim.opt.shell = '/bin/bash'
+vim.opt.shell = '/usr/bin/env bash'
 -- Disable netrw, in favor of a more featureful filetree viewer
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
@@ -65,6 +65,7 @@ vim.keymap.set('i', '{<cr>', '{<cr>}<esc>O', { desc = 'Automatically match brack
 vim.keymap.set('i', '(<cr>', '(<cr>)<esc>O', { desc = 'Automatically match parens' })
 vim.keymap.set('n', '<c-l>', ':noh<cr>', { desc = 'Clear search highlight' })
 vim.keymap.set('n', '<leader>a', ':keepjumps normal! ggVG<cr>', { desc = 'Select all text in the current buffer' })
+vim.keymap.set('v', '<leader>x', ':lua<CR>', { desc = 'Execute selected Lua code (for plugin/config dev)' })
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight yanked text',
@@ -447,85 +448,4 @@ require('lazy').setup({
     end
   },
   'tpope/vim-sleuth',
-  {
-    'ggandor/leap.nvim',
-    dependencies = { 'tpope/vim-repeat' },
-    config = function()
-      require('leap').create_default_mappings()
-    end
-  },
-  {
-    -- See: https://github.com/yetone/avante.nvim?tab=readme-ov-file#installation
-    'yetone/avante.nvim',
-    cond = function()
-      return os.getenv('LOAD_NVIM_AVANTE') == '1'
-    end,
-    keys = function(_, keys)
-      local opts =
-          require('lazy.core.plugin').values(require('lazy.core.config').spec.plugins['avante.nvim'], 'opts', false)
-
-      local mappings = {
-        {
-          opts.mappings.ask,
-          function() require('avante.api').ask() end,
-          desc = 'avante: ask',
-          mode = { 'n', 'v' },
-        },
-        {
-          opts.mappings.refresh,
-          function() require('avante.api').refresh() end,
-          desc = 'avante: refresh',
-          mode = 'v',
-        },
-        {
-          opts.mappings.edit,
-          function() require('avante.api').edit() end,
-          desc = 'avante: edit',
-          mode = { 'n', 'v' },
-        },
-      }
-      mappings = vim.tbl_filter(function(m) return m[1] and #m[1] > 0 end, mappings)
-      return vim.list_extend(mappings, keys)
-    end,
-    opts = {
-      mappings = {
-        ask = '<leader>ua',
-        edit = '<leader>ue',
-        refresh = '<leader>ur',
-      },
-    },
-    event = 'VeryLazy',
-    lazy = false,
-    version = false,
-    build = 'make',
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter',
-      'stevearc/dressing.nvim',
-      'nvim-lua/plenary.nvim',
-      'MunifTanjim/nui.nvim',
-      'nvim-tree/nvim-web-devicons',
-      'zbirenbaum/copilot.lua',
-      {
-        'HakonHarnes/img-clip.nvim',
-        event = 'VeryLazy',
-        opts = {
-          default = {
-            embed_image_as_base64 = false,
-            prompt_for_file_name = false,
-            drag_and_drop = {
-              insert_mode = true,
-            },
-            use_absolute_path = true,
-          },
-        },
-      },
-      {
-        'MeanderingProgrammer/render-markdown.nvim',
-        opts = {
-          file_types = { 'Avante' },
-        },
-        ft = { 'Avante' },
-      },
-    },
-  }
 })
