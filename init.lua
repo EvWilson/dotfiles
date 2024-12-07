@@ -52,8 +52,6 @@ vim.keymap.set('n', '<leader>w', ':w<cr>', { desc = 'Quicksave' })
 vim.keymap.set('n', ';', ':', { desc = 'Enter command mode easier' })
 vim.keymap.set('i', 'jh', '<esc>', { desc = 'Escape insert mode from home' })
 vim.keymap.set('n', '<leader>d', ':bd<cr>', { desc = 'Delete current buffer' })
-vim.keymap.set('n', '<c-n>', ':bnext<cr>', { desc = 'Cycle to next buffer', silent = true })
-vim.keymap.set('n', '<c-p>', ':bprevious<cr>', { desc = 'Cycle to previous buffer', silent = true })
 
 -- Make navigating, yanking, etc easier
 vim.keymap.set({ 'n', 'v' }, 'H', '^', { desc = 'Navigate to line start' })
@@ -398,7 +396,7 @@ require('lazy').setup({
             { 'filename', path = 1 }
           }
         },
-        tabline = { lualine_a = { { 'buffers', show_filename_only = false } } } -- Show open buffers in top line
+        -- tabline = { lualine_a = { { 'buffers', show_filename_only = false } } } -- Show open buffers in top line
       }
     end
   },
