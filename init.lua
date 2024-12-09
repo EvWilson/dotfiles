@@ -243,6 +243,16 @@ require('lazy').setup({
         filetypes = { 'lua' },
       })
 
+      lspconfig.basedpyright.setup {
+        capabilities = capabilities,
+        on_attach = lsp_keybinds,
+        filetypes = { 'python' },
+      }
+      lspconfig.ruff.setup {
+        cmd = { 'uv', 'run', 'ruff', 'server' },
+        filetypes = { 'python' }
+      }
+
       -- Taken from: https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports
       vim.api.nvim_create_autocmd('BufWritePre', {
         pattern = '*.go',
@@ -417,6 +427,7 @@ require('lazy').setup({
   },
   {
     'EvWilson/spelunk.nvim',
+    -- dir = '~/Documents/spelunk.nvim',
     dependencies = {
       'nvim-lua/plenary.nvim',
       'nvim-telescope/telescope.nvim',
