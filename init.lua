@@ -47,23 +47,22 @@ vim.opt.clipboard:append('unnamedplus')
 -- >>> Non-Plugin Key Mappings <<<
 -- NOTE: keymaps are default non-recursive now, yay!
 --------------------------------------------------------------------------------
+local set = vim.keymap.set
 -- My old faithfuls, you can't convince me these aren't right
-vim.keymap.set('n', '<leader>w', ':w<cr>', { desc = 'Quicksave' })
-vim.keymap.set('n', ';', ':', { desc = 'Enter command mode easier' })
-vim.keymap.set('i', 'jh', '<esc>', { desc = 'Escape insert mode from home' })
-vim.keymap.set('n', '<leader>d', ':bd<cr>', { desc = 'Delete current buffer' })
+set('n', '<leader>w', ':w<CR>', { desc = 'Quicksave' })
+set('n', ';', ':', { desc = 'Enter command mode easier' })
+set('i', 'jh', '<esc>', { desc = 'Escape insert mode from home' })
+set('n', '<leader>yf', ':let @+ = expand("%")', { desc = 'Yank relative path of current buffer to clipboard' })
 
 -- Make navigating, yanking, etc easier
-vim.keymap.set({ 'n', 'v' }, 'H', '^', { desc = 'Navigate to line start' })
-vim.keymap.set({ 'n', 'v' }, 'L', '$', { desc = 'Navigate to line end' })
-vim.keymap.set('n', 'Y', 'yg_', { desc = 'Make Y behave sanely' })
+set({ 'n', 'v' }, 'H', '^', { desc = 'Navigate to line start' })
+set({ 'n', 'v' }, 'L', '$', { desc = 'Navigate to line end' })
+set('n', 'Y', 'yg_', { desc = 'Make Y behave sanely' })
 
 -- Niceties
-vim.keymap.set('i', '{<cr>', '{<cr>}<esc>O', { desc = 'Automatically match brackets' })
-vim.keymap.set('i', '(<cr>', '(<cr>)<esc>O', { desc = 'Automatically match parens' })
-vim.keymap.set('n', '<c-l>', ':noh<cr>', { desc = 'Clear search highlight' })
-vim.keymap.set('n', '<leader>a', ':keepjumps normal! ggVG<cr>', { desc = 'Select all text in the current buffer' })
-vim.keymap.set('v', '<leader>x', ':lua<CR>', { desc = 'Execute selected Lua code (for plugin/config dev)' })
+set('i', '{<CR>', '{<CR>}<esc>O', { desc = 'Automatically match brackets' })
+set('i', '(<CR>', '(<CR>)<esc>O', { desc = 'Automatically match parens' })
+set('v', '<leader>x', ':lua<CR>', { desc = 'Execute selected Lua code (for plugin/config dev)' })
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight yanked text',
@@ -87,19 +86,18 @@ local lsp_keybinds = function(_, _)
   -- vim.diagnostic.goto_prev
   -- vim.diagnostic.goto_next
   -- vim.diagnostic.setloclist
-  local map = vim.keymap.set
-  map('n', 'gd', vim.lsp.buf.definition)
-  map('n', 'K', vim.lsp.buf.hover)
-  map('n', 'gi', vim.lsp.buf.implementation)
-  map('n', 'gr', vim.lsp.buf.references)
-  -- map('n', 'gds', vim.lsp.buf.document_symbol)
-  map('n', 'gws', vim.lsp.buf.workspace_symbol)
-  map('n', '<leader>cl', vim.lsp.codelens.run)
-  map('n', '<leader>sh', vim.lsp.buf.signature_help)
-  map('n', '<leader>rn', vim.lsp.buf.rename)
-  map('n', '<leader>f', vim.lsp.buf.format)
-  map('n', '<leader>ca', vim.lsp.buf.code_action)
-  map('n', '<leader>od', vim.diagnostic.open_float)
+  set('n', 'gd', vim.lsp.buf.definition)
+  set('n', 'K', vim.lsp.buf.hover)
+  set('n', 'gi', vim.lsp.buf.implementation)
+  set('n', 'gr', vim.lsp.buf.references)
+  -- set('n', 'gds', vim.lsp.buf.document_symbol)
+  set('n', 'gws', vim.lsp.buf.workspace_symbol)
+  set('n', '<leader>cl', vim.lsp.codelens.run)
+  set('n', '<leader>sh', vim.lsp.buf.signature_help)
+  set('n', '<leader>rn', vim.lsp.buf.rename)
+  set('n', '<leader>f', vim.lsp.buf.format)
+  set('n', '<leader>ca', vim.lsp.buf.code_action)
+  set('n', '<leader>od', vim.diagnostic.open_float)
 
   vim.api.nvim_create_autocmd('BufWritePre', {
     command = 'silent! lua vim.lsp.buf.format({ async = false, timeout = 2000 })',
@@ -146,7 +144,6 @@ require('lazy').setup({
           group_empty = true,
         }
       })
-      local set = vim.keymap.set
       local api = require('nvim-tree.api')
       set('n', 'tt', api.tree.toggle, { desc = 'Toggle filetree viewer' })
       set('n', 'tc', api.tree.collapse_all, { desc = 'Close open folders in filetree viewer' })
@@ -292,7 +289,7 @@ require('lazy').setup({
         end,
         group = nvim_metals_group,
       })
-      vim.keymap.set('n', '<leader>gg', require('telescope').extensions.metals.commands,
+      set('n', '<leader>gg', require('telescope').extensions.metals.commands,
         { desc = 'Pull up Metals commands in Telescope picker' })
     end
   },
@@ -403,7 +400,6 @@ require('lazy').setup({
       end
 
       local t = require('telescope.builtin')
-      local set = vim.keymap.set
       set('n', '<leader>h', t.find_files, { desc = 'Telescope find files' })
       set('n', '<leader>j', t.buffers, { desc = 'Telescope find buffers' })
       set('n', '<leader>k', live_globular_grep, { desc = 'Telescope - custom globular grep' })
@@ -424,7 +420,6 @@ require('lazy').setup({
       require('nvim-dap-virtual-text').setup()
       require('dap-go').setup()
 
-      local set = vim.keymap.set
       set('n', '<leader>gb', ':lua require("dap").toggle_breakpoint()<CR>', { desc = 'Toggle DAP breakpoint' })
       set('n', '<leader>gc', ':lua require("dap").continue()<CR>', { desc = 'Continue in DAP' })
       set('n', '<leader>go', ':lua require("dap").step_over()<CR>', { desc = 'Step over in DAP' })
@@ -460,7 +455,6 @@ require('lazy').setup({
         target_socket = slimux.get_tmux_socket(),
         target_pane = string.format('%s.2', slimux.get_tmux_window()),
       })
-      local set = vim.keymap.set
       set('v', '<leader>r', ':lua require("slimux").send_highlighted_text()<CR>',
         { desc = 'Send currently highlighted text to configured tmux pane' })
       set('n', '<leader>r', ':lua require("slimux").send_paragraph_text()<CR>',
