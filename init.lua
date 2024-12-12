@@ -360,11 +360,54 @@ require('lazy').setup({
         }
       }
       require('telescope').load_extension('fzf')
+
+      local live_globular_grep = function(opts)
+        opts = opts or {}
+        opts.cwd = opts.cwd or vim.fn.getcwd()
+
+        local finder = require('telescope.finders').new_async_job {
+          command_generator = function(prompt)
+            if not prompt or prompt == "" then
+              return nil
+            end
+            local pieces = vim.split(prompt, '  ')
+            local args = { 'rg' }
+            if pieces[1] then
+              table.insert(args, '-e')
+              table.insert(args, pieces[1])
+            end
+            if pieces[2] then
+              table.insert(args, '-g')
+              table.insert(args, pieces[2])
+            end
+            --@diagnostic disable-next-line: deprecated
+            return vim.tbl_flatten {
+              args,
+              { '--color=never', '--no-heading', '--with-filename', '--line-number', '--column', '--smart-case' }
+            }
+          end,
+          entry_maker = require('telescope.make_entry').gen_from_vimgrep(opts),
+          cwd = opts.cwd,
+        }
+
+        require('telescope.pickers').new(
+          opts,
+          {
+            debounce = 100,
+            prompt_title = 'Globular Grep',
+            finder = finder,
+            previewer = require('telescope.config').values.grep_previewer(opts),
+            sorter = require('telescope.sorters').empty(),
+          }
+        ):find()
+      end
+
       local t = require('telescope.builtin')
       local set = vim.keymap.set
       set('n', '<leader>h', t.find_files, { desc = 'Telescope find files' })
       set('n', '<leader>j', t.buffers, { desc = 'Telescope find buffers' })
-      set('n', '<leader>k', t.live_grep, { desc = 'Telescope live grep' })
+      set('n', '<leader>k', live_globular_grep, { desc = 'Telescope - custom globular grep' })
+      set('n', '<leader>qk', t.live_grep, { desc = 'Telescope live grep' })
     end,
   },
   {
@@ -406,7 +449,6 @@ require('lazy').setup({
             { 'filename', path = 1 }
           }
         },
-        -- tabline = { lualine_a = { { 'buffers', show_filename_only = false } } } -- Show open buffers in top line
       }
     end
   },
