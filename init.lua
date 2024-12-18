@@ -357,7 +357,6 @@ require('lazy').setup({
         }
       }
       require('telescope').load_extension('fzf')
-
       local live_globular_grep = function(opts)
         opts = opts or {}
         opts.cwd = opts.cwd or vim.fn.getcwd()
@@ -469,7 +468,8 @@ require('lazy').setup({
       'nvim-telescope/telescope.nvim',
     },
     config = function()
-      require('spelunk').setup({
+      local spelunk = require('spelunk')
+      spelunk.setup({
         base_mappings = {
           toggle = '<C-h>',
           next_bookmark = '<C-j>',
@@ -478,6 +478,12 @@ require('lazy').setup({
         enable_persist = true,
         orientation = 'horizontal',
       })
+      spelunk.display_function = function(mark)
+        local ctx = require('spelunk.util').get_treesitter_context(mark)
+        ctx = (ctx == '' and ctx) or (' - ' .. ctx)
+        local filename = spelunk.filename_formatter(mark.file)
+        return string.format("%s:%d%s", filename, mark.line, ctx)
+      end
     end
   },
   {
