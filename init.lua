@@ -250,6 +250,12 @@ require('lazy').setup({
         filetypes = { 'python' }
       }
 
+      lspconfig.rust_analyzer.setup {
+        capabilities = capabilities,
+        on_attach = lsp_keybinds,
+        filetypes = { 'rust' },
+      }
+
       -- Taken from: https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports
       vim.api.nvim_create_autocmd('BufWritePre', {
         pattern = '*.go',
