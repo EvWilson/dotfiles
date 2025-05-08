@@ -109,17 +109,20 @@ end
 --------------------------------------------------------------------------------
 -- >>> Plugin Configuration <<<
 --------------------------------------------------------------------------------
--- Bootstrap lazy.nvim: https://github.com/folke/lazy.nvim#-installation
-local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
-if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    'git',
-    'clone',
-    '--filter=blob:none',
-    'https://github.com/folke/lazy.nvim.git',
-    '--branch=stable', -- latest stable release
-    lazypath,
-  })
+-- Bootstrap lazy.nvim: https://lazy.folke.io/installation
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  if vim.v.shell_error ~= 0 then
+    vim.api.nvim_echo({
+      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+      { out,                            "WarningMsg" },
+      { "\nPress any key to exit..." },
+    }, true, {})
+    vim.fn.getchar()
+    os.exit(1)
+  end
 end
 vim.opt.rtp:prepend(lazypath)
 
@@ -266,44 +269,7 @@ require('lazy').setup({
     end,
   },
   {
-    'scalameta/nvim-metals',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      {
-        'j-hui/fidget.nvim',
-        opts = {},
-      },
-    },
-    ft = { 'scala', 'sbt', 'java' },
-    opts = function()
-      local metals_config = require('metals').bare_config()
-      metals_config.settings = {
-        showImplicitArguments = true,
-        showImplicitConversionsAndClasses = true,
-        showInferredType = true,
-      }
-      metals_config.init_options.statusBarProvider = 'off'
-      metals_config.on_attach = lsp_keybinds
-      return metals_config
-    end,
-    config = function(self, metals_config)
-      local nvim_metals_group = vim.api.nvim_create_augroup('nvim-metals', { clear = true })
-      vim.api.nvim_create_autocmd('FileType', {
-        pattern = self.ft,
-        callback = function()
-          require('metals').initialize_or_attach(metals_config)
-        end,
-        group = nvim_metals_group,
-      })
-      set('n', '<leader>gg', require('telescope').extensions.metals.commands,
-        { desc = 'Pull up Metals commands in Telescope picker' })
-    end
-  },
-  {
-    'williamboman/mason.nvim',
-    build = function()
-      vim.cmd([[MasonUpdate]])
-    end,
+    "mason-org/mason.nvim",
     config = function()
       require('mason').setup()
     end
