@@ -76,49 +76,19 @@ vim.api.nvim_create_user_command('BufOnly',
   { desc = 'Close all buffers (including filetree) other than the current' }
 )
 
-local lsp_keybinds = function(_, _)
-  -- Other not-yet-explicitly-bound options:
-  -- vim.lsp.buf.declaration
-  -- vim.lsp.buf.add_workspace_folder
-  -- vim.lsp.buf.remove_workspace_folder
-  -- lsp.buf.list_workspace_folders
-  -- vim.lsp.buf.type_definition
-  -- vim.diagnostic.goto_prev
-  -- vim.diagnostic.goto_next
-  -- vim.diagnostic.setloclist
-  set('n', 'gd', vim.lsp.buf.definition)
-  set('n', 'K', vim.lsp.buf.hover)
-  set('n', 'gi', vim.lsp.buf.implementation)
-  set('n', 'gr', vim.lsp.buf.references)
-  -- set('n', 'gds', vim.lsp.buf.document_symbol)
-  set('n', 'gws', vim.lsp.buf.workspace_symbol)
-  set('n', '<leader>cl', vim.lsp.codelens.run)
-  set('n', '<leader>sh', vim.lsp.buf.signature_help)
-  set('n', '<leader>rn', vim.lsp.buf.rename)
-  set('n', '<leader>f', vim.lsp.buf.format)
-  set('n', '<leader>ca', vim.lsp.buf.code_action)
-  set('n', '<leader>od', vim.diagnostic.open_float)
-
-  vim.api.nvim_create_autocmd('BufWritePre', {
-    command = 'silent! lua vim.lsp.buf.format({ async = false, timeout = 2000 })',
-    desc = 'Format on save',
-  })
-  vim.lsp.inlay_hint.enable(true)
-end
-
 --------------------------------------------------------------------------------
 -- >>> Plugin Configuration <<<
 --------------------------------------------------------------------------------
 -- Bootstrap lazy.nvim: https://lazy.folke.io/installation
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
-  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
+  local out = vim.fn.system({ 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath })
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
-      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-      { out,                            "WarningMsg" },
-      { "\nPress any key to exit..." },
+      { 'Failed to clone lazy.nvim:\n', 'ErrorMsg' },
+      { out,                            'WarningMsg' },
+      { '\nPress any key to exit...' },
     }, true, {})
     vim.fn.getchar()
     os.exit(1)
@@ -222,54 +192,25 @@ require('lazy').setup({
   {
     'neovim/nvim-lspconfig',
     config = function()
-      local lspconfig = require('lspconfig')
-      local capabilities = require('cmp_nvim_lsp').default_capabilities()
-
-      lspconfig.ts_ls.setup({
-        capabilities = capabilities,
-        on_attach = lsp_keybinds,
-        filetypes = { 'typescript', 'typescriptreact', 'javascript', 'javascriptreact' },
-      })
-
-      lspconfig.gopls.setup({
-        capabilities = capabilities,
-        on_attach = lsp_keybinds,
-        filetypes = { 'go' },
-      })
-
-      lspconfig.lua_ls.setup({
-        capabilities = capabilities,
-        on_attach = lsp_keybinds,
-        filetypes = { 'lua' },
-      })
-
-      lspconfig.basedpyright.setup {
-        capabilities = capabilities,
-        on_attach = lsp_keybinds,
-        filetypes = { 'python' },
-      }
-      lspconfig.ruff.setup {
-        cmd = { 'uv', 'run', 'ruff', 'server' },
-        filetypes = { 'python' }
-      }
-
-      lspconfig.rust_analyzer.setup {
-        capabilities = capabilities,
-        on_attach = lsp_keybinds,
-        filetypes = { 'rust' },
-      }
-
-      -- Taken from: https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports
-      vim.api.nvim_create_autocmd('BufWritePre', {
-        pattern = '*.go',
-        callback = function()
-          vim.lsp.buf.code_action({ context = { only = { 'source.organizeImports' } }, apply = true })
-        end
-      })
+      vim.lsp.enable('gopls')
+      vim.lsp.enable('ts_ls')
+      vim.lsp.enable('lua_ls')
+      vim.lsp.enable('basedpyright')
+      vim.lsp.enable('ruff')
+      vim.lsp.enable('rust_analyzer')
     end,
   },
   {
-    "mason-org/mason.nvim",
+    'stevearc/conform.nvim',
+    opts = {
+      formatters_by_ft = {
+        go = { "gofumpt" },
+      },
+      format_on_save = { timeout_ms = 500 },
+    },
+  },
+  {
+    'mason-org/mason.nvim',
     config = function()
       require('mason').setup()
     end
@@ -335,7 +276,7 @@ require('lazy').setup({
 
         local finder = require('telescope.finders').new_async_job {
           command_generator = function(prompt)
-            if not prompt or prompt == "" then
+            if not prompt or prompt == '' then
               return nil
             end
             local pieces = vim.split(prompt, '  ')
@@ -454,16 +395,16 @@ require('lazy').setup({
         local ctx = require('spelunk.util').get_treesitter_context(mark)
         ctx = (ctx == '' and ctx) or (' - ' .. ctx)
         local filename = spelunk.filename_formatter(mark.file)
-        return string.format("%s:%d%s", filename, mark.line, ctx)
+        return string.format('%s:%d%s', filename, mark.line, ctx)
       end
     end
   },
   {
-    "kylechui/nvim-surround",
-    version = "*",
-    event = "VeryLazy",
+    'kylechui/nvim-surround',
+    version = '*',
+    event = 'VeryLazy',
     config = function()
-      require("nvim-surround").setup({
+      require('nvim-surround').setup({
         keymaps = {
           delete = '<leader>ds'
         }
