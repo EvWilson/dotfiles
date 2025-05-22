@@ -192,6 +192,11 @@ require('lazy').setup({
   {
     'neovim/nvim-lspconfig',
     config = function()
+      -- Keybind cheatsheet:
+      -- Goto def: C-]
+      -- Back: C-t
+      -- Next/prev diagnostic: ]d/[d
+      -- Show diagnostic: C-w d
       vim.lsp.enable('gopls')
       vim.lsp.enable('ts_ls')
       vim.lsp.enable('lua_ls')
