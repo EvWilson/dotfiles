@@ -203,6 +203,12 @@ require('lazy').setup({
       vim.lsp.enable('basedpyright')
       vim.lsp.enable('ruff')
       vim.lsp.enable('rust_analyzer')
+
+      -- Additional keybinds I'm setting because the baseline aren't quite cutting it for me
+      set('n', '<leader>ca', vim.lsp.buf.code_action, { desc = 'Code action' })
+      set('n', 'gd', vim.lsp.buf.definition, { desc = 'Go to definition' })
+      set('n', 'gr', vim.lsp.buf.references, { desc = 'Go to references' })
+      set('n', '<leader>rn', vim.lsp.buf.rename, { desc = 'Rename' })
     end,
   },
   {
