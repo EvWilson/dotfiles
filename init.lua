@@ -76,6 +76,42 @@ vim.api.nvim_create_user_command('BufOnly',
   { desc = 'Close all buffers (including filetree) other than the current' }
 )
 
+local function run_go_test_command(cmd, success_title, fail_title)
+  -- Run the command in the current file's directory
+  local file_dir = vim.fn.expand("%:p:h") -- Get the directory of the current file
+  local output = vim.fn.systemlist("cd " .. file_dir .. " && " .. cmd)
+  local output_str = table.concat(output, "\n")
+  local timeout = 5000
+  if vim.v.shell_error == 0 then
+    vim.notify(output_str, vim.log.levels.INFO, { title = success_title, timeout = timeout })
+  else
+    vim.notify(
+      "Error running go test:\n" .. output_str,
+      vim.log.levels.ERROR,
+      { title = fail_title, timeout = timeout }
+    )
+  end
+end
+local function run_nearest_go_test()
+  -- Get the test name under the cursor
+  local test_name = vim.fn.search("^func Test", "bnW")
+  if test_name == 0 then
+    vim.notify("No test function found near the cursor", vim.log.levels.WARN, { title = "Go Test" })
+    return
+  end
+  -- Extract the name of the test function
+  local line = vim.fn.getline(test_name)
+  local test_func = line:match("^func%s+(Test%w+)")
+  if not test_func then
+    vim.notify("Failed to parse test function name", vim.log.levels.ERROR, { title = "Go Test" })
+    return
+  end
+  -- Build and run the `go test` command
+  local cmd = "go test -v -run " .. test_func
+  run_go_test_command(cmd, "Go Test Success", "Go Test Failed")
+end
+vim.api.nvim_create_user_command("Gotest", run_nearest_go_test, {})
+
 --------------------------------------------------------------------------------
 -- >>> Plugin Configuration <<<
 --------------------------------------------------------------------------------
@@ -115,7 +151,7 @@ require('lazy').setup({
       require('nvim-tree').setup({
         renderer = {
           group_empty = true,
-        }
+        },
       })
       local api = require('nvim-tree.api')
       set('n', 'tt', api.tree.toggle, { desc = 'Toggle filetree viewer' })
@@ -330,24 +366,151 @@ require('lazy').setup({
     end,
   },
   {
-    -- Debug Adapter Protocol with associated UI
-    'rcarriga/nvim-dap-ui',
+    'mfussenegger/nvim-dap',
     dependencies = {
-      'mfussenegger/nvim-dap',
-      'nvim-neotest/nvim-nio',
-      'theHamsta/nvim-dap-virtual-text',
+      'rcarriga/nvim-dap-ui',
       'leoluz/nvim-dap-go',
+      'nvim-neotest/nvim-nio',
     },
+    init = function()
+      local function toggle_ui()
+        require('dapui').toggle({ reset = true })
+      end
+      _G.toggle_ui = toggle_ui
+    end,
     config = function()
-      require('dapui').setup()
-      require('nvim-dap-virtual-text').setup()
+      local dap = require('dap')
+      local dapui = require('dapui')
       require('dap-go').setup()
-
-      set('n', '<leader>gb', ':lua require("dap").toggle_breakpoint()<CR>', { desc = 'Toggle DAP breakpoint' })
-      set('n', '<leader>gc', ':lua require("dap").continue()<CR>', { desc = 'Continue in DAP' })
-      set('n', '<leader>go', ':lua require("dap").step_over()<CR>', { desc = 'Step over in DAP' })
-      set('n', '<leader>gi', ':lua require("dap").step_into()<CR>', { desc = 'Step into in DAP' })
-      set('n', '<leader>gq', ':lua require("dap").terminate()<CR>', { desc = 'Terminate DAP session' })
+      dapui.setup({
+        layouts = {
+          {
+            elements = {
+              { id = 'stacks', size = 0.3 },
+              { id = 'breakpoints', size = 0.3 },
+            },
+            size = 30,
+            position = 'right',
+          },
+          {
+            elements = {
+              { id = 'watches', size = 0.5 },
+              { id = 'scopes', size = 0.5 },
+            },
+            size = 10,
+            position = 'bottom',
+          },
+        },
+      })
+      -- Clean up duplicate configs
+      local unique_configs = {}
+      local seen = {}
+      for _, config in ipairs(dap.configurations.go or {}) do
+        if not seen[config.name] then
+          table.insert(unique_configs, config)
+          seen[config.name] = true
+        end
+      end
+      -- Add custom headless attach config
+      table.insert(unique_configs, 1, {
+        name = 'Attach To Headless (127.0.0.1:2346)',
+        type = 'go',
+        request = 'attach',
+        mode = 'remote',
+        host = '127.0.0.1',
+        port = 2346,
+      })
+      table.insert(unique_configs, 1, {
+        name = 'Attach To Headless (127.0.0.1:2345)',
+        type = 'go',
+        request = 'attach',
+        mode = 'remote',
+        host = '127.0.0.1',
+        port = 2345,
+      })
+      dap.configurations.go = unique_configs
+      -- Auto open/close UI when debugging starts/stops
+      dap.listeners.after.event_initialized['dapui_config'] = function()
+        _G.toggle_ui()
+      end
+      dap.listeners.before.event_terminated['dapui_config'] = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited['dapui_config'] = function()
+        dapui.close()
+      end
+      dap.listeners.after.event_stopped['dapui_config'] = function()
+        dapui.open()
+      end
+    end,
+    keys = function()
+      local dap = require('dap')
+      local dap_go = require('dap-go')
+      return {
+        {
+          '<leader>du',
+          function()
+            _G.toggle_ui()
+          end,
+          desc = 'Toggle Debug UI',
+        },
+        {
+          '<leader>dc',
+          function()
+            dap.continue()
+          end,
+          desc = 'Start/Continue Debugging',
+        },
+        {
+          '<leader>dC',
+          function()
+            dap.clear_breakpoints()
+          end,
+          desc = 'Clear breakpoints',
+        },
+        {
+          '<leader>dn',
+          function()
+            dap.step_over()
+          end,
+          desc = 'Step Over',
+        },
+        {
+          '<leader>di',
+          function()
+            dap.step_into()
+          end,
+          desc = 'Step Into',
+        },
+        {
+          '<leader>do',
+          function()
+            dap.step_out()
+          end,
+          desc = 'Step Out',
+        },
+        {
+          '<leader>db',
+          function()
+            dap.toggle_breakpoint()
+          end,
+          desc = 'Toggle Breakpoint',
+        },
+        {
+          '<leader>df',
+          function()
+            dap.focus_frame()
+          end,
+          desc = 'Focus',
+        },
+        {
+          '<leader>dt',
+          function()
+            dap_go.debug_test()
+          end,
+          desc = 'Debug test',
+        },
+      }
     end,
   },
   {
