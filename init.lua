@@ -163,67 +163,18 @@ require('lazy').setup({
     end,
   },
   {
-    'hrsh7th/nvim-cmp',
-    dependencies = {
-      { 'hrsh7th/cmp-nvim-lsp' },
-      { 'L3MON4D3/LuaSnip' },
-      { 'saadparwaiz1/cmp_luasnip' },
+    'saghen/blink.cmp',
+    -- use a release tag to download pre-built binaries
+    version = '1.*',
+    opts = {
+      keymap = {
+        ['<S-Tab>'] = { 'select_prev', 'fallback' },
+        ['<Tab>'] = { 'select_next', 'fallback' },
+        preset = 'enter',
+      },
+      completion = { documentation = { auto_show = true } },
     },
-    config = function()
-      local cmp = require('cmp')
-      local luasnip = require('luasnip')
-
-      cmp.setup({
-        preselect = 'item',
-        completion = {
-          completeopt = 'menu,menuone,noinsert'
-        },
-        snippet = {
-          expand = function(args)
-            luasnip.lsp_expand(args.body)
-          end,
-        },
-        mapping = {
-          ['<CR>'] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              if luasnip.expandable() then
-                luasnip.expand()
-              else
-                cmp.confirm({
-                  select = true,
-                })
-              end
-            else
-              fallback()
-            end
-          end),
-          ['<Tab>'] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            elseif luasnip.locally_jumpable(1) then
-              luasnip.jump(1)
-            else
-              fallback()
-            end
-          end, { 'i', 's' }),
-          ['<S-Tab>'] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            elseif luasnip.locally_jumpable(-1) then
-              luasnip.jump(-1)
-            else
-              fallback()
-            end
-          end, { 'i', 's' }),
-        },
-        sources = cmp.config.sources({
-          { name = 'nvim_lsp' },
-          { name = 'luasnip' },
-        }, {
-          { name = 'buffer' },
-        })
-      })
-    end,
+    opts_extend = { "sources.default" }
   },
   {
     'neovim/nvim-lspconfig',
