@@ -77,42 +77,6 @@ vim.api.nvim_create_user_command(
 	{ desc = "Close all buffers (including filetree) other than the current" }
 )
 
-local function run_go_test_command(cmd, success_title, fail_title)
-	-- Run the command in the current file's directory
-	local file_dir = vim.fn.expand("%:p:h") -- Get the directory of the current file
-	local output = vim.fn.systemlist("cd " .. file_dir .. " && " .. cmd)
-	local output_str = table.concat(output, "\n")
-	local timeout = 5000
-	if vim.v.shell_error == 0 then
-		vim.notify(output_str, vim.log.levels.INFO, { title = success_title, timeout = timeout })
-	else
-		vim.notify(
-			"Error running go test:\n" .. output_str,
-			vim.log.levels.ERROR,
-			{ title = fail_title, timeout = timeout }
-		)
-	end
-end
-local function run_nearest_go_test()
-	-- Get the test name under the cursor
-	local test_name = vim.fn.search("^func Test", "bnW")
-	if test_name == 0 then
-		vim.notify("No test function found near the cursor", vim.log.levels.WARN, { title = "Go Test" })
-		return
-	end
-	-- Extract the name of the test function
-	local line = vim.fn.getline(test_name)
-	local test_func = line:match("^func%s+(Test%w+)")
-	if not test_func then
-		vim.notify("Failed to parse test function name", vim.log.levels.ERROR, { title = "Go Test" })
-		return
-	end
-	-- Build and run the `go test` command
-	local cmd = "go test -v -run " .. test_func
-	run_go_test_command(cmd, "Go Test Success", "Go Test Failed")
-end
-vim.api.nvim_create_user_command("Gotest", run_nearest_go_test, {})
-
 --------------------------------------------------------------------------------
 -- >>> Plugin Configuration <<<
 --------------------------------------------------------------------------------
@@ -197,6 +161,19 @@ require("lazy").setup({
 			set("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
 			set("n", "gr", vim.lsp.buf.references, { desc = "Go to references" })
 			set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename" })
+			--@param dir integer
+			local function jump_and_diagnose(dir)
+				vim.diagnostic.jump({ count = dir })
+				vim.defer_fn(function()
+					vim.diagnostic.open_float()
+				end, 50)
+			end
+			set("n", "]d", function()
+				jump_and_diagnose(1)
+			end, { desc = "Jump to next diagnostic" })
+			set("n", "[d", function()
+				jump_and_diagnose(-1)
+			end, { desc = "Jump to prev diagnostic" })
 		end,
 	},
 	{
@@ -552,5 +529,4 @@ require("lazy").setup({
 			})
 		end,
 	},
-	"tpope/vim-sleuth",
 })
