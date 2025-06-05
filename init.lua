@@ -492,8 +492,8 @@ require("lazy").setup({
 		end,
 	},
 	{
-		-- "EvWilson/spelunk.nvim",
-		dir = "~/Documents/spelunk.nvim",
+		"EvWilson/spelunk.nvim",
+		-- dir = "~/Documents/spelunk.nvim",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"nvim-telescope/telescope.nvim",
