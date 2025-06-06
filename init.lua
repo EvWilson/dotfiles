@@ -53,6 +53,12 @@ set("n", "<leader>w", ":w<CR>", { desc = "Quicksave" })
 set("n", ";", ":", { desc = "Enter command mode easier" })
 set("i", "jh", "<esc>", { desc = "Escape insert mode from home" })
 set("n", "<leader>yf", ':let @+ = expand("%")<CR>', { desc = "Yank relative path of current buffer to clipboard" })
+set(
+	"n",
+	"<leader>yl",
+	':let @+ = expand("%") . ":" . line(".")<CR>',
+	{ desc = "Yank relative path of current buffer to clipboard, including current line number" }
+)
 
 -- Make navigating, yanking, etc easier
 set({ "n", "v" }, "H", "^", { desc = "Navigate to line start" })
