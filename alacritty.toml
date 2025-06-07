@@ -27,3 +27,6 @@ blue    = '#7da6ff'
 magenta = '#bb9af7'
 cyan    = '#0db9d7'
 white   = '#acb0d0'
+
+[window]
+option_as_alt = 'Both'
