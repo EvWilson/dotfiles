@@ -536,4 +536,5 @@ require("lazy").setup({
 			})
 		end,
 	},
+	"tpope/vim-sleuth",
 })
