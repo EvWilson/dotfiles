@@ -65,23 +65,21 @@ set({ "n", "v" }, "H", "^", { desc = "Navigate to line start" })
 set({ "n", "v" }, "L", "$", { desc = "Navigate to line end" })
 set("n", "Y", "yg_", { desc = "Make Y behave sanely" })
 
+-- Quickfix navigation
+set({ "n" }, "<leader>n", ":cnext<CR>", { desc = "Quickfix next shortcut" })
+set({ "n" }, "<leader>p", ":cprev<CR>", { desc = "Quickfix previous shortcut" })
+
 -- Niceties
 set("i", "{<CR>", "{<CR>}<esc>O", { desc = "Automatically match brackets" })
 set("i", "(<CR>", "(<CR>)<esc>O", { desc = "Automatically match parens" })
 set("v", "<leader>x", ":lua<CR>", { desc = "Execute selected Lua code (for plugin/config dev)" })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
-	desc = "Highlight yanked text",
 	callback = function(_)
 		vim.highlight.on_yank({ higroup = "Visual", timeout = 500 })
 	end,
+	desc = "Highlight yanked text",
 })
-
-vim.api.nvim_create_user_command(
-	"BufOnly",
-	'execute "%bd|e#|bd#"',
-	{ desc = "Close all buffers (including filetree) other than the current" }
-)
 
 --------------------------------------------------------------------------------
 -- >>> Plugin Configuration <<<
