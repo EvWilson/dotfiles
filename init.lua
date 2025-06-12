@@ -165,7 +165,7 @@ require("lazy").setup({
 			set("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
 			set("n", "gr", vim.lsp.buf.references, { desc = "Go to references" })
 			set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename" })
-			--@param dir integer
+			---@param dir integer
 			local function jump_and_diagnose(dir)
 				vim.diagnostic.jump({ count = dir })
 				vim.defer_fn(function()
@@ -221,12 +221,12 @@ require("lazy").setup({
 		},
 		config = function()
 			require("nvim-treesitter.configs").setup({
-				sync_install = false, -- Install parsers synchronously (only applied to `ensure_installed`)
-				auto_install = true, -- Automatically install missing parsers when entering buffer
+				sync_install = false,
+				auto_install = true,
 				highlight = { enable = true },
 			})
 			require("treesitter-context").setup({
-				enable = false, -- Default to false, because it can be annoying, but keeping it around in case I want it
+				enable = false,
 			})
 		end,
 	},
@@ -244,10 +244,10 @@ require("lazy").setup({
 				},
 				extensions = {
 					fzf = {
-						fuzzy = true, -- false will only do exact matching
-						override_generic_sorter = true, -- override the generic sorter
-						override_file_sorter = true, -- override the file sorter
-						case_mode = "smart_case", -- or 'ignore_case' or 'respect_case', default is 'smart_case'
+						fuzzy = true,
+						override_generic_sorter = true,
+						override_file_sorter = true,
+						case_mode = "smart_case",
 					},
 				},
 			})
@@ -460,6 +460,9 @@ require("lazy").setup({
 		config = function()
 			require("gitlinker").setup()
 		end,
+	},
+	{
+		"lewis6991/gitsigns.nvim",
 	},
 	{
 		"nvim-lualine/lualine.nvim",
