@@ -160,6 +160,9 @@ require("lazy").setup({
 			vim.lsp.enable("basedpyright")
 			vim.lsp.enable("ruff")
 			vim.lsp.enable("rust_analyzer")
+			vim.lsp.enable("vue_ls")
+
+			-- TODO: figure out JS/TS support from here: https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#vue-support
 
 			-- Additional keybinds I'm setting because the baseline aren't quite cutting it for me
 			set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code action" })
