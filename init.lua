@@ -162,7 +162,23 @@ require("lazy").setup({
 			vim.lsp.enable("rust_analyzer")
 			vim.lsp.enable("vue_ls")
 
-			-- TODO: figure out JS/TS support from here: https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#vue-support
+			-- TODO: figure out the longer-term solution to this: https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#vue-support
+			vim.lsp.config("ts_ls", {
+				init_options = {
+					plugins = {
+						{
+							name = "@vue/typescript-plugin",
+							location = vim.fn.system("npm root -g"):gsub("\n", "") .. "/@vue/typescript-plugin",
+							languages = { "javascript", "typescript", "vue" },
+						},
+					},
+				},
+				filetypes = {
+					"javascript",
+					"typescript",
+					"vue",
+				},
+			})
 
 			-- Additional keybinds I'm setting because the baseline aren't quite cutting it for me
 			set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code action" })
