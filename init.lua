@@ -462,9 +462,7 @@ require("lazy").setup({
 			require("gitlinker").setup()
 		end,
 	},
-	{
-		"lewis6991/gitsigns.nvim",
-	},
+	"lewis6991/gitsigns.nvim",
 	{
 		"nvim-lualine/lualine.nvim",
 		config = function()
