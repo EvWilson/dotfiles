@@ -208,6 +208,7 @@ require("lazy").setup({
 			formatters_by_ft = {
 				go = { "gofumpt" },
 				lua = { "stylua" },
+				python = { "ruff_format" },
 			},
 			format_on_save = { timeout_ms = 500 },
 		},
@@ -521,7 +522,6 @@ require("lazy").setup({
 	},
 	{
 		"EvWilson/spelunk.nvim",
-		-- dir = "~/Documents/spelunk.nvim",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"nvim-telescope/telescope.nvim",
