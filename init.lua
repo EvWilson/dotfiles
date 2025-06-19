@@ -161,6 +161,8 @@ require("lazy").setup({
 			vim.lsp.enable("ruff")
 			vim.lsp.enable("rust_analyzer")
 			vim.lsp.enable("vue_ls")
+			vim.lsp.enable("docker_compose_language_service")
+			vim.lsp.enable("dockerls")
 
 			-- TODO: figure out the longer-term solution to this: https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#vue-support
 			vim.lsp.config("ts_ls", {
