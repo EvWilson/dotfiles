@@ -186,6 +186,7 @@ require("lazy").setup({
 			set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code action" })
 			set("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
 			set("n", "gr", vim.lsp.buf.references, { desc = "Go to references" })
+			set("n", "gr", vim.lsp.buf.implementation, { desc = "Go to implementations" })
 			set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename" })
 			---@param dir integer
 			local function jump_and_diagnose(dir)
