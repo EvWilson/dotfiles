@@ -211,6 +211,7 @@ require("lazy").setup({
 				go = { "gofumpt" },
 				lua = { "stylua" },
 				python = { "ruff_format" },
+				zig = { "zigfmt" },
 			},
 			format_on_save = { timeout_ms = 500 },
 		},
