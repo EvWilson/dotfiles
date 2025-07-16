@@ -13,7 +13,7 @@ parse_git_branch() {
 PROMPT_COMMAND='PS1X=$(p="${PWD#${HOME}}"; [ "${PWD}" != "${p}" ] && printf "~";IFS=/; for q in ${p:1}; do printf /${q:0:1}; done; printf "${q:1}")'
 HOST_COLOR="01;35m"
 PATH_COLOR="01;36m"
-PS1='\[\033[$HOST_COLOR\]\u\[\033[00m\]:\[\033[$PATH_COLOR\]${PS1X}$(parse_git_branch)\[\033[00m\] '
+PS1='\[\033[$PATH_COLOR\]${PS1X}$(parse_git_branch)\[\033[00m\] '
 
 # Adjust FZF to use ripgrep
 export FZF_DEFAULT_COMMAND='rg --files -g "!{.git,node_modules}/*"'
