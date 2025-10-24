@@ -114,7 +114,22 @@ require("lazy").setup({
 	{
 		"folke/snacks.nvim",
 		opts = {
-			picker = {},
+			picker = {
+				layouts = {
+					default = {
+						layout = {
+							box = "vertical",
+							{
+								box = "vertical",
+								title = "{title} {live} {flags}",
+								{ win = "input", height = 1, border = "bottom" },
+								{ win = "list", border = "none" },
+							},
+							{ win = "preview", title = "{preview}" },
+						},
+					},
+				},
+			},
 			explorer = {},
 			lazygit = {},
 			scroll = {},
