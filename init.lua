@@ -115,9 +115,7 @@ require("lazy").setup({
 		"folke/snacks.nvim",
 		opts = {
 			picker = {},
-			explorer = {
-				replace_netrw = true,
-			},
+			explorer = {},
 			lazygit = {},
 			scroll = {},
 		},
@@ -156,6 +154,13 @@ require("lazy").setup({
 					Snacks.lazygit()
 				end,
 				desc = "Lazygit",
+			},
+			{
+				"<leader>.",
+				function()
+					Snacks.scratch()
+				end,
+				desc = "Toggle Scratch Buffer",
 			},
 		},
 	},
