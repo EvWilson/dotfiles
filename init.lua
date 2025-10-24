@@ -112,25 +112,52 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"nvim-tree/nvim-tree.lua",
-		dependencies = {
-			"nvim-tree/nvim-web-devicons",
+		"folke/snacks.nvim",
+		opts = {
+			picker = {},
+			explorer = {
+				replace_netrw = true,
+			},
+			lazygit = {},
+			scroll = {},
 		},
-		version = "*",
-		config = function()
-			require("nvim-tree").setup({
-				renderer = {
-					group_empty = true,
-				},
-			})
-			local api = require("nvim-tree.api")
-			set("n", "tt", api.tree.toggle, { desc = "Toggle filetree viewer" })
-			set("n", "tc", api.tree.collapse_all, { desc = "Close open folders in filetree viewer" })
-			set("n", "tf", api.tree.find_file, { desc = "Open filetree to current file" })
-			set("n", "to", api.tree.expand_all, { desc = "Open filetree and expand all directories" })
-			set("n", "ts", ":NvimTreeResize -20<CR>", { desc = "Make filetree window smaller" })
-			set("n", "tb", ":NvimTreeResize +20<CR>", { desc = "Make filetree window bigger" })
-		end,
+		keys = {
+			{
+				"<leader>h",
+				function()
+					Snacks.picker.smart()
+				end,
+				desc = "Smart Find Files",
+			},
+			{
+				"<leader>j",
+				function()
+					Snacks.picker.buffers()
+				end,
+				desc = "Buffers",
+			},
+			{
+				"<leader>k",
+				function()
+					Snacks.picker.grep()
+				end,
+				desc = "Grep",
+			},
+			{
+				"<leader>e",
+				function()
+					Snacks.explorer()
+				end,
+				desc = "File Explorer",
+			},
+			{
+				"<leader>lg",
+				function()
+					Snacks.lazygit()
+				end,
+				desc = "Lazygit",
+			},
+		},
 	},
 	{
 		"saghen/blink.cmp",
@@ -218,23 +245,6 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"kdheepak/lazygit.nvim",
-		lazy = true,
-		cmd = {
-			"LazyGit",
-			"LazyGitConfig",
-			"LazyGitCurrentFile",
-			"LazyGitFilter",
-			"LazyGitFilterCurrentFile",
-		},
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-		},
-		keys = {
-			{ "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
-		},
-	},
-	{
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
 		dependencies = {
@@ -249,82 +259,6 @@ require("lazy").setup({
 			require("treesitter-context").setup({
 				enable = false,
 			})
-		end,
-	},
-	{
-		"nvim-telescope/telescope.nvim",
-		branch = "0.1.x",
-		dependencies = {
-			{ "nvim-lua/plenary.nvim" },
-			{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-		},
-		config = function()
-			require("telescope").setup({
-				defaults = {
-					layout_strategy = "vertical",
-				},
-				extensions = {
-					fzf = {
-						fuzzy = true,
-						override_generic_sorter = true,
-						override_file_sorter = true,
-						case_mode = "smart_case",
-					},
-				},
-			})
-			require("telescope").load_extension("fzf")
-			local live_globular_grep = function(opts)
-				opts = opts or {}
-				opts.cwd = opts.cwd or vim.fn.getcwd()
-
-				local finder = require("telescope.finders").new_async_job({
-					command_generator = function(prompt)
-						if not prompt or prompt == "" then
-							return nil
-						end
-						local pieces = vim.split(prompt, "  ")
-						local args = { "rg" }
-						if pieces[1] then
-							table.insert(args, "-e")
-							table.insert(args, pieces[1])
-						end
-						if pieces[2] then
-							table.insert(args, "-g")
-							table.insert(args, pieces[2])
-						end
-						---@diagnostic disable-next-line: deprecated
-						return vim.tbl_flatten({
-							args,
-							{
-								"--color=never",
-								"--no-heading",
-								"--with-filename",
-								"--line-number",
-								"--column",
-								"--smart-case",
-							},
-						})
-					end,
-					entry_maker = require("telescope.make_entry").gen_from_vimgrep(opts),
-					cwd = opts.cwd,
-				})
-
-				require("telescope.pickers")
-					.new(opts, {
-						debounce = 100,
-						prompt_title = "Globular Grep",
-						finder = finder,
-						previewer = require("telescope.config").values.grep_previewer(opts),
-						sorter = require("telescope.sorters").empty(),
-					})
-					:find()
-			end
-
-			local t = require("telescope.builtin")
-			set("n", "<leader>h", t.find_files, { desc = "Telescope find files" })
-			set("n", "<leader>j", t.buffers, { desc = "Telescope find buffers" })
-			set("n", "<leader>k", live_globular_grep, { desc = "Telescope - custom globular grep" })
-			set("n", "<leader>qk", t.live_grep, { desc = "Telescope live grep" })
 		end,
 	},
 	{
