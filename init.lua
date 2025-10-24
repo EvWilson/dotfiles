@@ -121,18 +121,18 @@ require("lazy").setup({
 							box = "vertical",
 							{
 								box = "vertical",
+								border = "rounded",
 								title = "{title} {live} {flags}",
 								{ win = "input", height = 1, border = "bottom" },
 								{ win = "list", border = "none" },
 							},
-							{ win = "preview", title = "{preview}" },
+							{ win = "preview", title = "{preview}", border = "rounded" },
 						},
 					},
 				},
 			},
 			explorer = {},
 			lazygit = {},
-			scroll = {},
 		},
 		keys = {
 			{
