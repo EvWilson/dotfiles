@@ -196,6 +196,30 @@ require("lazy").setup({
 	{
 		"neovim/nvim-lspconfig",
 		config = function()
+			-- See: https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#vue-support
+			local vue_language_server_path = vim.fn.expand("$MASON/packages")
+				.. "/vue-language-server"
+				.. "/node_modules/@vue/language-server"
+			local vue_plugin = {
+				name = "@vue/typescript-plugin",
+				location = vue_language_server_path,
+				languages = { "vue" },
+				configNamespace = "typescript",
+			}
+			vim.lsp.config("vtsls", {
+				settings = {
+					vtsls = {
+						tsserver = {
+							globalPlugins = {
+								vue_plugin,
+							},
+						},
+					},
+				},
+				filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
+			})
+			vim.lsp.enable("vtsls")
+
 			vim.lsp.enable("gopls")
 			vim.lsp.enable("ts_ls")
 			vim.lsp.enable("lua_ls")
@@ -206,24 +230,6 @@ require("lazy").setup({
 			vim.lsp.enable("docker_compose_language_service")
 			vim.lsp.enable("dockerls")
 			vim.lsp.enable("zls")
-
-			-- TODO: figure out the longer-term solution to this: https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#vue-support
-			vim.lsp.config("ts_ls", {
-				init_options = {
-					plugins = {
-						{
-							name = "@vue/typescript-plugin",
-							location = vim.fn.system("npm root -g"):gsub("\n", "") .. "/@vue/typescript-plugin",
-							languages = { "javascript", "typescript", "vue" },
-						},
-					},
-				},
-				filetypes = {
-					"javascript",
-					"typescript",
-					"vue",
-				},
-			})
 
 			-- Additional keybinds I'm setting because the baseline aren't quite cutting it for me
 			set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code action" })
