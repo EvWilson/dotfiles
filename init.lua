@@ -426,6 +426,13 @@ require("lazy").setup({
 					desc = "Focus",
 				},
 				{
+					"<leader>dq",
+					function()
+						dap.terminate()
+					end,
+					desc = "Quit current debug session",
+				},
+				{
 					"<leader>dt",
 					function()
 						dap_go.debug_test()
@@ -493,6 +500,7 @@ require("lazy").setup({
 				},
 				enable_persist = true,
 				orientation = "horizontal",
+				enable_status_col_display = true,
 			})
 			spelunk.display_function = function(mark)
 				local ctx = require("spelunk.util").get_treesitter_context(mark)
