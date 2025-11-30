@@ -475,8 +475,8 @@ require("lazy").setup({
 	{
 		"EvWilson/spelunk.nvim",
 		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"nvim-telescope/telescope.nvim",
+			"folke/snacks.nvim",
+			"nvim-treesitter/nvim-treesitter",
 		},
 		config = function()
 			local spelunk = require("spelunk")
@@ -488,6 +488,7 @@ require("lazy").setup({
 				},
 				enable_persist = true,
 				orientation = "horizontal",
+				fuzzy_search_provider = "snacks",
 			})
 			spelunk.display_function = function(mark)
 				local ctx = require("spelunk.util").get_treesitter_context(mark)
