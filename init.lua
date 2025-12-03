@@ -220,6 +220,7 @@ require("lazy").setup({
 			})
 			vim.lsp.enable("vtsls")
 
+			vim.lsp.enable("gdscript")
 			vim.lsp.enable("gopls")
 			vim.lsp.enable("ts_ls")
 			vim.lsp.enable("lua_ls")

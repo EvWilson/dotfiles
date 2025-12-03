@@ -90,7 +90,7 @@ nagme() {
 	shift
 	TEXT=$@
 	if [[ ! $(isnum $VALUE) ]]; then
-		echo "Period value $VALUE does not appear to be a number"
+		echo "error: period value $VALUE does not appear to be a number"
 		return 1
 	fi
 	if [[ "$PERIOD" == *m ]]; then
@@ -98,7 +98,7 @@ nagme() {
 	elif [[ "$PERIOD" == *s ]]; then
 		:
 	else
-		echo "Unknown period, specify a time in minutes or seconds. E.g.: 5s, 10m"
+		echo "error: unknown period, specify a time in minutes or seconds. E.g.: 5s, 10m"
 		return 1
 	fi
 	nagger $VALUE $TEXT & disown
@@ -116,3 +116,17 @@ gitco() {(
 	BRANCH="${BRANCH#\*}"
 	git checkout $BRANCH
 )}
+
+checkout_pr() {
+	set -e
+	if [[ $# -ne 1 ]]; then
+		echo "error: exactly one integer parameter required" >&2
+		return 1
+	fi
+	if [[ ! "$1" =~ ^[0-9]+$ ]]; then
+		echo "error: not passed a positive integer" >&2
+		return 1
+	fi
+	git fetch origin pull/${1}/head:pr-${1}
+	git checkout pr-${1}
+}
