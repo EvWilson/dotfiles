@@ -257,16 +257,10 @@ require("lazy").setup({
 		"stevearc/conform.nvim",
 		opts = {
 			formatters_by_ft = {
-				gdscript = { "gdformat" },
 				go = { "gofumpt" },
 				lua = { "stylua" },
 				python = { "ruff_format" },
 				zig = { "zigfmt" },
-			},
-			formatters = {
-				gdformat = {
-					timeout_ms = 5000,
-				},
 			},
 			format_on_save = { timeout_ms = 500 },
 		},
