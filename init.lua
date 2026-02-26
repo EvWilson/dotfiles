@@ -273,18 +273,17 @@ require("lazy").setup({
 	},
 	{
 		"nvim-treesitter/nvim-treesitter",
+		lazy = false,
 		build = ":TSUpdate",
 		dependencies = {
 			{ "nvim-treesitter/nvim-treesitter-context" },
 		},
 		config = function()
-			require("nvim-treesitter.configs").setup({
-				sync_install = false,
-				auto_install = true,
-				highlight = { enable = true },
-			})
-			require("treesitter-context").setup({
-				enable = false,
+			vim.api.nvim_create_autocmd("FileType", {
+				pattern = { "go", "markdown", "python", "zig", "rust" },
+				callback = function()
+					vim.treesitter.start()
+				end,
 			})
 		end,
 	},
@@ -446,9 +445,6 @@ require("lazy").setup({
 	{
 		"ruifm/gitlinker.nvim",
 		dependencies = { "nvim-lua/plenary.nvim" },
-		config = function()
-			require("gitlinker").setup()
-		end,
 	},
 	"lewis6991/gitsigns.nvim",
 	{
@@ -515,15 +511,8 @@ require("lazy").setup({
 	},
 	{
 		"kylechui/nvim-surround",
-		version = "*",
+		version = "^4.0.0", -- Use for stability; omit to use `main` branch for the latest features
 		event = "VeryLazy",
-		config = function()
-			require("nvim-surround").setup({
-				keymaps = {
-					delete = "<leader>ds",
-				},
-			})
-		end,
 	},
 	"tpope/vim-sleuth",
 })
