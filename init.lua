@@ -280,7 +280,7 @@ require("lazy").setup({
 		},
 		config = function()
 			vim.api.nvim_create_autocmd("FileType", {
-				pattern = { "go", "markdown", "python", "zig", "rust" },
+				pattern = { "go", "markdown", "python", "zig", "rust", "svelte", "vue" },
 				callback = function()
 					vim.treesitter.start()
 				end,
