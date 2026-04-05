@@ -18,24 +18,9 @@ PS1='\[\033[$PATH_COLOR\]${PS1X}$(parse_git_branch)\[\033[00m\] '
 # Adjust FZF to use ripgrep
 export FZF_DEFAULT_COMMAND='rg --files -g "!{.git,node_modules}/*"'
 
-alias cdd='cd $(fd --type directory | fzf)'
 alias n='nvim'
-alias gimme='n $(fd . ~/Documents | fzf)'
 
 alias ls='ls --color=auto'
-
-alias epoch='date +%s'
-
-assert_arglen() {
-	local expected_count="$1"
-	shift
-	if [ "$#" -ne "$expected_count" ]; then
-		local caller="${FUNCNAME[1]:-main}"
-		echo "error: $caller requires exactly $expected_count argument(s), but got $#" >&2
-		return 1
-	fi
-	return 0
-}
 
 # In existing tmux window, open preferred format and change all open windows to cwd
 winme() {
@@ -56,58 +41,6 @@ neovim_update() {
 	nvim --headless "+Lazy! sync" +qa
 }
 
-gitup() {
-	if [ $# -eq 0 ]; then
-		local MSG="Update"
-	else
-		local MSG=$@
-	fi
-	git add -A && git commit -m "$MSG" && git push
-}
-
-isnum() {
-	case $1 in
-		''|*[!0-9]*) echo '' ;;
-		*) echo 'isnum' ;;
-	esac
-}
-
-nagger() {
-	PERIOD=$1
-	shift
-	TEXT=$@
-	sleep $PERIOD
-	osascript -e "display notification \"${TEXT}\" with title \"Nag Me\""
-}
-
-nagme() {
-	if (( $# < 2 )); then
-		echo "Please supply a period (e.g. 10m, 5s), and then the text of your notification"
-		return 1
-	fi
-	PERIOD=$1
-	VALUE=$(echo $PERIOD | sed 's/.$//')
-	shift
-	TEXT=$@
-	if [[ ! $(isnum $VALUE) ]]; then
-		echo "error: period value $VALUE does not appear to be a number"
-		return 1
-	fi
-	if [[ "$PERIOD" == *m ]]; then
-		VALUE=$(($VALUE * 60))
-	elif [[ "$PERIOD" == *s ]]; then
-		:
-	else
-		echo "error: unknown period, specify a time in minutes or seconds. E.g.: 5s, 10m"
-		return 1
-	fi
-	nagger $VALUE $TEXT & disown
-}
-
-
-cdme() {
-	cd "$(fd -t d . ~/Documents | fzf --preview 'tree -L 1 {}')"
-}
 
 gitco() {(
 	set -e
@@ -117,16 +50,59 @@ gitco() {(
 	git checkout $BRANCH
 )}
 
-checkout_pr() {
-	set -e
-	if [[ $# -ne 1 ]]; then
-		echo "error: exactly one integer parameter required" >&2
-		return 1
+# Git worktree helpers
+
+# Create a new worktree and cd into it.
+# Usage: wt-new <branch-name> [base-branch]
+#   base-branch defaults to main
+wt-new() {
+	local branch="${1:?Usage: wt-new <branch-name> [base-branch]}"
+	local base="${2:-main}"
+	local repo_root
+	repo_root=$(git rev-parse --show-toplevel 2>/dev/null) || { echo "Not in a git repo"; return 1; }
+	local worktree_path="${repo_root}/../$(basename "$repo_root")-${branch}"
+	git worktree add -b "$branch" "$worktree_path" "$base" || return 1
+	cd "$worktree_path"
+}
+
+# Switch to an existing worktree via fzf.
+# Usage: wt-pick
+wt-pick() {
+	local selection
+	selection=$(git worktree list 2>/dev/null \
+		| fzf --prompt="worktree> " --height=40% --reverse \
+			  --preview='git -C {1} log --oneline -10') || return 0
+	local path
+	path=$(echo "$selection" | awk '{print $1}')
+	cd "$path"
+}
+
+# Remove a worktree via fzf, with confirmation.
+# Skips the main worktree. Prompts twice if there are uncommitted changes.
+# Usage: wt-rm
+wt-rm() {
+	# Exclude the main worktree (the one with .git directory, not a .git file)
+	local selection
+	selection=$(git worktree list 2>/dev/null \
+		| awk 'NR>1' \
+		| fzf --prompt="remove worktree> " --height=40% --reverse \
+			  --preview='git -C {1} status --short') || return 0
+
+	local path
+	path=$(echo "$selection" | awk '{print $1}')
+	local branch
+	branch=$(echo "$selection" | awk '{print $3}' | tr -d '[]')
+
+	read -r -p "Remove worktree '${branch}' at ${path}? [y/N] " confirm
+	[[ "$confirm" =~ ^[Yy]$ ]] || return 0
+
+	# Check for uncommitted changes
+	if ! git -C "$path" diff --quiet 2>/dev/null || ! git -C "$path" diff --cached --quiet 2>/dev/null; then
+		echo "Warning: worktree has uncommitted changes."
+		read -r -p "Force remove anyway? [y/N] " force_confirm
+		[[ "$force_confirm" =~ ^[Yy]$ ]] || return 0
+		git worktree remove --force "$path"
+	else
+		git worktree remove "$path"
 	fi
-	if [[ ! "$1" =~ ^[0-9]+$ ]]; then
-		echo "error: not passed a positive integer" >&2
-		return 1
-	fi
-	git fetch origin pull/${1}/head:pr-${1}
-	git checkout pr-${1}
 }
