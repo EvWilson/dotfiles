@@ -228,6 +228,7 @@ require("lazy").setup({
 			vim.lsp.enable("ruff")
 			vim.lsp.enable("rust_analyzer")
 			vim.lsp.enable("vue_ls")
+			vim.lsp.enable("svelte")
 			vim.lsp.enable("docker_compose_language_service")
 			vim.lsp.enable("dockerls")
 			vim.lsp.enable("zls")
