@@ -81,6 +81,15 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight yanked text",
 })
 
+-- Parsers and queries managed by ts-manager (see ts-manager/ in this repo)
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "go", "lua", "markdown", "markdown_inline", "python", "javascript", "typescript", "tsx", "zig", "rust", "svelte", "vue" },
+	callback = function()
+		vim.treesitter.start()
+	end,
+	desc = "Enable treesitter highlighting",
+})
+
 --------------------------------------------------------------------------------
 -- >>> Plugin Configuration <<<
 --------------------------------------------------------------------------------
@@ -270,23 +279,6 @@ require("lazy").setup({
 		"mason-org/mason.nvim",
 		config = function()
 			require("mason").setup()
-		end,
-	},
-	{
-		"nvim-treesitter/nvim-treesitter",
-		branch = "main",
-		lazy = false,
-		build = ":TSUpdate",
-		dependencies = {
-			{ "nvim-treesitter/nvim-treesitter-context" },
-		},
-		config = function()
-			vim.api.nvim_create_autocmd("FileType", {
-				pattern = { "go", "markdown", "python", "zig", "rust", "svelte", "vue" },
-				callback = function()
-					vim.treesitter.start()
-				end,
-			})
 		end,
 	},
 	{
@@ -488,7 +480,6 @@ require("lazy").setup({
 		"EvWilson/spelunk.nvim",
 		dependencies = {
 			"folke/snacks.nvim",
-			"nvim-treesitter/nvim-treesitter",
 		},
 		config = function()
 			local spelunk = require("spelunk")
@@ -503,12 +494,6 @@ require("lazy").setup({
 				enable_status_col_display = true,
 				fuzzy_search_provider = "snacks",
 			})
-			spelunk.display_function = function(mark)
-				local ctx = require("spelunk.util").get_treesitter_context(mark)
-				ctx = (ctx == "" and ctx) or (" - " .. ctx)
-				local filename = spelunk.filename_formatter(mark.file)
-				return string.format("%s:%d%s", filename, mark.line, ctx)
-			end
 		end,
 	},
 	{

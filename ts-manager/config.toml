@@ -1,0 +1,61 @@
+# queries_repo: optional override for query source. When set, queries are fetched
+# from this repo+ref instead of the grammar repo. Specified as "owner/repo@ref".
+#
+# Currently all languages point at the frozen nvim-treesitter master branch, which
+# ships richer highlight/indent/fold queries than the upstream grammar repos.
+#
+# TODO: periodically check whether upstream grammar repos have closed the gap and
+# migrate languages off nvim-treesitter queries where they've become self-sufficient.
+# Tracking issue: https://github.com/nvim-treesitter/nvim-treesitter (archived master branch)
+
+[languages.go]
+repo = "https://github.com/tree-sitter/tree-sitter-go"
+queries_repo = "nvim-treesitter/nvim-treesitter@master"
+
+[languages.python]
+repo = "https://github.com/tree-sitter/tree-sitter-python"
+queries_repo = "nvim-treesitter/nvim-treesitter@master"
+
+[languages.rust]
+repo = "https://github.com/tree-sitter/tree-sitter-rust"
+queries_repo = "nvim-treesitter/nvim-treesitter@master"
+
+[languages.zig]
+repo = "https://github.com/tree-sitter-grammars/tree-sitter-zig"
+queries_repo = "nvim-treesitter/nvim-treesitter@master"
+
+[languages.lua]
+repo = "https://github.com/tree-sitter-grammars/tree-sitter-lua"
+queries_repo = "nvim-treesitter/nvim-treesitter@master"
+
+[languages.javascript]
+repo = "https://github.com/tree-sitter/tree-sitter-javascript"
+queries_repo = "nvim-treesitter/nvim-treesitter@master"
+
+[languages.typescript]
+repo = "https://github.com/tree-sitter/tree-sitter-typescript"
+grammar_path = "typescript"
+queries_repo = "nvim-treesitter/nvim-treesitter@master"
+
+[languages.tsx]
+repo = "https://github.com/tree-sitter/tree-sitter-typescript"
+grammar_path = "tsx"
+queries_repo = "nvim-treesitter/nvim-treesitter@master"
+
+[languages.markdown]
+repo = "https://github.com/tree-sitter-grammars/tree-sitter-markdown"
+grammar_path = "tree-sitter-markdown"
+queries_repo = "nvim-treesitter/nvim-treesitter@master"
+
+[languages.markdown_inline]
+repo = "https://github.com/tree-sitter-grammars/tree-sitter-markdown"
+grammar_path = "tree-sitter-markdown-inline"
+queries_repo = "nvim-treesitter/nvim-treesitter@master"
+
+[languages.svelte]
+repo = "https://github.com/tree-sitter-grammars/tree-sitter-svelte"
+queries_repo = "nvim-treesitter/nvim-treesitter@master"
+
+[languages.vue]
+repo = "https://github.com/tree-sitter-grammars/tree-sitter-vue"
+queries_repo = "nvim-treesitter/nvim-treesitter@master"
