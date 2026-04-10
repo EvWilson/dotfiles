@@ -36,11 +36,14 @@ uv run ts_manager/main.py status
 2. Detects the ABI version expected by your local Neovim build
 3. For each language, resolves the latest semver tag via `git ls-remote`
 4. Clones the grammar repo at that tag into `.cache/grammars/<lang>/`
-5. Compiles the parser to `~/.local/share/nvim/parser/<lang>.so`
+5. Compiles the parser to `~/.local/share/nvim/site/parser/<lang>.so`
 6. Copies query files to `~/.local/share/nvim/site/queries/<lang>/`
 7. Records the pinned tag and commit in `lock.toml`
 
 On subsequent runs, languages whose tag hasn't changed are skipped.
+
+If the configured parser install root is not backed by a Neovim `runtimepath` entry,
+`ts-manager` emits a warning because Neovim will not discover those parsers.
 
 ## Query sources
 

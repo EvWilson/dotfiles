@@ -9,6 +9,7 @@ Usage:
 
 from __future__ import annotations
 
+import json
 import re
 import shutil
 import subprocess
@@ -26,7 +27,7 @@ CONFIG_FILE = PROJECT_ROOT / "config.toml"
 LOCK_FILE = PROJECT_ROOT / "lock.toml"
 CLONE_DIR = PROJECT_ROOT / ".cache" / "grammars"
 
-PARSER_DIR = Path.home() / ".local" / "share" / "nvim" / "parser"
+PARSER_DIR = Path.home() / ".local" / "share" / "nvim" / "site" / "parser"
 QUERY_DIR = Path.home() / ".local" / "share" / "nvim" / "site" / "queries"
 
 QUERY_TYPES = ["highlights", "indents", "folds", "injections", "locals"]
@@ -76,6 +77,37 @@ def detect_nvim_abi() -> int:
     except Exception as e:
         print(f"  warning: could not detect Neovim ABI ({e}), defaulting to 14")
         return 14
+
+
+def detect_nvim_runtime_paths() -> list[Path] | None:
+    try:
+        result = subprocess.run(
+            ["nvim", "--headless", "-c", "lua io.write(vim.json.encode(vim.api.nvim_list_runtime_paths()))", "-c", "q"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        if result.returncode != 0:
+            stderr = result.stderr.strip() or result.stdout.strip() or "unknown error"
+            raise RuntimeError(stderr)
+        return [Path(path).resolve() for path in json.loads(result.stdout)]
+    except Exception as e:
+        print(f"  warning: could not detect Neovim runtimepath ({e})")
+        return None
+
+
+def warn_if_parser_dir_missing_from_runtimepath() -> None:
+    runtime_paths = detect_nvim_runtime_paths()
+    if runtime_paths is None:
+        return
+
+    parser_runtime_root = PARSER_DIR.parent.resolve()
+    if parser_runtime_root not in runtime_paths:
+        print(
+            "  warning: PARSER_DIR parent is not on Neovim's runtimepath; "
+            f"parsers installed to {PARSER_DIR} may not be discovered"
+        )
+        print(f"           expected runtime path entry: {parser_runtime_root}")
 
 
 # ---------------------------------------------------------------------------
@@ -315,6 +347,7 @@ def install_language(lang: str, cfg: dict, lock: dict, force: bool, abi: int) ->
 def cmd_install(langs: list[str], config: dict, lock: dict, force: bool = True) -> None:
     abi = detect_nvim_abi()
     print(f"Neovim treesitter ABI: {abi}")
+    warn_if_parser_dir_missing_from_runtimepath()
     languages = config.get("languages", {})
     targets = langs or list(languages.keys())
 
@@ -335,6 +368,7 @@ def cmd_update(langs: list[str], config: dict, lock: dict) -> None:
 
 
 def cmd_status(langs: list[str], config: dict, lock: dict) -> None:
+    warn_if_parser_dir_missing_from_runtimepath()
     languages = config.get("languages", {})
     targets = langs or list(languages.keys())
 
