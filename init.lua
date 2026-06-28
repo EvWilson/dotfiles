@@ -81,23 +81,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight yanked text",
 })
 
--- Parsers and queries managed by ts-manager (see ts-manager/ in this repo)
--- Some filetypes use parser aliases rather than matching parser names directly.
--- React buffers need this registration so the generic FileType autocmd can resolve
--- them to the installed tsx parser before starting Tree-sitter.
-vim.treesitter.language.register("tsx", { "javascriptreact", "typescriptreact" })
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = "*",
-	callback = function(args)
-		local filetype = vim.bo[args.buf].filetype
-		local language = vim.treesitter.language.get_lang(filetype)
-
-		if pcall(vim.treesitter.language.inspect, language) then
-			vim.treesitter.start(args.buf, language)
-		end
-	end,
-	desc = "Enable treesitter highlighting when a parser exists",
-})
 
 --------------------------------------------------------------------------------
 -- >>> Plugin Configuration <<<
@@ -514,4 +497,20 @@ require("lazy").setup({
 		event = "VeryLazy",
 	},
 	"tpope/vim-sleuth",
+	{
+		"romus204/tree-sitter-manager.nvim",
+		config = function()
+			require("tree-sitter-manager").setup({
+				ensure_installed = {
+					"go", "python", "rust", "zig", "lua",
+					"javascript", "typescript", "tsx",
+					"html", "html_tags", "css", "scss",
+					"markdown", "markdown_inline",
+					"svelte", "vue",
+				},
+				auto_install = true,
+				highlight = true,
+			})
+		end,
+	},
 })
