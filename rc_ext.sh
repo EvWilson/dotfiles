@@ -1,19 +1,36 @@
 # My wonderful little preferences, aliases, functions, etc, to make my shell feel like home
-# Add this line to the end of .bashrc to load it in:
+# Works in both bash and zsh. Add this line to the end of .bashrc or .zshrc to load it in:
 # [ -s "${HOME}/.dotfiles/rc_ext.sh" ] && \. "${HOME}/.dotfiles/rc_ext.sh"
 
 # Colors to see dirs and bins
 LS_COLORS="di=34:ex=33"
-export $LS_COLORS
+export LS_COLORS
 
 # Set custom prompt
 parse_git_branch() {
 	git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
-PROMPT_COMMAND='PS1X=$(p="${PWD#${HOME}}"; [ "${PWD}" != "${p}" ] && printf "~";IFS=/; for q in ${p:1}; do printf /${q:0:1}; done; printf "${q:1}")'
-HOST_COLOR="01;35m"
-PATH_COLOR="01;36m"
-PS1='\[\033[$PATH_COLOR\]${PS1X}$(parse_git_branch)\[\033[00m\] '
+# Shorten the cwd to the first letter of each dir except the last, e.g. ~/a/b/project
+short_pwd() {
+	local p="${PWD#${HOME}}" out="" q
+	[ "${PWD}" != "${p}" ] && out="~"
+	p="${p#/}"
+	while [ "${p#*/}" != "${p}" ]; do
+		q="${p%%/*}"
+		out="${out}/${q:0:1}"
+		p="${p#*/}"
+	done
+	[ -n "${p}" ] && out="${out}/${p}"
+	printf '%s' "${out}"
+}
+if [ -n "${ZSH_VERSION}" ]; then
+	setopt PROMPT_SUBST
+	PROMPT='%B%F{cyan}$(short_pwd)$(parse_git_branch)%f%b '
+else
+	HOST_COLOR="01;35m"
+	PATH_COLOR="01;36m"
+	PS1='\[\033[$PATH_COLOR\]$(short_pwd)$(parse_git_branch)\[\033[00m\] '
+fi
 
 # Adjust FZF to use ripgrep
 export FZF_DEFAULT_COMMAND='rg --files -g "!{.git,node_modules}/*"'
@@ -44,10 +61,9 @@ neovim_update() {
 
 gitco() {(
 	set -e
-	local BRANCH=$(git branch | fzf)
-	# Remove leading asterisk, as in case of currently active branch
-	BRANCH="${BRANCH#\*}"
-	git checkout $BRANCH
+	# Remove leading asterisk and spaces, as in case of currently active branch
+	local BRANCH=$(git branch | fzf | sed 's/^[* ]*//')
+	git checkout "$BRANCH"
 )}
 
 # Git worktree helpers
@@ -72,9 +88,10 @@ wt-pick() {
 	selection=$(git worktree list 2>/dev/null \
 		| fzf --prompt="worktree> " --height=40% --reverse \
 			  --preview='git -C {1} log --oneline -10') || return 0
-	local path
-	path=$(echo "$selection" | awk '{print $1}')
-	cd "$path"
+	# Not named "path", since zsh ties $path to $PATH
+	local wt_path
+	wt_path=$(echo "$selection" | awk '{print $1}')
+	cd "$wt_path"
 }
 
 # Remove a worktree via fzf, with confirmation.
@@ -88,21 +105,26 @@ wt-rm() {
 		| fzf --prompt="remove worktree> " --height=40% --reverse \
 			  --preview='git -C {1} status --short') || return 0
 
-	local path
-	path=$(echo "$selection" | awk '{print $1}')
+	# Not named "path", since zsh ties $path to $PATH
+	local wt_path
+	wt_path=$(echo "$selection" | awk '{print $1}')
 	local branch
 	branch=$(echo "$selection" | awk '{print $3}' | tr -d '[]')
 
-	read -r -p "Remove worktree '${branch}' at ${path}? [y/N] " confirm
+	# printf + read rather than `read -p`, which means something else in zsh
+	local confirm force_confirm
+	printf "Remove worktree '%s' at %s? [y/N] " "$branch" "$wt_path"
+	read -r confirm
 	[[ "$confirm" =~ ^[Yy]$ ]] || return 0
 
 	# Check for uncommitted changes
-	if ! git -C "$path" diff --quiet 2>/dev/null || ! git -C "$path" diff --cached --quiet 2>/dev/null; then
+	if ! git -C "$wt_path" diff --quiet 2>/dev/null || ! git -C "$wt_path" diff --cached --quiet 2>/dev/null; then
 		echo "Warning: worktree has uncommitted changes."
-		read -r -p "Force remove anyway? [y/N] " force_confirm
+		printf "Force remove anyway? [y/N] "
+		read -r force_confirm
 		[[ "$force_confirm" =~ ^[Yy]$ ]] || return 0
-		git worktree remove --force "$path"
+		git worktree remove --force "$wt_path"
 	else
-		git worktree remove "$path"
+		git worktree remove "$wt_path"
 	fi
 }
