@@ -500,6 +500,8 @@ require("lazy").setup({
 	{
 		"romus204/tree-sitter-manager.nvim",
 		config = function()
+			-- `git commit` exports GIT_INDEX_FILE to the editor, which breaks parser clones
+			vim.env.GIT_INDEX_FILE = nil
 			require("tree-sitter-manager").setup({
 				ensure_installed = {
 					"go", "python", "rust", "zig", "lua",
@@ -507,6 +509,7 @@ require("lazy").setup({
 					"html", "html_tags", "css", "scss",
 					"markdown", "markdown_inline",
 					"svelte", "vue",
+					"gitcommit", "git_rebase", "diff",
 				},
 				auto_install = true,
 				highlight = true,
